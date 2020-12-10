@@ -20,3 +20,9 @@ Route::post('/categoria/registrar', 'CategoriaController@store');
 Route::put('/categoria/actualizar', 'CategoriaController@update');
 Route::put('/categoria/desactivar', 'CategoriaController@desactivar');
 Route::put('/categoria/activar', 'CategoriaController@activar');
+
+Route::get('/vehiculo', 'VehiculoController@index');
+Route::post('/vehiculo/registrar', 'VehiculoController@store');
+Route::put('/vehiculo/actualizar', 'VehiculoController@update');
+Route::put('/vehiculo/desactivar', 'VehiculoController@desactivar');
+Route::put('/vehiculo/activar', 'VehiculoController@activar');

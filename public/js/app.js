@@ -986,7 +986,7 @@ window.Vue = __webpack_require__(34);
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('categoria', __webpack_require__(37));
+Vue.component('vehiculo', __webpack_require__(37));
 
 var app = new Vue({
   el: '#app',
@@ -32555,7 +32555,7 @@ var Component = normalizeComponent(
   __vue_scopeId__,
   __vue_module_identifier__
 )
-Component.options.__file = "resources\\assets\\js\\components\\Categoria.vue"
+Component.options.__file = "resources\\assets\\js\\components\\Vehiculo.vue"
 
 /* hot reload */
 if (false) {(function () {
@@ -32564,9 +32564,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-c9526b68", Component.options)
+    hotAPI.createRecord("data-v-6489655c", Component.options)
   } else {
-    hotAPI.reload("data-v-c9526b68", Component.options)
+    hotAPI.reload("data-v-6489655c", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -32587,13 +32587,13 @@ var content = __webpack_require__(39);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(41)("5e333118", content, false, {});
+var update = __webpack_require__(41)("484c4b43", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
  if(!content.locals) {
-   module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-c9526b68\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Categoria.vue", function() {
-     var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-c9526b68\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Categoria.vue");
+   module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-6489655c\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Vehiculo.vue", function() {
+     var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-6489655c\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Vehiculo.vue");
      if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
      update(newContent);
    });
@@ -33210,19 +33210,45 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
-            categoria_id: 0,
-            nombre: '',
-            descripcion: '',
-            arrayCategoria: [],
+            id: 0,
+            ruta: '',
+            tipo: '',
+            placa: '',
+            conductor: '',
+            destino: '',
+            arrayVehiculo: [],
             modal: 0,
             tituloModal: '',
             tipoAccion: 0,
-            errorCategoria: 0,
-            errorMostrarMsjCategoria: [],
+            errorVehiculo: 0,
+            errorMostrarMsjVehiculo: [],
             pagination: {
                 'total': 0,
                 'current_page': 0,
@@ -33232,7 +33258,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'to': 0
             },
             offset: 3,
-            criterio: 'nombre',
+            criterio: 'placa',
             buscar: ''
         };
     },
@@ -33266,12 +33292,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         }
     },
     methods: {
-        listarCategoria: function listarCategoria(page, buscar, criterio) {
+        listarVehiculo: function listarVehiculo(page, buscar, criterio) {
             var me = this;
-            var url = '/categoria?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
+            var url = '/vehiculo?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
             axios.get(url).then(function (response) {
                 var respuesta = response.data;
-                me.arrayCategoria = respuesta.categorias.data;
+                me.arrayVehiculo = respuesta.vehiculos.data;
                 me.pagination = respuesta.pagination;
             }).catch(function (error) {
                 console.log(error);
@@ -33282,44 +33308,50 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             //Actualiza la página actual
             me.pagination.current_page = page;
             //Envia la petición para visualizar la data de esa página
-            me.listarCategoria(page, buscar, criterio);
+            me.listarVehiculo(page, buscar, criterio);
         },
-        registrarCategoria: function registrarCategoria() {
-            if (this.validarCategoria()) {
+        registrarVehiculo: function registrarVehiculo() {
+            if (this.validarVehiculo()) {
                 return;
             }
 
             var me = this;
 
-            axios.post('/categoria/registrar', {
-                'nombre': this.nombre,
-                'descripcion': this.descripcion
+            axios.post('/vehiculo/registrar', {
+                'ruta': this.ruta,
+                'tipo': this.tipo,
+                'placa': this.placa,
+                'conductor': this.conductor,
+                'destino': this.destino
             }).then(function (response) {
                 me.cerrarModal();
-                me.listarCategoria(1, '', 'nombre');
+                me.listarVehiculo(1, '', 'placa');
             }).catch(function (error) {
                 console.log(error);
             });
         },
-        actualizarCategoria: function actualizarCategoria() {
-            if (this.validarCategoria()) {
+        actualizarVehiculo: function actualizarVehiculo() {
+            if (this.validarVehiculo()) {
                 return;
             }
 
             var me = this;
 
-            axios.put('/categoria/actualizar', {
-                'nombre': this.nombre,
-                'descripcion': this.descripcion,
-                'id': this.categoria_id
+            axios.put('/vehiculo/actualizar', {
+                'ruta': this.ruta,
+                'tipo': this.tipo,
+                'placa': this.placa,
+                'conductor': this.conductor,
+                'destino': this.destino,
+                'id': this.id
             }).then(function (response) {
                 me.cerrarModal();
-                me.listarCategoria(1, '', 'nombre');
+                me.listarVehiculo(1, '', 'placa');
             }).catch(function (error) {
                 console.log(error);
             });
         },
-        desactivarCategoria: function desactivarCategoria(id) {
+        desactivarVehiculo: function desactivarVehiculo(id) {
             var _this = this;
 
             swal({
@@ -33338,10 +33370,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 if (result.value) {
                     var me = _this;
 
-                    axios.put('/categoria/desactivar', {
+                    axios.put('/vehiculo/desactivar', {
                         'id': id
                     }).then(function (response) {
-                        me.listarCategoria(1, '', 'nombre');
+                        me.listarVehiculo(1, '', 'placa');
                         swal('Desactivado!', 'El registro ha sido desactivado con éxito.', 'success');
                     }).catch(function (error) {
                         console.log(error);
@@ -33351,7 +33383,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 result.dismiss === swal.DismissReason.cancel) {}
             });
         },
-        activarCategoria: function activarCategoria(id) {
+        activarVehiculo: function activarVehiculo(id) {
             var _this2 = this;
 
             swal({
@@ -33370,10 +33402,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 if (result.value) {
                     var me = _this2;
 
-                    axios.put('/categoria/activar', {
+                    axios.put('/vehiculo/activar', {
                         'id': id
                     }).then(function (response) {
-                        me.listarCategoria(1, '', 'nombre');
+                        me.listarvehiculo(1, '', 'placa');
                         swal('Activado!', 'El registro ha sido activado con éxito.', 'success');
                     }).catch(function (error) {
                         console.log(error);
@@ -33383,35 +33415,53 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 result.dismiss === swal.DismissReason.cancel) {}
             });
         },
-        validarCategoria: function validarCategoria() {
-            this.errorCategoria = 0;
-            this.errorMostrarMsjCategoria = [];
+        validarVehiculo: function validarVehiculo() {
+            this.errorVehiculo = 0;
+            this.errorMostrarMsjVehiculo = [];
 
-            if (!this.nombre) this.errorMostrarMsjCategoria.push("El nombre de la categoría no puede estar vacío.");
+            if (!this.ruta) this.errorMostrarMsjVehiculo.push("El ruta de la categoría no puede estar vacío.");
 
-            if (this.errorMostrarMsjCategoria.length) this.errorCategoria = 1;
+            if (this.errorMostrarMsjVehiculo.length) this.errorVehiculo = 1;
+            if (!this.tipo) this.errorMostrarMsjVehiculo.push("El tipo de la categoría no puede estar vacío.");
 
-            return this.errorCategoria;
+            if (this.errorMostrarMsjVehiculo.length) this.errorVehiculo = 1;
+            if (!this.placa) this.errorMostrarMsjVehiculo.push("El placa de la categoría no puede estar vacío.");
+
+            if (this.errorMostrarMsjVehiculo.length) this.errorVehiculo = 1;
+            if (!this.conductor) this.errorMostrarMsjVehiculo.push("El conductor de la categoría no puede estar vacío.");
+
+            if (this.errorMostrarMsjVehiculo.length) this.errorVehiculo = 1;
+            if (!this.destino) this.errorMostrarMsjVehiculo.push("El destino de la categoría no puede estar vacío.");
+
+            if (this.errorMostrarMsjVehiculo.length) this.errorVehiculo = 1;
+
+            return this.errorVehiculo;
         },
         cerrarModal: function cerrarModal() {
             this.modal = 0;
             this.tituloModal = '';
-            this.nombre = '';
-            this.descripcion = '';
+            this.ruta = '';
+            this.tipo = '';
+            this.placa = 0;
+            this.conductor = '';
+            this.destino = '';
         },
         abrirModal: function abrirModal(modelo, accion) {
             var data = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
 
             switch (modelo) {
-                case "categoria":
+                case "vehiculo":
                     {
                         switch (accion) {
                             case 'registrar':
                                 {
                                     this.modal = 1;
                                     this.tituloModal = 'Registrar Categoría';
-                                    this.nombre = '';
-                                    this.descripcion = '';
+                                    this.ruta = '';
+                                    this.tipo = '';
+                                    this.placa = 0;
+                                    this.conductor = '';
+                                    this.destino = '';
                                     this.tipoAccion = 1;
                                     break;
                                 }
@@ -33421,9 +33471,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.modal = 1;
                                     this.tituloModal = 'Actualizar categoría';
                                     this.tipoAccion = 2;
-                                    this.categoria_id = data['id'];
-                                    this.nombre = data['nombre'];
-                                    this.descripcion = data['descripcion'];
+                                    this.id = data['id'];
+                                    this.ruta = data['ruta'];
+                                    this.tipo = data['tipo'];
+                                    this.placa = data['placa'];
+                                    this.conductor = data['conductor'];
+                                    this.destino = data['destino'];
                                     break;
                                 }
                         }
@@ -33432,7 +33485,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         }
     },
     mounted: function mounted() {
-        this.listarCategoria(1, this.buscar, this.criterio);
+        this.listarVehiculo(1, this.buscar, this.criterio);
     }
 });
 
@@ -33451,7 +33504,7 @@ var render = function() {
       _c("div", { staticClass: "card" }, [
         _c("div", { staticClass: "card-header" }, [
           _c("i", { staticClass: "fa fa-align-justify" }),
-          _vm._v(" Categorías\n                "),
+          _vm._v(" Vehiculos\n                "),
           _c(
             "button",
             {
@@ -33459,7 +33512,7 @@ var render = function() {
               attrs: { type: "button" },
               on: {
                 click: function($event) {
-                  _vm.abrirModal("categoria", "registrar")
+                  _vm.abrirModal("vehiculo", "registrar")
                 }
               }
             },
@@ -33503,12 +33556,12 @@ var render = function() {
                     }
                   },
                   [
-                    _c("option", { attrs: { value: "nombre" } }, [
-                      _vm._v("Nombre")
+                    _c("option", { attrs: { value: "ruta" } }, [
+                      _vm._v("Ruta")
                     ]),
                     _vm._v(" "),
-                    _c("option", { attrs: { value: "descripcion" } }, [
-                      _vm._v("Descripción")
+                    _c("option", { attrs: { value: "placa" } }, [
+                      _vm._v("Placas")
                     ])
                   ]
                 ),
@@ -33533,7 +33586,7 @@ var render = function() {
                       ) {
                         return null
                       }
-                      _vm.listarCategoria(1, _vm.buscar, _vm.criterio)
+                      _vm.listarVehiculo(1, _vm.buscar, _vm.criterio)
                     },
                     input: function($event) {
                       if ($event.target.composing) {
@@ -33551,7 +33604,7 @@ var render = function() {
                     attrs: { type: "submit" },
                     on: {
                       click: function($event) {
-                        _vm.listarCategoria(1, _vm.buscar, _vm.criterio)
+                        _vm.listarVehiculo(1, _vm.buscar, _vm.criterio)
                       }
                     }
                   },
@@ -33569,8 +33622,8 @@ var render = function() {
               _vm._v(" "),
               _c(
                 "tbody",
-                _vm._l(_vm.arrayCategoria, function(categoria) {
-                  return _c("tr", { key: categoria.id }, [
+                _vm._l(_vm.arrayVehiculo, function(vehiculo) {
+                  return _c("tr", { key: vehiculo.id }, [
                     _c(
                       "td",
                       [
@@ -33582,9 +33635,9 @@ var render = function() {
                             on: {
                               click: function($event) {
                                 _vm.abrirModal(
-                                  "categoria",
+                                  "vehiculo",
                                   "actualizar",
-                                  categoria
+                                  vehiculo
                                 )
                               }
                             }
@@ -33592,7 +33645,7 @@ var render = function() {
                           [_c("i", { staticClass: "icon-pencil" })]
                         ),
                         _vm._v("  \n                                "),
-                        categoria.condicion
+                        vehiculo.condicion
                           ? [
                               _c(
                                 "button",
@@ -33601,7 +33654,7 @@ var render = function() {
                                   attrs: { type: "button" },
                                   on: {
                                     click: function($event) {
-                                      _vm.desactivarCategoria(categoria.id)
+                                      _vm.desactivarVehiculo(vehiculo.id)
                                     }
                                   }
                                 },
@@ -33616,7 +33669,7 @@ var render = function() {
                                   attrs: { type: "button" },
                                   on: {
                                     click: function($event) {
-                                      _vm.activarCategoria(categoria.id)
+                                      _vm.activarVehiculo(vehiculo.id)
                                     }
                                   }
                                 },
@@ -33628,15 +33681,27 @@ var render = function() {
                     ),
                     _vm._v(" "),
                     _c("td", {
-                      domProps: { textContent: _vm._s(categoria.nombre) }
+                      domProps: { textContent: _vm._s(vehiculo.ruta) }
                     }),
                     _vm._v(" "),
                     _c("td", {
-                      domProps: { textContent: _vm._s(categoria.descripcion) }
+                      domProps: { textContent: _vm._s(vehiculo.tipo) }
+                    }),
+                    _vm._v(" "),
+                    _c("td", {
+                      domProps: { textContent: _vm._s(vehiculo.placa) }
+                    }),
+                    _vm._v(" "),
+                    _c("td", {
+                      domProps: { textContent: _vm._s(vehiculo.conductor) }
+                    }),
+                    _vm._v(" "),
+                    _c("td", {
+                      domProps: { textContent: _vm._s(vehiculo.destino) }
                     }),
                     _vm._v(" "),
                     _c("td", [
-                      categoria.condicion
+                      vehiculo.condicion
                         ? _c("div", [
                             _c("span", { staticClass: "badge badge-success" }, [
                               _vm._v("Activo")
@@ -33802,7 +33867,7 @@ var render = function() {
                           staticClass: "col-md-3 form-control-label",
                           attrs: { for: "text-input" }
                         },
-                        [_vm._v("Nombre")]
+                        [_vm._v("Ruta")]
                       ),
                       _vm._v(" "),
                       _c("div", { staticClass: "col-md-9" }, [
@@ -33811,8 +33876,8 @@ var render = function() {
                             {
                               name: "model",
                               rawName: "v-model",
-                              value: _vm.nombre,
-                              expression: "nombre"
+                              value: _vm.ruta,
+                              expression: "ruta"
                             }
                           ],
                           staticClass: "form-control",
@@ -33820,13 +33885,13 @@ var render = function() {
                             type: "text",
                             placeholder: "Nombre de categoría"
                           },
-                          domProps: { value: _vm.nombre },
+                          domProps: { value: _vm.ruta },
                           on: {
                             input: function($event) {
                               if ($event.target.composing) {
                                 return
                               }
-                              _vm.nombre = $event.target.value
+                              _vm.ruta = $event.target.value
                             }
                           }
                         })
@@ -33840,7 +33905,7 @@ var render = function() {
                           staticClass: "col-md-3 form-control-label",
                           attrs: { for: "email-input" }
                         },
-                        [_vm._v("Descripción")]
+                        [_vm._v("Tipo")]
                       ),
                       _vm._v(" "),
                       _c("div", { staticClass: "col-md-9" }, [
@@ -33849,22 +33914,136 @@ var render = function() {
                             {
                               name: "model",
                               rawName: "v-model",
-                              value: _vm.descripcion,
-                              expression: "descripcion"
+                              value: _vm.tipo,
+                              expression: "tipo"
                             }
                           ],
                           staticClass: "form-control",
                           attrs: {
-                            type: "email",
+                            type: "text",
                             placeholder: "Ingrese descripción"
                           },
-                          domProps: { value: _vm.descripcion },
+                          domProps: { value: _vm.tipo },
                           on: {
                             input: function($event) {
                               if ($event.target.composing) {
                                 return
                               }
-                              _vm.descripcion = $event.target.value
+                              _vm.tipo = $event.target.value
+                            }
+                          }
+                        })
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "email-input" }
+                        },
+                        [_vm._v("placa")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-9" }, [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.placa,
+                              expression: "placa"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: {
+                            type: "text",
+                            placeholder: "Ingrese descripción"
+                          },
+                          domProps: { value: _vm.placa },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.placa = $event.target.value
+                            }
+                          }
+                        })
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "email-input" }
+                        },
+                        [_vm._v("conductor")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-9" }, [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.conductor,
+                              expression: "conductor"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: {
+                            type: "text",
+                            placeholder: "Ingrese descripción"
+                          },
+                          domProps: { value: _vm.conductor },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.conductor = $event.target.value
+                            }
+                          }
+                        })
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "email-input" }
+                        },
+                        [_vm._v("destino")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-9" }, [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.destino,
+                              expression: "destino"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: {
+                            type: "text",
+                            placeholder: "Ingrese descripción"
+                          },
+                          domProps: { value: _vm.destino },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.destino = $event.target.value
                             }
                           }
                         })
@@ -33878,8 +34057,8 @@ var render = function() {
                           {
                             name: "show",
                             rawName: "v-show",
-                            value: _vm.errorCategoria,
-                            expression: "errorCategoria"
+                            value: _vm.errorVehiculo,
+                            expression: "errorVehiculo"
                           }
                         ],
                         staticClass: "form-group row div-error"
@@ -33888,7 +34067,7 @@ var render = function() {
                         _c(
                           "div",
                           { staticClass: "text-center text-error" },
-                          _vm._l(_vm.errorMostrarMsjCategoria, function(error) {
+                          _vm._l(_vm.errorMostrarMsjVehiculo, function(error) {
                             return _c("div", {
                               key: error,
                               domProps: { textContent: _vm._s(error) }
@@ -33924,7 +34103,7 @@ var render = function() {
                         attrs: { type: "button" },
                         on: {
                           click: function($event) {
-                            _vm.registrarCategoria()
+                            _vm.registrarVehiculo()
                           }
                         }
                       },
@@ -33940,7 +34119,7 @@ var render = function() {
                         attrs: { type: "button" },
                         on: {
                           click: function($event) {
-                            _vm.actualizarCategoria()
+                            _vm.actualizarVehiculo()
                           }
                         }
                       },
@@ -33978,11 +34157,15 @@ var staticRenderFns = [
       _c("tr", [
         _c("th", [_vm._v("Opciones")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Nombre")]),
+        _c("th", [_vm._v("Ruta")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Descripción")]),
+        _c("th", [_vm._v("Tipo")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Estado")])
+        _c("th", [_vm._v("placa")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Conductor")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Destino")])
       ])
     ])
   }
@@ -33992,7 +34175,7 @@ module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-c9526b68", module.exports)
+    require("vue-hot-reload-api")      .rerender("data-v-6489655c", module.exports)
   }
 }
 
