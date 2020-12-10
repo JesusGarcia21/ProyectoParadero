@@ -20,3 +20,15 @@ Route::post('/categoria/registrar', 'CategoriaController@store');
 Route::put('/categoria/actualizar', 'CategoriaController@update');
 Route::put('/categoria/desactivar', 'CategoriaController@desactivar');
 Route::put('/categoria/activar', 'CategoriaController@activar');
+
+Route::get('/paraderos', 'ParaderosController@index');
+Route::post('/paraderos/registrar', 'ParaderosController@store');
+Route::put('/paraderos/actualizar', 'ParaderosController@update');
+Route::put('/paraderos/desactivar', 'ParaderosController@desactivar');
+Route::put('/paraderos/activar', 'ParaderosController@activar');
+
+Route::get('/rutas', 'RutasController@index');
+Route::post('/rutas/registrar', 'RutasController@store');
+Route::put('/rutas/actualizar', 'RutasController@update');
+Route::put('/rutas/desactivar', 'RutasController@desactivar');
+Route::put('/rutas/activar', 'RutasController@activar');

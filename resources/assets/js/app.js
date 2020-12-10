@@ -16,6 +16,8 @@ window.Vue = require('vue');
  */
 
 Vue.component('categoria', require('./components/Categoria.vue'));
+Vue.component('paraderos', require('./components/Paraderos.vue'));
+Vue.component('rutas', require('./components/Rutas.vue'));
 
 const app = new Vue({
     el: '#app',
