@@ -1,11 +1,11 @@
 <template>
             <main class="main">
             <!-- Breadcrumb -->
-            <ol class="breadcrumb">
+            <!--<ol class="breadcrumb">
                 <li class="breadcrumb-item">Home</li>
                 <li class="breadcrumb-item"><a href="#">Admin</a></li>
                 <li class="breadcrumb-item active">Dashboard</li>
-            </ol>
+            </ol>-->
             <div class="container-fluid">
                 <!-- Ejemplo de tabla Listado -->
                 <div class="card">
@@ -47,11 +47,11 @@
                                 <tr v-for="paraderos in arrayParaderos" :key="paraderos.id">
                                     <td>
                                         <button type="button" @click="abrirModal('paraderos','actualizar',paraderos)" class="btn btn-warning btn-sm">
-                                          <i class="icon-pencil"></i>
+                                          <i class="fas fa-edit"></i>
                                         </button> &nbsp;
                                         <template v-if="paraderos.condicion">
                                             <button type="button" class="btn btn-danger btn-sm" @click="desactivarParaderos(paraderos.id)">
-                                                <i class="icon-trash"></i>
+                                                <i class="fas fa-ban"></i>
                                             </button>
                                         </template>
                                         <template v-else>

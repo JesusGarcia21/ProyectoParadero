@@ -1,16 +1,16 @@
 <template>
             <main class="main">
             <!-- Breadcrumb -->
-            <ol class="breadcrumb">
+            <!--<ol class="breadcrumb">
                 <li class="breadcrumb-item">Home</li>
                 <li class="breadcrumb-item"><a href="#">Admin</a></li>
                 <li class="breadcrumb-item active">Dashboard</li>
-            </ol>
+            </ol>-->
             <div class="container-fluid">
                 <!-- Ejemplo de tabla Listado -->
                 <div class="card">
                     <div class="card-header">
-                        <i class="fa fa-align-justify"></i> Vehiculos
+                        <i class="fa fa-align-justify"></i> Lista de vehiculos
                         <button type="button" @click="abrirModal('vehiculo','registrar')" class="btn btn-secondary">
                             <i class="icon-plus"></i>&nbsp;Nuevo
                         </button>
@@ -37,22 +37,23 @@
                                     <th>placa</th>
                                     <th>Conductor</th>
                                     <th>Destino</th>
+                                    <th>Estado</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr v-for="vehiculo in arrayVehiculo" :key="vehiculo.id">
                                     <td>
                                         <button type="button" @click="abrirModal('vehiculo','actualizar',vehiculo)" class="btn btn-warning btn-sm">
-                                          <i class="icon-pencil"></i>
+                                          <i class="fas fa-edit"></i>
                                         </button> &nbsp;
                                         <template v-if="vehiculo.condicion">
                                             <button type="button" class="btn btn-danger btn-sm" @click="desactivarVehiculo(vehiculo.id)">
-                                                <i class="icon-trash"></i>
+                                                <i class="fas fa-ban"></i>
                                             </button>
                                         </template>
                                         <template v-else>
                                             <button type="button" class="btn btn-info btn-sm" @click="activarVehiculo(vehiculo.id)">
-                                                <i class="icon-check"></i>
+                                                <i class="fas fa-ban"></i>
                                             </button>
                                         </template>
                                     </td>
@@ -105,32 +106,32 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Ruta</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="ruta" class="form-control" placeholder="Nombre de categoría">
+                                        <input type="text" v-model="ruta" class="form-control" placeholder="Nombreel nombre o numero de ruta">
                                         
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="email-input">Tipo</label>
+                                    <label class="col-md-3 form-control-label" for="text-input">Tipo</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="tipo" class="form-control" placeholder="Ingrese descripción">
+                                        <input type="text" v-model="tipo" class="form-control" placeholder="Ingrese el tipo de vehiculo">
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="email-input">placa</label>
+                                    <label class="col-md-3 form-control-label" for="text-input">placa</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="placa" class="form-control" placeholder="Ingrese descripción">
+                                        <input type="text" v-model="placa" class="form-control" placeholder="Ingrese el numero de placa">
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="email-input">conductor</label>
+                                    <label class="col-md-3 form-control-label" for="text-input">conductor</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="conductor" class="form-control" placeholder="Ingrese descripción">
+                                        <input type="text" v-model="conductor" class="form-control" placeholder="Ingrese el nombre del conductor">
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="email-input">destino</label>
+                                    <label class="col-md-3 form-control-label" for="text-input">destino</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="destino" class="form-control" placeholder="Ingrese descripción">
+                                        <input type="text" v-model="destino" class="form-control" placeholder="Ingrese el destino">
                                     </div>
                                 </div>
                                 <div v-show="errorVehiculo" class="form-group row div-error">
@@ -278,7 +279,7 @@
             },
             desactivarVehiculo(id){
                swal({
-                title: 'Esta seguro de desactivar esta categoría?',
+                title: 'Esta seguro de desactivar este vehiculo?',
                 type: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -299,7 +300,7 @@
                         me.listarVehiculo(1,'','placa');
                         swal(
                         'Desactivado!',
-                        'El registro ha sido desactivado con éxito.',
+                        'El vehiculo ha sido desactivado con éxito.',
                         'success'
                         )
                     }).catch(function (error) {
@@ -317,7 +318,7 @@
             },
             activarVehiculo(id){
                swal({
-                title: 'Esta seguro de activar esta categoría?',
+                title: 'Esta seguro de activar este vehiculo?',
                 type: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -338,7 +339,7 @@
                         me.listarvehiculo(1,'','placa');
                         swal(
                         'Activado!',
-                        'El registro ha sido activado con éxito.',
+                        'El vehiculo ha sido activado con éxito.',
                         'success'
                         )
                     }).catch(function (error) {
@@ -358,19 +359,19 @@
                 this.errorVehiculo=0;
                 this.errorMostrarMsjVehiculo =[];
 
-                if (!this.ruta) this.errorMostrarMsjVehiculo.push("El ruta de la categoría no puede estar vacío.");
+                if (!this.ruta) this.errorMostrarMsjVehiculo.push("La ruta no puede estar vacío.");
 
                 if (this.errorMostrarMsjVehiculo.length) this.errorVehiculo = 1;
-                if (!this.tipo) this.errorMostrarMsjVehiculo.push("El tipo de la categoría no puede estar vacío.");
+                if (!this.tipo) this.errorMostrarMsjVehiculo.push("El tipo de vehiculo no puede estar vacío.");
 
                 if (this.errorMostrarMsjVehiculo.length) this.errorVehiculo = 1;
-                if (!this.placa) this.errorMostrarMsjVehiculo.push("El placa de la categoría no puede estar vacío.");
+                if (!this.placa) this.errorMostrarMsjVehiculo.push("El numero de placa no puede estar vacío.");
 
                 if (this.errorMostrarMsjVehiculo.length) this.errorVehiculo = 1;
-                if (!this.conductor) this.errorMostrarMsjVehiculo.push("El conductor de la categoría no puede estar vacío.");
+                if (!this.conductor) this.errorMostrarMsjVehiculo.push("El nombre del conductor no puede estar vacío.");
 
                 if (this.errorMostrarMsjVehiculo.length) this.errorVehiculo = 1;
-                if (!this.destino) this.errorMostrarMsjVehiculo.push("El destino de la categoría no puede estar vacío.");
+                if (!this.destino) this.errorMostrarMsjVehiculo.push("El destino no puede estar vacío.");
 
                 if (this.errorMostrarMsjVehiculo.length) this.errorVehiculo = 1;
 
@@ -384,6 +385,8 @@
                 this.placa= 0;
                 this.conductor= '';
                 this.destino='';
+                this.errorVehiculo=0;
+                this.errorMostrarMsjVehiculo = [];
             },
             abrirModal(modelo, accion, data = []){
                 switch(modelo){
@@ -393,7 +396,7 @@
                             case 'registrar':
                             {
                                 this.modal = 1;
-                                this.tituloModal = 'Registrar Categoría';
+                                this.tituloModal = 'Registrar Vehiculo';
                                  this.ruta='';
                                 this.tipo='';
                                 this.placa= 0;
@@ -406,7 +409,7 @@
                             {
                                 //console.log(data);
                                 this.modal=1;
-                                this.tituloModal='Actualizar categoría';
+                                this.tituloModal='Actualizar Vehiculo';
                                 this.tipoAccion=2;
                                 this.id=data['id'];
                                 this.ruta = data['ruta'];

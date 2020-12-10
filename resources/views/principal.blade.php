@@ -8,11 +8,12 @@
     <meta name="description" content="Sistema Ventas Laravel Vue Js- IncanatoIT">
     <meta name="author" content="Incanatoit.com">
     <meta name="keyword" content="Sistema ventas Laravel Vue Js, Sistema compras Laravel Vue Js">
-    <link rel="shortcut icon" href="img/favicon.png">
-    <title>Sistema Ventas - IncanatoIT</title>
+    <link rel="shortcut icon" href="img/Azul.svg">
+    <title>ParaderosRFID</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Icons -->
-    <link href="css/plantilla.css" rel="stylesheet">
+    <link href="css/plantillaas.css" rel="stylesheet">
+    <link href="css/all.css" rel="stylesheet">
 </head>
 
 <body class="app header-fixed sidebar-fixed aside-menu-fixed aside-menu-hidden">
@@ -25,14 +26,14 @@
         <button class="navbar-toggler sidebar-toggler d-md-down-none" type="button">
           <span class="navbar-toggler-icon"></span>
         </button>
-        <ul class="nav navbar-nav d-md-down-none">
+       <!-- <ul class="nav navbar-nav d-md-down-none">
             <li class="nav-item px-3">
                 <a class="nav-link" href="#">Escritorio</a>
             </li>
             <li class="nav-item px-3">
                 <a class="nav-link" href="#">Configuraciones</a>
             </li>
-        </ul>
+        </ul>-->
         <ul class="nav navbar-nav ml-auto">
             <li class="nav-item d-md-down-none">
                 <a class="nav-link" href="#" data-toggle="dropdown">
@@ -44,19 +45,19 @@
                         <strong>Notificaciones</strong>
                     </div>
                     <a class="dropdown-item" href="#">
-                        <i class="fa fa-envelope-o"></i> Ingresos
-                        <span class="badge badge-success">3</span>
+                        <i class="fa fa-envelope-o"></i> Mensaje nuevo
+                        
                     </a>
                     <a class="dropdown-item" href="#">
-                        <i class="fa fa-tasks"></i> Ventas
-                        <span class="badge badge-danger">2</span>
+                        <i class="fa fa-tasks"></i> Añadido
+                       
                     </a>
                 </div>
             </li>
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                     <img src="img/avatars/6.jpg" class="img-avatar" alt="admin@bootstrapmaster.com">
-                    <span class="d-md-down-none">admin </span>
+                    <span class="d-md-down-none">Usuario </span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
                     <div class="dropdown-header text-center">
@@ -77,12 +78,11 @@
         <!-- /Fin del contenido principal -->
     </div>   
     </div>
-    <!--
+
     <footer class="app-footer">
-        <span><a href="http://www.incanatoit.com/">IncanatoIT</a> &copy; 2017</span>
-        <span class="ml-auto">Desarrollado por <a href="http://www.incanatoit.com/">IncanatoIT</a></span>
+        <span>ParaderosRFID</a> &copy; 2020</span>
     </footer>
-    -->
+    
 
     <script src="js/app.js"></script>
     <script src="js/plantilla.js"></script>
