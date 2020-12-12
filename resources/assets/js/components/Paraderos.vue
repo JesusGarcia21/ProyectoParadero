@@ -22,9 +22,6 @@
                                     <select class="form-control col-md-3" v-model="criterio">
                                       <option value="ubicacion">Ubicación</option>
                                       <option value="ruta">Ruta</option>
-                                      <option value="serie">Serie</option>
-                                      <option value="latitud">Latitud</option>
-                                      <option value="longitud">Longitud</option>
                                     </select>
                                     <input type="text" v-model="buscar" @keyup.enter="listarParaderos(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
                                     <button type="submit" @click="listarParaderos(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
@@ -135,13 +132,15 @@
                                         <input type="email" v-model="latitud" class="form-control" placeholder="Ingrese la latitud del autobús">
                                     </div>
                                 </div>
-                                
+
                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="email-input">longitud</label>
+                                    <label class="col-md-3 form-control-label" for="email-input">Longitud</label>
                                     <div class="col-md-9">
                                         <input type="email" v-model="longitud" class="form-control" placeholder="Ingrese la longitud del autobús">
                                     </div>
                                 </div>
+                                
+                                
 
                                 <div v-show="errorParaderos" class="form-group row div-error">
                                     <div class="text-center text-error">

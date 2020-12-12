@@ -42,9 +42,8 @@
                             <tbody>
                                 <tr v-for="rutas in arrayRutas" :key="rutas.id">
                                     <td>
-                                        <button type="button" @click="abrirModal('rutas','actualizar',rutas)" class="btn btn-warning btn-sm">
-                                          <i class="fas fa-edit"></i>
-                                        </button> &nbsp;
+                                        <button type="button" @click="abrirModal('rutas','actualizar',rutas)" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></button> &nbsp;
+                                        <button v-if="rutas.id!=1" type="button" class="btn btn-icon btn-round btn-danger btn-xs" @click="eliminarRutas(rutas.id,rutas.direccion)"><i class="fa fa-trash-alt"></i></button>
                                         <template v-if="rutas.condicion">
                                             <button type="button" class="btn btn-danger btn-sm" @click="desactivarRutas(rutas.id)">
                                                 <i class="fas fa-ban"></i>
@@ -272,7 +271,7 @@
             },
             desactivarRutas(id){
                swal({
-                title: 'Esta seguro de desactivar esta categoría?',
+                title: 'Esta seguro de desactivar esta ruta?',
                 type: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -311,7 +310,7 @@
             },
             activarRutas(id){
                swal({
-                title: 'Esta seguro de activar esta categoría?',
+                title: 'Esta seguro de activar esta ruta?',
                 type: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -348,6 +347,50 @@
                 }
                 }) 
             },
+            eliminarRutas(id)
+            {
+                let me = this;
+                swal({
+                title: 'Estas seguro de eliminar esta ruta?',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Aceptar!',
+                cancelButtonText: 'Cancelar',
+                confirmButtonClass: 'btn btn-success',
+                cancelButtonClass: 'btn btn-danger',
+                buttonsStyling: false,
+                reverseButtons: true
+                }).then((Delete) => {
+                    if (Delete) 
+                    {
+                        
+                        axios.delete('/rutas/delete/'+id,{
+                            
+                        }).then(function (response) 
+                        {
+                            me.listarRutas(1,'');
+                            swal({
+							    title: 'Eliminado',
+							    text: 'Su ruta ha sido eliminada',
+							    type: 'success',
+							    buttons : {
+								    confirm: {
+									    className : 'btn btn-success'
+								    }
+							    }
+						    });
+                        }).catch(function (error) 
+                        {
+                            console.log(error);
+                            me.notificationError('Error','No se pudo eliminar el registro');
+                        });
+					} else {
+						swal.close();
+					}
+				});
+            },
             validarRutas(){
                 this.errorRutas=0;
                 this.errorMostrarMsjRutas =[];
@@ -365,7 +408,9 @@
                 this.modal=0;
                 this.tituloModal='';
                 this.direccion='';
-                this.descripcion='';
+                this.ruta='';
+                this.latitud='';
+                this.longitud='';
             },
             abrirModal(modelo, accion, data = []){
                 switch(modelo){
@@ -375,9 +420,11 @@
                             case 'registrar':
                             {
                                 this.modal = 1;
-                                this.tituloModal = 'Registrar Categoría';
+                                this.tituloModal = 'Registrar Rutas';
                                 this.direccion= '';
-                                this.descripcion = '';
+                                this.ruta= '';
+                                this.latitud= '';
+                                this.longitud= '';
                                 this.tipoAccion = 1;
                                 break;
                             }
@@ -385,11 +432,13 @@
                             {
                                 //console.log(data);
                                 this.modal=1;
-                                this.tituloModal='Actualizar categoría';
+                                this.tituloModal='Actualizar Rutas';
                                 this.tipoAccion=2;
                                 this.rutas_id=data['id'];
                                 this.direccion = data['direccion'];
-                                this.descripcion= data['descripcion'];
+                                this.ruta = data['ruta'];
+                                this.latitud = data['latitud'];
+                                this.longitud = data['longitud'];
                                 break;
                             }
                         }

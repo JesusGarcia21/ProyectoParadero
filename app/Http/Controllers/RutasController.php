@@ -75,4 +75,9 @@ class RutasController extends Controller
         $rutas->condicion = '1';
         $rutas->save();
     }
+
+    public function destroy($id)
+    {
+        $rutas = Rutas::where('id',$id)->delete();
+    }
 }

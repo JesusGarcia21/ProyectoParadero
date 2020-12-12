@@ -10,7 +10,7 @@ class ParaderosController extends Controller
 {
     public function index(Request $request)
     {
-        if (!$request->ajax()) return redirect('/');
+        //if (!$request->ajax()) return redirect('/');
 
         $buscar = $request->buscar;
         $criterio = $request->criterio;
@@ -21,7 +21,7 @@ class ParaderosController extends Controller
         else{
             $paraderos = Paraderos::where($criterio, 'like', '%'. $buscar . '%')->orderBy('id', 'desc')->paginate(3);
         }
-        
+        //return $paraderos;
 
         return [
             'pagination' => [
@@ -36,6 +36,7 @@ class ParaderosController extends Controller
         ];
     }
 
+    
     public function store(Request $request)
     {
         if (!$request->ajax()) return redirect('/');
@@ -44,7 +45,7 @@ class ParaderosController extends Controller
         $paraderos->ruta = $request->ruta;
         $paraderos->serie = $request->serie;
         $paraderos->latitud = $request->latitud;
-        $paraderos->longitud = $request->ubicacion;
+        $paraderos->longitud = $request->longitud;
         $paraderos->condicion = '1';
         $paraderos->save();
     }
@@ -57,7 +58,7 @@ class ParaderosController extends Controller
         $paraderos->ruta = $request->ruta;
         $paraderos->serie = $request->serie;
         $paraderos->latitud = $request->latitud;
-        $paraderos->longitud = $request->ubicacion;
+        $paraderos->longitud = $request->longitud;
         $paraderos->condicion = '1';
         $paraderos->save();
     }
