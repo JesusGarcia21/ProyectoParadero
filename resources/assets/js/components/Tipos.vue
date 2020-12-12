@@ -10,8 +10,8 @@
                 <!-- Ejemplo de tabla Listado -->
                 <div class="card">
                     <div class="card-header">
-                        <i class="fa fa-align-justify"></i> Lista de vehiculos
-                        <button type="button" @click="abrirModal('vehiculo','registrar')" class="btn btn-secondary">
+                        <i class="fa fa-align-justify"></i> Tipos de vehiculos
+                        <button type="button" @click="abrirModal('tipos','registrar')" class="btn btn-secondary">
                             <i class="icon-plus"></i>&nbsp;Nuevo
                         </button>
                     </div>
@@ -20,11 +20,10 @@
                             <div class="col-md-6">
                                 <div class="input-group">
                                     <select class="form-control col-md-3" v-model="criterio">
-                                      <option value="ruta">Ruta</option>
-                                      <option value="placa">Placas</option>
+                                      <option value="nombre">Nombre</option>
                                     </select>
-                                    <input type="text" v-model="buscar" @keyup.enter="listarVehiculo(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
-                                    <button type="submit" @click="listarVehiculo(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <input type="text" v-model="buscar" @keyup.enter="listarRutas(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
+                                    <button type="submit" @click="listarTipos(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
                         </div>
@@ -32,40 +31,30 @@
                             <thead>
                                 <tr>
                                     <th>Opciones</th>
-                                    <th>Ruta</th>
-                                    <th>Tipo</th>
-                                    <th>placa</th>
-                                    <th>Conductor</th>
-                                    <th>Destino</th>
-                                    <th>Estado</th>
+                                    <th>Tipos</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="vehiculo in arrayVehiculo" :key="vehiculo.id">
+                                <tr v-for="tipos in arrayTipos" :key="tipos.id">
                                     <td>
-                                        <button type="button" @click="abrirModal('vehiculo','actualizar',vehiculo)" class="btn btn-warning btn-sm">
+                                        <button type="button" @click="abrirModal('tipos','actualizar',tipos)" class="btn btn-warning btn-sm">
                                           <i class="fas fa-edit"></i>
                                         </button> &nbsp;
-                                        <button type="button" class="btn btn-dark btn-sm" @click="eliminarVehiculo(vehiculo.id)"><i class="fa fa-trash-alt"></i></button>
-
-                                        <template v-if="vehiculo.condicion">
-                                            <button type="button" class="btn btn-danger btn-sm" @click="desactivarVehiculo(vehiculo.id)">
+                                        <template v-if="tipos.condicion">
+                                            <button type="button" class="btn btn-danger btn-sm" @click="desactivarTipos(tipos.id)">
                                                 <i class="fas fa-ban"></i>
                                             </button>
                                         </template>
                                         <template v-else>
-                                            <button type="button" class="btn btn-info btn-sm" @click="activarVehiculo(vehiculo.id)">
-                                                <i class="fas fa-ban"></i>
+                                            <button type="button" class="btn btn-info btn-sm" @click="activarTipos(tipos.id)">
+                                                <i class="icon-check"></i>
                                             </button>
                                         </template>
                                     </td>
-                                    <td v-text="vehiculo.id_ruta"></td>
-                                    <td v-text="vehiculo.id_tipo"></td>
-                                    <td v-text="vehiculo.placa"></td>
-                                    <td v-text="vehiculo.conductor"></td>
-                                    <td v-text="vehiculo.destino"></td>
+                                    <td v-text="tipos.nombre"></td>
+
                                     <td>
-                                        <div v-if="vehiculo.condicion">
+                                        <div v-if="tipos.condicion">
                                             <span class="badge badge-success">Activo</span>
                                         </div>
                                         <div v-else>
@@ -105,45 +94,16 @@
                         </div>
                         <div class="modal-body">
                             <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+                                
                                 <div class="form-group row">
-                                    <div class="col-md-6">
-                                    <label for="text-input">Ruta</label>
-                                    <select class="form-control" v-model="id_ruta" >
-                                        <option value="0">Seleccione</option>
-                                        <option v-for="rutas in arrayRutas" :key="rutas.id" :value="rutas.id" v-text="rutas.ruta"></option>
-                                    </select>
-                                </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-md-6">
-                                    <label for="text-input">Tipo</label>
-                                    <select class="form-control" v-model="id_tipo" >
-                                        <option value="0">Seleccione</option>
-                                        <option v-for="tipos in arrayTipos" :key="tipos.id" :value="tipos.id" v-text="tipos.nombre"></option>
-                                    </select>
-                                </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">placa</label>
+                                    <label class="col-md-3 form-control-label" for="text-input">Nombre</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="placa" class="form-control" placeholder="Ingrese el numero de placa">
+                                        <input type="text" v-model="nombre" class="form-control" placeholder="tipo de autobus"> 
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">conductor</label>
-                                    <div class="col-md-9">
-                                        <input type="text" v-model="conductor" class="form-control" placeholder="Ingrese el nombre del conductor">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">destino</label>
-                                    <div class="col-md-9">
-                                        <input type="text" v-model="destino" class="form-control" placeholder="Ingrese el destino">
-                                    </div>
-                                </div>
-                                <div v-show="errorVehiculo" class="form-group row div-error">
+                                </div>               
+                                <div v-show="errorTipos" class="form-group row div-error">
                                     <div class="text-center text-error">
-                                        <div v-for="error in errorMostrarMsjVehiculo" :key="error" v-text="error">
+                                        <div v-for="error in errorMostrarMsjTipos" :key="error" v-text="error">
 
                                         </div>
                                     </div>
@@ -153,8 +113,8 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarVehiculo()">Guardar</button>
-                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarVehiculo()">Actualizar</button>
+                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarTipos()">Guardar</button>
+                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarTipos()">Actualizar</button>
                         </div>
                     </div>
                     <!-- /.modal-content -->
@@ -170,19 +130,13 @@
         data (){
             return {
                 id: 0,
-                id_ruta : 0,
-                id_tipo : 0,
-                placa : '',
-                conductor: '',
-                destino: '',
-                arrayVehiculo : [],
-                arrayTipos : [],
-                arrayRutas : [],
+                nombre : '',
+                arrayTipos: [],
                 modal : 0,
                 tituloModal : '',
                 tipoAccion : 0,
-                errorVehiculo : 0,
-                errorMostrarMsjVehiculo : [],
+                errorTipos: 0,
+                errorMostrarMsjTipos: [],
                 pagination : {
                     'total' : 0,
                     'current_page' : 0,
@@ -192,7 +146,7 @@
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'placa',
+                criterio : 'direccion',
                 buscar : ''
             }
         },
@@ -226,12 +180,12 @@
             }
         },
         methods : {
-            listarVehiculo (page,buscar,criterio){
+            listarTipos(page,buscar,criterio){
                 let me=this;
-                var url= '/vehiculo?page=' + page + '&buscar='+ buscar + '&criterio='+ criterio;
+                var url= '/tipos?page=' + page + '&buscar='+ buscar + '&criterio='+ criterio;
                 axios.get(url).then(function (response) {
                     var respuesta= response.data;
-                    me.arrayVehiculo = respuesta.vehiculos.data;
+                    me.arrayTipos = respuesta.tipos.data;
                     me.pagination= respuesta.pagination;
                 })
                 .catch(function (error) {
@@ -243,80 +197,45 @@
                 //Actualiza la página actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esa página
-                me.listarVehiculo(page,buscar,criterio);
+                me.listarTipos(page,buscar,criterio);
             },
-            
-           selectRuta()
-            {
-                let me=this;
-                var url = '/vehiculo/selectRuta';
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayRutas = respuesta.rutas;
-                })
-                .catch(function (error) {
-                    // handle error
-                    console.log(error);
-                });
-            },
-            selectTipo()
-            {
-                let me=this;
-                var url = '/vehiculo/selectTipo';
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayTipos = respuesta.tipos;
-                })
-                .catch(function (error) {
-                    // handle error
-                    console.log(error);
-                });
-            },
-
-            registrarVehiculo(){
-                if (this.validarVehiculo()){
+            registrarTipos(){
+                if (this.validarTipos()){
                     return;
                 }
                 
                 let me = this;
 
-                axios.post('/vehiculo/registrar',{
-                    'id_ruta': this.id_ruta,
-                    'id_tipo': this.id_tipo,
-                    'placa': this.placa,
-                    'conductor': this.conductor,     
-                    'destino': this.destino
+                axios.post('/tipos/registrar',{
+                    'nombre': this.nombre,
                 }).then(function (response) {
                     me.cerrarModal();
-                    me.listarVehiculo(1,'','placa');
+                    me.listarTipos(1,'','nombre');
                 }).catch(function (error) {
                     console.log(error);
                 });
             },
-            actualizarVehiculo(){
-               if (this.validarVehiculo()){
+            actualizarTipos(){
+               if (this.validarTipos()){
                     return;
                 }
                 
                 let me = this;
 
-                axios.put('/vehiculo/actualizar',{
-                    'id_ruta': this.id_ruta,
-                    'id_tipo': this.id_tipo,
-                    'placa': this.placa,
-                    'conductor': this.conductor,     
-                    'destino': this.destino,
+                axios.put('/tipos/actualizar',{
+                    'nombre': this.nombre,
+
                     'id': this.id
                 }).then(function (response) {
                     me.cerrarModal();
-                    me.listarVehiculo(1,'','placa');
+                    me.listarTipos(1,'','nombre');
                 }).catch(function (error) {
                     console.log(error);
                 }); 
             },
-            desactivarVehiculo(id){
+            desactivarTipos(id){
                swal({
-                title: 'Esta seguro de desactivar este vehiculo?',
+                title: 'Esta seguro de desactivar este tipo de vehiculo?',
                 type: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -331,13 +250,13 @@
                 if (result.value) {
                     let me = this;
 
-                    axios.put('/vehiculo/desactivar',{
+                    axios.put('/tipos/desactivar',{
                         'id': id
                     }).then(function (response) {
-                        me.listarVehiculo(1,'','placa');
+                        me.listarTipos(1,'','nombre');
                         swal(
                         'Desactivado!',
-                        'El vehiculo ha sido desactivado con éxito.',
+                        'El registro ha sido desactivado con éxito.',
                         'success'
                         )
                     }).catch(function (error) {
@@ -353,9 +272,9 @@
                 }
                 }) 
             },
-            activarVehiculo(id){
+            activarTipos(id){
                swal({
-                title: 'Esta seguro de activar este vehiculo?',
+                title: 'Esta seguro de activar este tipo de vehiculo?',
                 type: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -370,13 +289,13 @@
                 if (result.value) {
                     let me = this;
 
-                    axios.put('/vehiculo/activar',{
+                    axios.put('/tipos/activar',{
                         'id': id
                     }).then(function (response) {
-                        me.listarvehiculo(1,'','placa');
+                        me.listarTipos(1,'','nombre');
                         swal(
                         'Activado!',
-                        'El vehiculo ha sido activado con éxito.',
+                        'El registro ha sido activado con éxito.',
                         'success'
                         )
                     }).catch(function (error) {
@@ -392,90 +311,33 @@
                 }
                 }) 
             },
+            validarTipos(){
+                this.errorTipos=0;
+                this.errorMostrarMsjTipos =[];
 
-            eliminarVehiculo(id)
-            {
-                swal({
-					title: '¿Está seguro de eliminar este vehiculo?',
-					text: "",
-					type: 'warning',
-		        showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Aceptar!',
-                cancelButtonText: 'Cancelar',
-                confirmButtonClass: 'btn btn-success',
-                cancelButtonClass: 'btn btn-danger',
-                buttonsStyling: false,
-                reverseButtons: true
-				}).then((result) => {
-                    if (result.value) 
-                    {
-                        let me = this;
-                        axios.delete('/vehiculo/delete/'+id,{
-                            //'id' : id,
-                            
-                        }).then(function (response) 
-                        {
-                            me.listarVehiculo(1,'');
-                            swal(
-                        'Eliminado!',
-                        'El vehiculo ha sido eliminado con éxito.',
-                        'success'
-                        )
-                        }).catch(function (error) 
-                        {
-                            console.log(error);
-                           
-                        });
-					} else {
-						swal.close();
-					}
-				});
-            },
+                if (!this.nombre) this.errorMostrarMsjTipos.push("El nombre  no puede estar vacío.");
+               
+                if (this.errorMostrarMsjTipos.length) this.errorTipos = 1;
 
-            validarVehiculo(){
-                this.errorVehiculo=0;
-                this.errorMostrarMsjVehiculo =[];
-
-                if (this.errorMostrarMsjVehiculo.length) this.errorVehiculo = 1;
-                if (!this.placa) this.errorMostrarMsjVehiculo.push("El numero de placa no puede estar vacío.");
-
-                if (this.errorMostrarMsjVehiculo.length) this.errorVehiculo = 1;
-                if (!this.conductor) this.errorMostrarMsjVehiculo.push("El nombre del conductor no puede estar vacío.");
-
-                if (this.errorMostrarMsjVehiculo.length) this.errorVehiculo = 1;
-                if (!this.destino) this.errorMostrarMsjVehiculo.push("El destino no puede estar vacío.");
-
-                if (this.errorMostrarMsjVehiculo.length) this.errorVehiculo = 1;
-
-                return this.errorVehiculo;
+                return this.errorTipos;
             },
             cerrarModal(){
                 this.modal=0;
                 this.tituloModal='';
-                this.id_ruta=0;
-                this.id_tipo=0;
-                this.placa= 0;
-                this.conductor= '';
-                this.destino='';
-                this.errorVehiculo=0;
-                this.errorMostrarMsjVehiculo = [];
+                this.nombre='';
+                this.errorTipos=0;
+                this.errorMostrarMsjTipos =[];
             },
             abrirModal(modelo, accion, data = []){
                 switch(modelo){
-                    case "vehiculo":
+                    case "tipos":
                     {
                         switch(accion){
                             case 'registrar':
                             {
                                 this.modal = 1;
-                                this.tituloModal = 'Registrar Vehiculo';
-                                 this.id_ruta=0;
-                                this.id_tipo=0;
-                                this.placa= 0;
-                                this.conductor= '';
-                                this.destino='';
+                                this.tituloModal = 'Registrar Tipo';
+                                this.nombre= '';
                                 this.tipoAccion = 1;
                                 break;
                             }
@@ -483,25 +345,19 @@
                             {
                                 //console.log(data);
                                 this.modal=1;
-                                this.tituloModal='Actualizar Vehiculo';
+                                this.tituloModal='Actualizar Tipos';
                                 this.tipoAccion=2;
                                 this.id=data['id'];
-                                this.id_ruta = data['id_ruta'];
-                                this.id_tipo= data['id_tipo'];
-                                this.placa= data['placa'];
-                                this.conductor= data['conductor'];
-                                this.destino= data['destino'];
+                                this.nombre = data['nombre'];
                                 break;
                             }
                         }
                     }
-                    this.selectRuta();
-                    this.selectTipo();
                 }
             }
         },
         mounted() {
-            this.listarVehiculo(1,this.buscar,this.criterio);
+            this.listarTipos(1,this.buscar,this.criterio);
         }
     }
 </script>

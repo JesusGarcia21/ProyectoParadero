@@ -15,14 +15,21 @@ class Vehiculos extends Migration
     {
         Schema::create('vehiculos', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('ruta', 50)->nullable();
-            $table->string('tipo', 256);
+            $table->unsignedInteger('id_ruta');
+            
+            $table->unsignedInteger('id_tipo');
+            
             $table->Integer('placa');
             $table->string('conductor', 50);
             $table->string('destino', 50);
             $table->boolean('condicion')->default(1);
+
+           $table->foreign('id_ruta')->references('id')->on('rutas');
+            $table->foreign('id_tipo')->references('id')->on('tipos');
+         
             $table->timestamps();
         });
+
     }
 
     /**
@@ -32,6 +39,6 @@ class Vehiculos extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('vehiculos');
+        Schema::drop('Vehiculos');
     }
 }
