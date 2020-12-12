@@ -9,8 +9,8 @@
         </template>
 
         <template v-if="menu==2">
+        <tipos></tipos>
             
-            <paraderos></paraderos>
         </template>
 
         <template v-if="menu==3">
@@ -18,7 +18,7 @@
         </template>
 
         <template v-if="menu==4">
-        
+        <paraderos></paraderos>
         </template>
 
         <template v-if="menu==5">
