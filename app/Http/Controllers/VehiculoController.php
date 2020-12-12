@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Vehiculo;
+use App\Tipos;
+use App\Rutas;
+
 //use exception;
 
 class VehiculoController extends Controller
@@ -16,10 +19,17 @@ class VehiculoController extends Controller
         $criterio = $request->criterio;
         
         if ($buscar==''){
-            $vehiculos = Vehiculo::orderBy('id', 'desc')->paginate(3);
+            $vehiculos = Vehiculo::join('rutas','vehiculos.id_ruta','=','rutas.id')
+            ->select('vehiculos.id','vehiculos.id_ruta','vehiculos.id_tipo',
+            'vehiculos.placa','vehiculos.conductor','vehiculos.destino','vehiculos.Condicion','rutas.ruta')
+            ->orderBy('vehiculos.id','asc')->paginate(2);
         }
         else{
-            $vehiculos = Vehiculo::where($criterio, 'like', '%'. $buscar . '%')->orderBy('id', 'desc')->paginate(3);
+            $vehiculos = Vehiculo::join('rutas','vehiculos.id_rutas','=','rutas.id')
+            ->select('vehiculos.id','vehiculos.id_ruta','vehiculos.id_tipo',
+            'vehiculos.placa','vehiculos.conductor','vehiculos.destino','vehiculos.Condicion','rutas.ruta')
+            ->where($criterio,'like','%'. $buscar .'%')
+            ->orderBy('vehiculos.id','asc')->paginate(2);
         }
         
 
@@ -42,16 +52,31 @@ class VehiculoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+    public function lista_vehiculos(Request $request)
+    {
+        if (!$request->ajax()) return redirect('/');
+
+        $buscar = $request->buscar;
+        $criterio = $request->criterio;
+        
+        if ($buscar==''){
+            $vehiculos = Vehiculo::orderBy('id', 'desc')->paginate(3);
+        }
+        else{
+            $vehiculos = Vehiculo::where($criterio, 'like', '%'. $buscar . '%')->orderBy('id', 'desc')->paginate(3);
+        }
+        return['vehiculos' => $vehiculos];
+    }
     public function store(Request $request)
     {
         if (!$request->ajax()) return redirect('/');
         $vehiculo = new Vehiculo();
-        $vehiculo->ruta = $request->ruta;
-        $vehiculo->tipo = $request->tipo;
+        $vehiculo->id_ruta = $request->id_ruta;
+        $vehiculo->id_tipo = $request->id_tipo;
         $vehiculo->placa = $request->placa;
         $vehiculo->conductor = $request->conductor;
         $vehiculo->destino = $request->destino;
-        $vehiculo->condicion = '1';
+       $vehiculo->condicion = '1';
         $vehiculo->save();
     }
   
@@ -67,8 +92,8 @@ class VehiculoController extends Controller
     {
         if (!$request->ajax()) return redirect('/');
         $vehiculo = Vehiculo::findOrFail($request->id);
-        $vehiculo->ruta = $request->ruta;
-        $vehiculo->tipo = $request->tipo;
+        $vehiculo->id_ruta = $request->id_ruta;
+        $vehiculo->id_tipo = $request->id_tipo;
         $vehiculo->placa = $request->placa;
         $vehiculo->conductor = $request->conductor;
         $vehiculo->destino = $request->destino;
@@ -91,5 +116,26 @@ class VehiculoController extends Controller
         $vehiculo->condicion = '1';
         $vehiculo->save();
     }
+    public function destroy(Request $request)
+    {
+        Vehiculo::destroy($request->id);
+    }
+    public function selectRuta(Request $request)
+    {
+        if(!$request->ajax()) return redirect('/');
+        $rutas = Rutas::select('id','ruta')
+        ->orderBy('ruta','asc')->get();
+        return ['rutas'=>$rutas];
+    }
+
+    public function selectTipo(Request $request)
+    {
+        if(!$request->ajax()) return redirect('/');
+        $tipos = Tipos::select('id','nombre')
+        ->orderBy('nombre','asc')->get();
+        return ['tipos'=>$tipos];
+    }
 
 }
+
+    
