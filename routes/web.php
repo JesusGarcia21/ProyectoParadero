@@ -14,7 +14,9 @@
 Route::get('/', function () {
     return view('contenido/contenido');
 });
-
+Route::get('/informacion', function () {
+    return view('informacion');
+});
 
 
 Route::get('/vehiculo', 'VehiculoController@index');

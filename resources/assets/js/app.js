@@ -22,6 +22,7 @@ Vue.component('paraderos', require('./components/Paraderos.vue'));
 Vue.component('rutas', require('./components/Rutas.vue'));
 Vue.component('tipos', require('./components/Tipos.vue'));
 
+
 const app = new Vue({
     el: '#app',
     data :{

@@ -34364,7 +34364,7 @@ exports = module.exports = __webpack_require__(2)(false);
 
 
 // module
-exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: absolute !important;\n    background-color: #3c29297a !important;\n}\n.div-error{\n    display: flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n", ""]);
+exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: absolute !important;\n    background-color: #3c29297a !important;\n}\n.div-error{\n    display: flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n\n", ""]);
 
 // exports
 
@@ -34375,6 +34375,30 @@ exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    pos
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -34725,6 +34749,39 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 result.dismiss === swal.DismissReason.cancel) {}
             });
         },
+        eliminarParaderos: function eliminarParaderos(id) {
+            var _this3 = this;
+
+            swal({
+                title: '¿Está seguro de eliminar este Paradero?',
+                text: "",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Aceptar!',
+                cancelButtonText: 'Cancelar',
+                confirmButtonClass: 'btn btn-success',
+                cancelButtonClass: 'btn btn-danger',
+                buttonsStyling: false,
+                reverseButtons: true
+            }).then(function (result) {
+                if (result.value) {
+                    var me = _this3;
+                    axios.delete('/paraderos/delete/' + id, {
+                        //'id' : id,
+
+                    }).then(function (response) {
+                        me.listarParaderos(1, '');
+                        swal('Eliminado!', 'El Paradero ha sido eliminada con éxito.', 'success');
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                } else {
+                    swal.close();
+                }
+            });
+        },
         validarParaderos: function validarParaderos() {
             this.errorParaderos = 0;
             this.errorMostrarMsjParaderos = [];
@@ -34759,8 +34816,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                 {
                                     this.modal = 1;
                                     this.tituloModal = 'Registrar Paradero';
-                                    this.ubicacion = '';
-                                    this.ruta = '';
+                                    this.ubicacion = '0';
+                                    this.ruta = '0';
                                     this.serie = '';
                                     this.latitud = '';
                                     this.longitud = '';
@@ -34943,6 +35000,20 @@ var render = function() {
                           [_c("i", { staticClass: "fas fa-edit" })]
                         ),
                         _vm._v("  \n                                "),
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-dark btn-sm",
+                            attrs: { type: "button" },
+                            on: {
+                              click: function($event) {
+                                _vm.eliminarParaderos(paraderos.id)
+                              }
+                            }
+                          },
+                          [_c("i", { staticClass: "fa fa-trash-alt" })]
+                        ),
+                        _vm._v(" "),
                         paraderos.condicion
                           ? [
                               _c(
@@ -35163,36 +35234,84 @@ var render = function() {
                         "label",
                         {
                           staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "text-input" }
+                          attrs: { for: "email-input" }
                         },
                         [_vm._v("Ubicación")]
                       ),
                       _vm._v(" "),
                       _c("div", { staticClass: "col-md-9" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.ubicacion,
-                              expression: "ubicacion"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: {
-                            type: "text",
-                            placeholder: "ubicacion del autobús"
-                          },
-                          domProps: { value: _vm.ubicacion },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.ubicacion,
+                                expression: "ubicacion"
                               }
-                              _vm.ubicacion = $event.target.value
+                            ],
+                            staticClass: "form-control",
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.ubicacion = $event.target.multiple
+                                  ? $$selectedVal
+                                  : $$selectedVal[0]
+                              }
                             }
-                          }
-                        })
+                          },
+                          [
+                            _c(
+                              "option",
+                              { attrs: { value: "0", disabled: "" } },
+                              [_vm._v("--Selecionar--")]
+                            ),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "Campeche" } }, [
+                              _vm._v("Campeche")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "Hecelchakan" } }, [
+                              _vm._v("Hecelchakan")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "Dzitbalche" } }, [
+                              _vm._v("Dzitbalche")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "Pomuch" } }, [
+                              _vm._v("Pomuch")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "Tenabo" } }, [
+                              _vm._v("Tenabo")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "Becal" } }, [
+                              _vm._v("Becal")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "halacho" } }, [
+                              _vm._v("Halacho")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "Maxcanu" } }, [
+                              _vm._v("Maxcanu")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "Merida" } }, [
+                              _vm._v("Merida")
+                            ])
+                          ]
+                        )
                       ])
                     ]),
                     _vm._v(" "),
@@ -35203,34 +35322,90 @@ var render = function() {
                           staticClass: "col-md-3 form-control-label",
                           attrs: { for: "email-input" }
                         },
-                        [_vm._v("Ruta")]
+                        [_vm._v("Rutas")]
                       ),
                       _vm._v(" "),
                       _c("div", { staticClass: "col-md-9" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.ruta,
-                              expression: "ruta"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: {
-                            type: "email",
-                            placeholder: "Ingrese la ruta del autobus"
-                          },
-                          domProps: { value: _vm.ruta },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.ruta,
+                                expression: "ruta"
                               }
-                              _vm.ruta = $event.target.value
+                            ],
+                            staticClass: "form-control",
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.ruta = $event.target.multiple
+                                  ? $$selectedVal
+                                  : $$selectedVal[0]
+                              }
                             }
-                          }
-                        })
+                          },
+                          [
+                            _c(
+                              "option",
+                              { attrs: { value: "0", disabled: "" } },
+                              [_vm._v("--Selecionar--")]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "option",
+                              { attrs: { value: "Merida-Campeche" } },
+                              [_vm._v("Merida-Campeche")]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "option",
+                              { attrs: { value: "Campeche-Merida" } },
+                              [_vm._v("Campeche-Merida")]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "option",
+                              { attrs: { value: "Itescam-Pomuch" } },
+                              [_vm._v("Itescam-Pomuch")]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "option",
+                              { attrs: { value: "Pomuch-Itescam" } },
+                              [_vm._v("Pomuch-Itescam")]
+                            ),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "Tenabo-Becal" } }, [
+                              _vm._v("Tenabo-Becal")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "Becal-Tenabo" } }, [
+                              _vm._v("Becal-Tenabo")
+                            ]),
+                            _vm._v(" "),
+                            _c(
+                              "option",
+                              { attrs: { value: "Maxcanu-Dzitbalche" } },
+                              [_vm._v("Maxcanu-Dzitbalche")]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "option",
+                              { attrs: { value: "Dzitbalche-Maxcanu" } },
+                              [_vm._v("Dzitbalche-Maxcanu")]
+                            )
+                          ]
+                        )
                       ])
                     ]),
                     _vm._v(" "),
@@ -35717,6 +35892,36 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -35724,9 +35929,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             rutas_id: 0,
             direccion: '',
             ruta: '',
+            id_placas: 0,
             latitud: '',
             longitud: '',
             arrayRutas: [],
+            arrayPlacas: [],
             modal: 0,
             tituloModal: '',
             tipoAccion: 0,
@@ -35802,6 +36009,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             axios.post('/rutas/registrar', {
                 'direccion': this.direccion,
+                'id_placas': this.id_placas,
                 'ruta': this.ruta,
                 'latitud': this.latitud,
                 'longitud': this.longitud
@@ -35821,6 +36029,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             axios.put('/rutas/actualizar', {
                 'direccion': this.direccion,
+                'id_placas': this.id_placas,
                 'ruta': this.ruta,
                 'latitud': this.latitud,
                 'longitud': this.longitud,
@@ -35897,9 +36106,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             });
         },
         eliminarRutas: function eliminarRutas(id) {
-            var me = this;
+            var _this3 = this;
+
             swal({
-                title: 'Estas seguro de eliminar esta ruta?',
+                title: '¿Está seguro de eliminar esta Ruta?',
+                text: "",
                 type: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -35910,28 +36121,32 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 cancelButtonClass: 'btn btn-danger',
                 buttonsStyling: false,
                 reverseButtons: true
-            }).then(function (Delete) {
-                if (Delete) {
+            }).then(function (result) {
+                if (result.value) {
+                    var me = _this3;
+                    axios.delete('/rutas/delete/' + id, {
+                        //'id' : id,
 
-                    axios.delete('/rutas/delete/' + id, {}).then(function (response) {
+                    }).then(function (response) {
                         me.listarRutas(1, '');
-                        swal({
-                            title: 'Eliminado',
-                            text: 'Su ruta ha sido eliminada',
-                            type: 'success',
-                            buttons: {
-                                confirm: {
-                                    className: 'btn btn-success'
-                                }
-                            }
-                        });
+                        swal('Eliminado!', 'La ruta ha sido eliminada con éxito.', 'success');
                     }).catch(function (error) {
                         console.log(error);
-                        me.notificationError('Error', 'No se pudo eliminar el registro');
                     });
                 } else {
                     swal.close();
                 }
+            });
+        },
+        selectPlacas: function selectPlacas() {
+            var me = this;
+            var url = '/rutas/selectPlacas';
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayPlacas = respuesta.placas;
+            }).catch(function (error) {
+                // handle error
+                console.log(error);
             });
         },
         validarRutas: function validarRutas() {
@@ -35951,6 +36166,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.modal = 0;
             this.tituloModal = '';
             this.direccion = '';
+            this.id_placas = 0;
             this.ruta = '';
             this.latitud = '';
             this.longitud = '';
@@ -35966,8 +36182,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                 {
                                     this.modal = 1;
                                     this.tituloModal = 'Registrar Rutas';
-                                    this.direccion = '';
-                                    this.ruta = '';
+                                    this.direccion = '0';
+                                    this.id_placas = '0';
+                                    this.ruta = '0';
                                     this.latitud = '';
                                     this.longitud = '';
                                     this.tipoAccion = 1;
@@ -35981,6 +36198,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.tipoAccion = 2;
                                     this.rutas_id = data['id'];
                                     this.direccion = data['direccion'];
+                                    this.id_placas = data['id_placas'];
                                     this.ruta = data['ruta'];
                                     this.latitud = data['latitud'];
                                     this.longitud = data['longitud'];
@@ -35993,6 +36211,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     mounted: function mounted() {
         this.listarRutas(1, this.buscar, this.criterio);
+        this.selectPlacas();
     }
 });
 
@@ -36144,22 +36363,19 @@ var render = function() {
                           [_c("i", { staticClass: "fas fa-edit" })]
                         ),
                         _vm._v("  \n                                "),
-                        rutas.id != 1
-                          ? _c(
-                              "button",
-                              {
-                                staticClass:
-                                  "btn btn-icon btn-round btn-danger btn-xs",
-                                attrs: { type: "button" },
-                                on: {
-                                  click: function($event) {
-                                    _vm.eliminarRutas(rutas.id, rutas.direccion)
-                                  }
-                                }
-                              },
-                              [_c("i", { staticClass: "fa fa-trash-alt" })]
-                            )
-                          : _vm._e(),
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-dark btn-sm",
+                            attrs: { type: "button" },
+                            on: {
+                              click: function($event) {
+                                _vm.eliminarRutas(rutas.id)
+                              }
+                            }
+                          },
+                          [_c("i", { staticClass: "fa fa-trash-alt" })]
+                        ),
                         _vm._v(" "),
                         rutas.condicion
                           ? [
@@ -36198,6 +36414,10 @@ var render = function() {
                     _vm._v(" "),
                     _c("td", {
                       domProps: { textContent: _vm._s(rutas.direccion) }
+                    }),
+                    _vm._v(" "),
+                    _c("td", {
+                      domProps: { textContent: _vm._s(rutas.id_placas) }
                     }),
                     _vm._v(" "),
                     _c("td", { domProps: { textContent: _vm._s(rutas.ruta) } }),
@@ -36371,40 +36591,56 @@ var render = function() {
                   },
                   [
                     _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "text-input" }
-                        },
-                        [_vm._v("Dirección")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-9" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.direccion,
-                              expression: "direccion"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: {
-                            type: "text",
-                            placeholder: "direccion del autobús"
-                          },
-                          domProps: { value: _vm.direccion },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
+                      _c("div", { staticClass: "col-md-6" }, [
+                        _c("label", { attrs: { for: "text-input" } }, [
+                          _vm._v("Placa")
+                        ]),
+                        _vm._v(" "),
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.id_placas,
+                                expression: "id_placas"
                               }
-                              _vm.direccion = $event.target.value
+                            ],
+                            staticClass: "form-control",
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.id_placas = $event.target.multiple
+                                  ? $$selectedVal
+                                  : $$selectedVal[0]
+                              }
                             }
-                          }
-                        })
+                          },
+                          [
+                            _c("option", { attrs: { value: "0" } }, [
+                              _vm._v("Seleccione")
+                            ]),
+                            _vm._v(" "),
+                            _vm._l(_vm.arrayPlacas, function(placas) {
+                              return _c("option", {
+                                key: placas.id,
+                                domProps: {
+                                  value: placas.id,
+                                  textContent: _vm._s(placas.placa)
+                                }
+                              })
+                            })
+                          ],
+                          2
+                        )
                       ])
                     ]),
                     _vm._v(" "),
@@ -36415,34 +36651,160 @@ var render = function() {
                           staticClass: "col-md-3 form-control-label",
                           attrs: { for: "email-input" }
                         },
-                        [_vm._v("Ruta")]
+                        [_vm._v("Dirección")]
                       ),
                       _vm._v(" "),
                       _c("div", { staticClass: "col-md-9" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.ruta,
-                              expression: "ruta"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: {
-                            type: "email",
-                            placeholder: "Ingrese la ruta del autobus"
-                          },
-                          domProps: { value: _vm.ruta },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.direccion,
+                                expression: "direccion"
                               }
-                              _vm.ruta = $event.target.value
+                            ],
+                            staticClass: "form-control",
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.direccion = $event.target.multiple
+                                  ? $$selectedVal
+                                  : $$selectedVal[0]
+                              }
                             }
-                          }
-                        })
+                          },
+                          [
+                            _c(
+                              "option",
+                              { attrs: { value: "0", disabled: "" } },
+                              [_vm._v("--Selecionar--")]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "option",
+                              { attrs: { value: "Para Campeche" } },
+                              [_vm._v("Para Campeche")]
+                            ),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "Para Merida" } }, [
+                              _vm._v("Para Merida")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "Para Pomuch" } }, [
+                              _vm._v("Para Pomuch")
+                            ]),
+                            _vm._v(" "),
+                            _c(
+                              "option",
+                              { attrs: { value: "Para el Itescam" } },
+                              [_vm._v("Para el Itescam")]
+                            )
+                          ]
+                        )
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "email-input" }
+                        },
+                        [_vm._v("Rutas")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-9" }, [
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.ruta,
+                                expression: "ruta"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.ruta = $event.target.multiple
+                                  ? $$selectedVal
+                                  : $$selectedVal[0]
+                              }
+                            }
+                          },
+                          [
+                            _c(
+                              "option",
+                              { attrs: { value: "0", disabled: "" } },
+                              [_vm._v("--Selecionar--")]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "option",
+                              { attrs: { value: "Merida-Campeche" } },
+                              [_vm._v("Merida-Campeche")]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "option",
+                              { attrs: { value: "Campeche-Merida" } },
+                              [_vm._v("Campeche-Merida")]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "option",
+                              { attrs: { value: "Itescam-Pomuch" } },
+                              [_vm._v("Itescam-Pomuch")]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "option",
+                              { attrs: { value: "Pomuch-Itescam" } },
+                              [_vm._v("Pomuch-Itescam")]
+                            ),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "Tenabo-Becal" } }, [
+                              _vm._v("Tenabo-Becal")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "Becal-Tenabo" } }, [
+                              _vm._v("Becal-Tenabo")
+                            ]),
+                            _vm._v(" "),
+                            _c(
+                              "option",
+                              { attrs: { value: "Maxcanu-Dzitbalche" } },
+                              [_vm._v("Maxcanu-Dzitbalche")]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "option",
+                              { attrs: { value: "Dzitbalche-Maxcanu" } },
+                              [_vm._v("Dzitbalche-Maxcanu")]
+                            )
+                          ]
+                        )
                       ])
                     ]),
                     _vm._v(" "),
@@ -36616,6 +36978,8 @@ var staticRenderFns = [
         _c("th", [_vm._v("Opciones")]),
         _vm._v(" "),
         _c("th", [_vm._v("Dirección")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Placa")]),
         _vm._v(" "),
         _c("th", [_vm._v("Ruta")]),
         _vm._v(" "),
