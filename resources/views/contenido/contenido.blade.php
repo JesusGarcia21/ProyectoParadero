@@ -14,11 +14,12 @@
         </template>
 
         <template v-if="menu==3">
-            <rutas></rutas>
+            
+            <paraderos></paraderos>
         </template>
 
         <template v-if="menu==4">
-        <paraderos></paraderos>
+        <rutas></rutas>
         </template>
 
         <template v-if="menu==5">

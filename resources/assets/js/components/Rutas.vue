@@ -33,7 +33,6 @@
                                 <tr>
                                     <th>Opciones</th>
                                     <th>Dirección</th>
-                                    <th>Placa</th>
                                     <th>Ruta</th>
                                     <th>Latitud</th>
                                     <th>Longitud</th>
@@ -44,8 +43,7 @@
                                 <tr v-for="rutas in arrayRutas" :key="rutas.id">
                                     <td>
                                         <button type="button" @click="abrirModal('rutas','actualizar',rutas)" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></button> &nbsp;
-                                        <button type="button" class="btn btn-dark btn-sm" @click="eliminarRutas(rutas.id)"><i class="fa fa-trash-alt"></i></button>
-      
+                                        <button v-if="rutas.id!=1" type="button" class="btn btn-icon btn-round btn-danger btn-xs" @click="eliminarRutas(rutas.id,rutas.direccion)"><i class="fa fa-trash-alt"></i></button>
                                         <template v-if="rutas.condicion">
                                             <button type="button" class="btn btn-danger btn-sm" @click="desactivarRutas(rutas.id)">
                                                 <i class="fas fa-ban"></i>
@@ -58,7 +56,6 @@
                                         </template>
                                     </td>
                                     <td v-text="rutas.direccion"></td>
-                                    <td v-text="rutas.id_placas"></td>
                                     <td v-text="rutas.ruta"></td>
                                     <td v-text="rutas.latitud"></td>
                                     <td v-text="rutas.longitud"></td>
@@ -104,44 +101,17 @@
                         <div class="modal-body">
                             <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
                                 
-
                                 <div class="form-group row">
-                                    <div class="col-md-6">
-                                    <label for="text-input">Placa</label>
-                                    <select class="form-control" v-model="id_placas" >
-                                        <option value="0">Seleccione</option>
-                                        <option v-for="placas in arrayPlacas" :key="placas.id" :value="placas.id" v-text="placas.placa"></option>
-                                    </select>
-                                </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="email-input">Dirección</label>
+                                    <label class="col-md-3 form-control-label" for="text-input">Dirección</label>
                                     <div class="col-md-9">
-                                        <select class="form-control" v-model="direccion">       
-                                        <option value="0" disabled>--Selecionar--</option>
-                                        <option value="Para Campeche">Para Campeche</option>
-                                        <option value="Para Merida">Para Merida</option>
-                                        <option value="Para Pomuch">Para Pomuch</option>
-                                        <option value="Para el Itescam">Para el Itescam</option>            
-                                     </select>
+                                        <input type="text" v-model="direccion" class="form-control" placeholder="direccion del autobús"> 
                                     </div>
                                 </div>
-                                
+
                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="email-input">Rutas</label>
+                                    <label class="col-md-3 form-control-label" for="email-input">Ruta</label>
                                     <div class="col-md-9">
-                                        <select class="form-control" v-model="ruta">       
-                                        <option value="0" disabled>--Selecionar--</option>
-                                        <option value="Merida-Campeche">Merida-Campeche</option>
-                                        <option value="Campeche-Merida">Campeche-Merida</option>
-                                        <option value="Itescam-Pomuch">Itescam-Pomuch</option>
-                                        <option value="Pomuch-Itescam">Pomuch-Itescam</option>
-                                        <option value="Tenabo-Becal">Tenabo-Becal</option>
-                                        <option value="Becal-Tenabo">Becal-Tenabo</option>
-                                        <option value="Maxcanu-Dzitbalche">Maxcanu-Dzitbalche</option>
-                                        <option value="Dzitbalche-Maxcanu">Dzitbalche-Maxcanu</option>            
-                                     </select>
+                                        <input type="email" v-model="ruta" class="form-control" placeholder="Ingrese la ruta del autobus">
                                     </div>
                                 </div>
 
@@ -190,11 +160,9 @@
                 rutas_id: 0,
                 direccion : '',
                 ruta : '',
-                id_placas : 0,
                 latitud : '',
                 longitud : '',
                 arrayRutas : [],
-                arrayPlacas : [],
                 modal : 0,
                 tituloModal : '',
                 tipoAccion : 0,
@@ -271,7 +239,6 @@
 
                 axios.post('/rutas/registrar',{
                     'direccion': this.direccion,
-                    'id_placas': this.id_placas,
                     'ruta': this.ruta,
                     'latitud': this.latitud,
                     'longitud': this.longitud
@@ -291,7 +258,6 @@
 
                 axios.put('/rutas/actualizar',{
                     'direccion': this.direccion,
-                    'id_placas': this.id_placas,
                     'ruta': this.ruta,
                     'latitud': this.latitud,
                     'longitud': this.longitud,
@@ -383,11 +349,11 @@
             },
             eliminarRutas(id)
             {
+                let me = this;
                 swal({
-					title: '¿Está seguro de eliminar esta Ruta?',
-					text: "",
-					type: 'warning',
-		        showCancelButton: true,
+                title: 'Estas seguro de eliminar esta ruta?',
+                type: 'warning',
+                showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Aceptar!',
@@ -396,45 +362,35 @@
                 cancelButtonClass: 'btn btn-danger',
                 buttonsStyling: false,
                 reverseButtons: true
-				}).then((result) => {
-                    if (result.value) 
+                }).then((Delete) => {
+                    if (Delete) 
                     {
-                        let me = this;
+                        
                         axios.delete('/rutas/delete/'+id,{
-                            //'id' : id,
                             
                         }).then(function (response) 
                         {
                             me.listarRutas(1,'');
-                            swal(
-                        'Eliminado!',
-                        'La ruta ha sido eliminada con éxito.',
-                        'success'
-                        )
+                            swal({
+							    title: 'Eliminado',
+							    text: 'Su ruta ha sido eliminada',
+							    type: 'success',
+							    buttons : {
+								    confirm: {
+									    className : 'btn btn-success'
+								    }
+							    }
+						    });
                         }).catch(function (error) 
                         {
                             console.log(error);
-                           
+                            me.notificationError('Error','No se pudo eliminar el registro');
                         });
 					} else {
 						swal.close();
 					}
 				});
             },
-            selectPlacas()
-            {
-                let me=this;
-                var url = '/rutas/selectPlacas';
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayPlacas = respuesta.placas;
-                })
-                .catch(function (error) {
-                    // handle error
-                    console.log(error);
-                });
-            },
-            
             validarRutas(){
                 this.errorRutas=0;
                 this.errorMostrarMsjRutas =[];
@@ -452,7 +408,6 @@
                 this.modal=0;
                 this.tituloModal='';
                 this.direccion='';
-                this.id_placas=0;
                 this.ruta='';
                 this.latitud='';
                 this.longitud='';
@@ -466,9 +421,8 @@
                             {
                                 this.modal = 1;
                                 this.tituloModal = 'Registrar Rutas';
-                                this.direccion= '0';
-                                this.id_placas= '0';
-                                this.ruta= '0';
+                                this.direccion= '';
+                                this.ruta= '';
                                 this.latitud= '';
                                 this.longitud= '';
                                 this.tipoAccion = 1;
@@ -482,7 +436,6 @@
                                 this.tipoAccion=2;
                                 this.rutas_id=data['id'];
                                 this.direccion = data['direccion'];
-                                this.id_placas= data['id_placas'];
                                 this.ruta = data['ruta'];
                                 this.latitud = data['latitud'];
                                 this.longitud = data['longitud'];
@@ -495,12 +448,9 @@
         },
         mounted() {
             this.listarRutas(1,this.buscar,this.criterio);
-            this.selectPlacas();
         }
     }
 </script>
-
-
 <style>    
     .modal-content{
         width: 100% !important;

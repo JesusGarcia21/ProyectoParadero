@@ -31,7 +31,6 @@ Route::post('/paraderos/registrar', 'ParaderosController@store');
 Route::put('/paraderos/actualizar', 'ParaderosController@update');
 Route::put('/paraderos/desactivar', 'ParaderosController@desactivar');
 Route::put('/paraderos/activar', 'ParaderosController@activar');
-Route::delete('/paraderos/delete/{id}','ParaderosController@destroy');
 
 Route::get('/rutas', 'RutasController@index');
 Route::post('/rutas/registrar', 'RutasController@store');
