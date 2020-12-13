@@ -40,6 +40,7 @@ Route::put('/rutas/desactivar', 'RutasController@desactivar');
 Route::put('/rutas/activar', 'RutasController@activar');
 Route::delete('/rutas/delete/{id}','RutasController@destroy');
 Route::get('/rutas/selectPlacas', 'RutasController@selectPlacas');
+Route::delete('/rutas/delete/{id}','RutasController@destroy');
 
 Route::get('/tipos', 'TiposController@index');
 Route::post('/tipos/registrar', 'TiposController@store');

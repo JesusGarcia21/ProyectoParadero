@@ -33434,7 +33434,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 buttonsStyling: false,
                 reverseButtons: true
             }).then(function (result) {
-                if (!result.value) {
+                if (result.value) {
                     var me = _this2;
 
                     axios.put('/vehiculo/activar', {
@@ -34543,7 +34543,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -34861,21 +34860,7 @@ var render = function() {
                       _vm._v("Ubicación")
                     ]),
                     _vm._v(" "),
-                    _c("option", { attrs: { value: "ruta" } }, [
-                      _vm._v("Ruta")
-                    ]),
-                    _vm._v(" "),
-                    _c("option", { attrs: { value: "serie" } }, [
-                      _vm._v("Serie")
-                    ]),
-                    _vm._v(" "),
-                    _c("option", { attrs: { value: "latitud" } }, [
-                      _vm._v("Latitud")
-                    ]),
-                    _vm._v(" "),
-                    _c("option", { attrs: { value: "longitud" } }, [
-                      _vm._v("Longitud")
-                    ])
+                    _c("option", { attrs: { value: "ruta" } }, [_vm._v("Ruta")])
                   ]
                 ),
                 _vm._v(" "),
@@ -35332,7 +35317,7 @@ var render = function() {
                           staticClass: "col-md-3 form-control-label",
                           attrs: { for: "email-input" }
                         },
-                        [_vm._v("longitud")]
+                        [_vm._v("Longitud")]
                       ),
                       _vm._v(" "),
                       _c("div", { staticClass: "col-md-9" }, [
@@ -35732,7 +35717,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -35852,7 +35836,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var _this = this;
 
             swal({
-                title: 'Esta seguro de desactivar esta categoría?',
+                title: 'Esta seguro de desactivar esta ruta?',
                 type: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -35884,7 +35868,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var _this2 = this;
 
             swal({
-                title: 'Esta seguro de activar esta categoría?',
+                title: 'Esta seguro de activar esta ruta?',
                 type: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -35912,6 +35896,44 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 result.dismiss === swal.DismissReason.cancel) {}
             });
         },
+        eliminarRutas: function eliminarRutas(id) {
+            var me = this;
+            swal({
+                title: 'Estas seguro de eliminar esta ruta?',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Aceptar!',
+                cancelButtonText: 'Cancelar',
+                confirmButtonClass: 'btn btn-success',
+                cancelButtonClass: 'btn btn-danger',
+                buttonsStyling: false,
+                reverseButtons: true
+            }).then(function (Delete) {
+                if (Delete) {
+
+                    axios.delete('/rutas/delete/' + id, {}).then(function (response) {
+                        me.listarRutas(1, '');
+                        swal({
+                            title: 'Eliminado',
+                            text: 'Su ruta ha sido eliminada',
+                            type: 'success',
+                            buttons: {
+                                confirm: {
+                                    className: 'btn btn-success'
+                                }
+                            }
+                        });
+                    }).catch(function (error) {
+                        console.log(error);
+                        me.notificationError('Error', 'No se pudo eliminar el registro');
+                    });
+                } else {
+                    swal.close();
+                }
+            });
+        },
         validarRutas: function validarRutas() {
             this.errorRutas = 0;
             this.errorMostrarMsjRutas = [];
@@ -35929,7 +35951,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.modal = 0;
             this.tituloModal = '';
             this.direccion = '';
-            this.descripcion = '';
+            this.ruta = '';
+            this.latitud = '';
+            this.longitud = '';
         },
         abrirModal: function abrirModal(modelo, accion) {
             var data = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
@@ -35941,9 +35965,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                             case 'registrar':
                                 {
                                     this.modal = 1;
-                                    this.tituloModal = 'Registrar Categoría';
+                                    this.tituloModal = 'Registrar Rutas';
                                     this.direccion = '';
-                                    this.descripcion = '';
+                                    this.ruta = '';
+                                    this.latitud = '';
+                                    this.longitud = '';
                                     this.tipoAccion = 1;
                                     break;
                                 }
@@ -35951,11 +35977,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                 {
                                     //console.log(data);
                                     this.modal = 1;
-                                    this.tituloModal = 'Actualizar categoría';
+                                    this.tituloModal = 'Actualizar Rutas';
                                     this.tipoAccion = 2;
                                     this.rutas_id = data['id'];
                                     this.direccion = data['direccion'];
-                                    this.descripcion = data['descripcion'];
+                                    this.ruta = data['ruta'];
+                                    this.latitud = data['latitud'];
+                                    this.longitud = data['longitud'];
                                     break;
                                 }
                         }
@@ -36116,6 +36144,23 @@ var render = function() {
                           [_c("i", { staticClass: "fas fa-edit" })]
                         ),
                         _vm._v("  \n                                "),
+                        rutas.id != 1
+                          ? _c(
+                              "button",
+                              {
+                                staticClass:
+                                  "btn btn-icon btn-round btn-danger btn-xs",
+                                attrs: { type: "button" },
+                                on: {
+                                  click: function($event) {
+                                    _vm.eliminarRutas(rutas.id, rutas.direccion)
+                                  }
+                                }
+                              },
+                              [_c("i", { staticClass: "fa fa-trash-alt" })]
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
                         rutas.condicion
                           ? [
                               _c(
@@ -36927,7 +36972,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var _this = this;
 
             swal({
-                title: 'Esta seguro de desactivar esta categoría?',
+                title: 'Esta seguro de desactivar este tipo de vehiculo?',
                 type: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -36959,7 +37004,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var _this2 = this;
 
             swal({
-                title: 'Esta seguro de activar esta categoría?',
+                title: 'Esta seguro de activar este tipo de vehiculo?',
                 type: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
