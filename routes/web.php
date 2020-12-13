@@ -31,6 +31,7 @@ Route::post('/paraderos/registrar', 'ParaderosController@store');
 Route::put('/paraderos/actualizar', 'ParaderosController@update');
 Route::put('/paraderos/desactivar', 'ParaderosController@desactivar');
 Route::put('/paraderos/activar', 'ParaderosController@activar');
+Route::delete('/paraderos/delete/{id}','ParaderosController@destroy');
 
 Route::get('/rutas', 'RutasController@index');
 Route::post('/rutas/registrar', 'RutasController@store');
@@ -38,4 +39,10 @@ Route::put('/rutas/actualizar', 'RutasController@update');
 Route::put('/rutas/desactivar', 'RutasController@desactivar');
 Route::put('/rutas/activar', 'RutasController@activar');
 Route::delete('/rutas/delete/{id}','RutasController@destroy');
+Route::get('/rutas/selectPlacas', 'RutasController@selectPlacas');
 
+Route::get('/tipos', 'TiposController@index');
+Route::post('/tipos/registrar', 'TiposController@store');
+Route::put('/tipos/actualizar', 'TiposController@update');
+Route::put('/tipos/desactivar', 'TiposController@desactivar');
+Route::put('/tipos/activar', 'TiposController@activar');

@@ -15,14 +15,16 @@ class Rutas extends Migration
     {
         Schema::create('rutas', function (Blueprint $table) {
             $table->increments('id');
+            $table->unsignedInteger('id_vehiculo');
+
             $table->string('direccion', 100);
             $table->string('ruta', 100);
-
-            //$table->string('serie', 100); debe ser una foranea
-
             $table->string('latitud', 100);
             $table->string('longitud', 100);
             $table->boolean('condicion')->default(1);
+
+            $table->foreign('id_vehiculo')->references('id')->on('vehiculo');
+
             $table->timestamps();
         });
     }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Rutas;
+use App\Vehiculo;
 use exception;
 
 
@@ -16,7 +17,19 @@ class RutasController extends Controller
         $buscar = $request->buscar;
         $criterio = $request->criterio;
         
-        if ($buscar==''){
+        /*if ($buscar==''){
+            $rutas = Rutas::join('vehiculos','rutas.id','=','vehiculos.id')
+            ->select('rutas.id','rutas.direccion','rutas.ruta','rutas,latitud','rutas.longitud','rutas.condicion')
+            ->orderBy('rutas.id','asc')->paginate(2);
+        }
+        else{
+            $rutas = Rutas::join('vehiculos','rutas.id','=','vehiculos.id')
+            ->select('rutas.id','rutas.direccion','rutas.ruta','rutas,latitud','rutas.longitud','rutas.condicion')
+            ->where($criterio,'like','%'. $buscar .'%')
+            ->orderBy('rutas.id','asc')->paginate(2);
+        }*/
+
+       if ($buscar==''){
             $rutas = Rutas::orderBy('id', 'desc')->paginate(3);
         }
         else{
@@ -79,5 +92,13 @@ class RutasController extends Controller
     public function destroy($id)
     {
         $rutas = Rutas::where('id',$id)->delete();
+    }
+
+    public function selectPlacas(Request $request)
+    {
+        //if(!$request->ajax()) return redirect('/');
+        $vehiculo = Vehiculo::select('id','placa')
+        ->orderBy('placa','asc')->get();
+        return ['placas'=>$vehiculo];
     }
 }
