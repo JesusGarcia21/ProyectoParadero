@@ -78,9 +78,4 @@ class ParaderosController extends Controller
         $paraderos->condicion = '1';
         $paraderos->save();
     }
-
-    public function destroy($id)
-    {
-        $paraderos = Paraderos::where('id',$id)->delete();
-    }
 }
