@@ -43,12 +43,9 @@
                             <tbody>
                                 <tr v-for="paraderos in arrayParaderos" :key="paraderos.id">
                                     <td>
-                                        <button type="button" @click="abrirModal('paraderos','actualizar',paraderos)" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></button> &nbsp;
-                                        <button type="button" class="btn btn-dark btn-sm" @click="eliminarParaderos(paraderos.id)"><i class="fa fa-trash-alt"></i></button>
-                                        
-                                        
-                                        
-                                        
+                                        <button type="button" @click="abrirModal('paraderos','actualizar',paraderos)" class="btn btn-warning btn-sm">
+                                          <i class="fas fa-edit"></i>
+                                        </button> &nbsp;
                                         <template v-if="paraderos.condicion">
                                             <button type="button" class="btn btn-danger btn-sm" @click="desactivarParaderos(paraderos.id)">
                                                 <i class="fas fa-ban"></i>
@@ -108,38 +105,17 @@
                         <div class="modal-body">
                             <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
 
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="email-input">Ubicación</label>
+                             <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Ubicación</label>
                                     <div class="col-md-9">
-                                        <select class="form-control" v-model="ubicacion">       
-                                        <option value="0" disabled>--Selecionar--</option>
-                                        <option value="Campeche">Campeche</option>
-                                        <option value="Hecelchakan">Hecelchakan</option>
-                                        <option value="Dzitbalche">Dzitbalche</option>
-                                        <option value="Pomuch">Pomuch</option>
-                                        <option value="Tenabo">Tenabo</option> 
-                                        <option value="Becal">Becal</option>
-                                        <option value="halacho">Halacho</option> 
-                                        <option value="Maxcanu">Maxcanu</option> 
-                                        <option value="Merida">Merida</option>              
-                                     </select>
+                                        <input type="text" v-model="ubicacion" class="form-control" placeholder="ubicacion del autobús"> 
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="email-input">Rutas</label>
+                                    <label class="col-md-3 form-control-label" for="email-input">Ruta</label>
                                     <div class="col-md-9">
-                                        <select class="form-control" v-model="ruta">       
-                                        <option value="0" disabled>--Selecionar--</option>
-                                        <option value="Merida-Campeche">Merida-Campeche</option>
-                                        <option value="Campeche-Merida">Campeche-Merida</option>
-                                        <option value="Itescam-Pomuch">Itescam-Pomuch</option>
-                                        <option value="Pomuch-Itescam">Pomuch-Itescam</option>
-                                        <option value="Tenabo-Becal">Tenabo-Becal</option>
-                                        <option value="Becal-Tenabo">Becal-Tenabo</option>
-                                        <option value="Maxcanu-Dzitbalche">Maxcanu-Dzitbalche</option>
-                                        <option value="Dzitbalche-Maxcanu">Dzitbalche-Maxcanu</option>             
-                                     </select>
+                                        <input type="email" v-model="ruta" class="form-control" placeholder="Ingrese la ruta del autobus">
                                     </div>
                                 </div>
 
@@ -387,47 +363,6 @@
                 }
                 }) 
             },
-            eliminarParaderos(id)
-            {
-                swal({
-					title: '¿Está seguro de eliminar este Paradero?',
-					text: "",
-					type: 'warning',
-		        showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Aceptar!',
-                cancelButtonText: 'Cancelar',
-                confirmButtonClass: 'btn btn-success',
-                cancelButtonClass: 'btn btn-danger',
-                buttonsStyling: false,
-                reverseButtons: true
-				}).then((result) => {
-                    if (result.value) 
-                    {
-                        let me = this;
-                        axios.delete('/paraderos/delete/'+id,{
-                            //'id' : id,
-                            
-                        }).then(function (response) 
-                        {
-                            me.listarParaderos(1,'');
-                            swal(
-                        'Eliminado!',
-                        'El Paradero ha sido eliminada con éxito.',
-                        'success'
-                        )
-                        }).catch(function (error) 
-                        {
-                            console.log(error);
-                           
-                        });
-					} else {
-						swal.close();
-					}
-				});
-            },
-
             validarParaderos(){
                 this.errorParaderos=0;
                 this.errorMostrarMsjParaderos =[];
@@ -460,8 +395,8 @@
                             {
                                 this.modal = 1;
                                 this.tituloModal = 'Registrar Paradero';
-                                this.ubicacion= '0';
-                                this.ruta= '0';
+                                this.ubicacion= '';
+                                this.ruta= '';
                                 this.serie= '';
                                 this.latitud= '';
                                 this.longitud= '';
@@ -511,5 +446,4 @@
         color: red !important;
         font-weight: bold;
     }
-
 </style>

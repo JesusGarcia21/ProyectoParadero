@@ -14,7 +14,8 @@
         </template>
 
         <template v-if="menu==3">
-        <paraderos></paraderos>
+            
+            <paraderos></paraderos>
         </template>
 
         <template v-if="menu==4">
