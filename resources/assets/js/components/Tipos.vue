@@ -95,12 +95,13 @@
                         <div class="modal-body">
                             <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
                                 
-                                <div class="form-group row">
+                               <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Nombre</label>
                                     <div class="col-md-9">
                                         <input type="text" v-model="nombre" class="form-control" placeholder="tipo de autobus"> 
                                     </div>
-                                </div>               
+                                </div>     
+          
                                 <div v-show="errorTipos" class="form-group row div-error">
                                     <div class="text-center text-error">
                                         <div v-for="error in errorMostrarMsjTipos" :key="error" v-text="error">

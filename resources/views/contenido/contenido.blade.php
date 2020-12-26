@@ -1,7 +1,7 @@
     @extends('principal')
     @section('contenido')
         <template v-if="menu==0">
-     
+        <info></info>
         </template>
 
         <template v-if="menu==1">
@@ -14,15 +14,15 @@
         </template>
 
         <template v-if="menu==3">
-            <rutas></rutas>
-        </template>
-
-        <template v-if="menu==4">
         <paraderos></paraderos>
         </template>
 
+        <template v-if="menu==4">
+        <rutas></rutas>
+        </template>
+
         <template v-if="menu==5">
-            
+            <horarios></horarios>
         </template>
 
         <template v-if="menu==6">
@@ -30,7 +30,7 @@
         </template>
 
         <template v-if="menu==7">
-            <h1>Contenido del menú 7</h1>
+            <ejemplo></ejemplo>
         </template>
 
         <template v-if="menu==8">

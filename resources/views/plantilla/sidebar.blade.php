@@ -4,8 +4,8 @@
                 <li class="nav-title">
                         Usuario
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="/Proyecto_Paradero/resources/views/informacion"><i class="fas fa-question-circle"></i> Información</a>
+                    <li @click="menu=0" class="nav-item">
+                    <a class="nav-link active" href="#"><i class="fas fa-question-circle"></i> Información</a>
                     </li>
                     <li @click="menu=8" class="nav-item">
                         <a class="nav-link active" href="#"><i class="fas fa-search"></i> Buscar</a>

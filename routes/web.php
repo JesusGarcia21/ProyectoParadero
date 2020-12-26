@@ -49,3 +49,11 @@ Route::post('/tipos/registrar', 'TiposController@store');
 Route::put('/tipos/actualizar', 'TiposController@update');
 Route::put('/tipos/desactivar', 'TiposController@desactivar');
 Route::put('/tipos/activar', 'TiposController@activar');
+
+Route::get('/horario', 'HorarioController@index');
+Route::post('/horario/registrar', 'HorarioController@store');
+Route::put('/horario/actualizar', 'HorarioController@update');
+Route::put('/horario/desactivar', 'HorarioController@desactivar');
+Route::put('/horario/activar', 'HorarioController@activar');
+Route::delete('/horario/delete/{id}', 'HorarioController@destroy');
+

@@ -373,7 +373,7 @@
                     axios.put('/vehiculo/activar',{
                         'id': id
                     }).then(function (response) {
-                        me.listarvehiculo(1,'','placa');
+                        me.listarVehiculo(1,'','placa');
                         swal(
                         'Activado!',
                         'El vehiculo ha sido activado con éxito.',

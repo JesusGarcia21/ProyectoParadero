@@ -9,7 +9,7 @@ class Vehiculo extends Model
     //protected $table = 'vehiculos';
     //protected $primaryKey = 'id';
     protected $fillable = [
-        'id_ruta','id_tipo','placa','conductor','destino'
+        'id_ruta','id_tipo','placa','conductor','destino','condicion'
     ];
    
 
