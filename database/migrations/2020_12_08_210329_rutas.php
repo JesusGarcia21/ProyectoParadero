@@ -20,13 +20,18 @@ class Rutas extends Migration
 
             //$table->string('serie', 100); debe ser una foranea
 
-            $table->string('latitud', 100);
-            $table->string('longitud', 100);
+            $table->string('latitud_inicial', 100);
+            $table->string('longitud_inicial', 100);
+            $table->string('latitud_final', 100);
+            $table->string('longitud_final', 100);
+
             $table->boolean('condicion')->default(1);
             $table->timestamps();
         });
     }
 
+    //$table->unsignedInteger('id_vehiculo');
+    //$table->foreign('id_vehiculo')->references('id')->on('vehiculo');
     /**
      * Reverse the migrations.
      *

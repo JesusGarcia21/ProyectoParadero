@@ -34,8 +34,10 @@
                                     <th>Opciones</th>
                                     <th>Dirección</th>
                                     <th>Ruta</th>
-                                    <th>Latitud</th>
-                                    <th>Longitud</th>
+                                    <th>Latitud Inicial</th>
+                                    <th>Longitud Incial</th>
+                                    <th>Latitud Final</th>
+                                    <th>Longitud Final</th>
                                     <th>Estado</th>
                                 </tr>
                             </thead>
@@ -43,7 +45,7 @@
                                 <tr v-for="rutas in arrayRutas" :key="rutas.id">
                                     <td>
                                         <button type="button" @click="abrirModal('rutas','actualizar',rutas)" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></button> &nbsp;
-                                        <button v-if="rutas.id!=1" type="button" class="btn btn-icon btn-round btn-danger btn-xs" @click="eliminarRutas(rutas.id,rutas.direccion)"><i class="fa fa-trash-alt"></i></button>
+                                        <button type="button" class="btn btn-dark btn-sm" @click="eliminarRutas(rutas.id)"><i class="fa fa-trash-alt"></i></button>
                                         <template v-if="rutas.condicion">
                                             <button type="button" class="btn btn-danger btn-sm" @click="desactivarRutas(rutas.id)">
                                                 <i class="fas fa-ban"></i>
@@ -57,8 +59,10 @@
                                     </td>
                                     <td v-text="rutas.direccion"></td>
                                     <td v-text="rutas.ruta"></td>
-                                    <td v-text="rutas.latitud"></td>
-                                    <td v-text="rutas.longitud"></td>
+                                    <td v-text="rutas.latitud_inicial"></td>
+                                    <td v-text="rutas.longitud_inicial"></td>
+                                    <td v-text="rutas.latitud_final"></td>
+                                    <td v-text="rutas.longitud_final"></td>
                                     <td>
                                         <div v-if="rutas.condicion">
                                             <span class="badge badge-success">Activo</span>
@@ -102,30 +106,55 @@
                             <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
                                 
                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Dirección</label>
+                                    <label class="col-md-3 form-control-label" for="email-input">Direccion</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="direccion" class="form-control" placeholder="direccion del autobús"> 
+                                        <select class="form-control" v-model="direccion">       
+                                        <option value="0" disabled>--Selecionar hacia donde va--</option>
+                                        <option value="Campeche">Campeche</option>
+                                        <option value="Hecelchakan">Hecelchakan</option>
+                                        <option value="Dzitbalche">Dzitbalche</option>
+                                        <option value="Pomuch">Pomuch</option>
+                                        <option value="Tenabo">Tenabo</option> 
+                                        <option value="Becal">Becal</option>
+                                        <option value="halacho">Halacho</option> 
+                                        <option value="Maxcanu">Maxcanu</option> 
+                                        <option value="Merida">Merida</option>              
+                                     </select>
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="email-input">Ruta</label>
                                     <div class="col-md-9">
-                                        <input type="email" v-model="ruta" class="form-control" placeholder="Ingrese la ruta del autobus">
+                                        <input type="email" v-model="ruta" class="form-control" placeholder="Ejemplo Merida-Campeche">
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="email-input">Latitud</label>
+                                    <label class="col-md-3 form-control-label" for="email-input">Latitud Inicial</label>
                                     <div class="col-md-9">
-                                        <input type="email" v-model="latitud" class="form-control" placeholder="Ingrese la latitud del autobús">
+                                        <input type="email" v-model="latitud_inicial" class="form-control" placeholder="Ingrese la latitud del autobús">
                                     </div>
                                 </div>
                                 
                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="email-input">longitud</label>
+                                    <label class="col-md-3 form-control-label" for="email-input">longitud Inicial</label>
                                     <div class="col-md-9">
-                                        <input type="email" v-model="longitud" class="form-control" placeholder="Ingrese la longitud del autobús">
+                                        <input type="email" v-model="longitud_inicial" class="form-control" placeholder="Ingrese la longitud del autobús">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="email-input">Latitud Final</label>
+                                    <div class="col-md-9">
+                                        <input type="email" v-model="latitud_final" class="form-control" placeholder="Ingrese la latitud del autobús">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="email-input">longitud Final</label>
+                                    <div class="col-md-9">
+                                        <input type="email" v-model="longitud_final" class="form-control" placeholder="Ingrese la longitud del autobús">
                                     </div>
                                 </div>
                                 
@@ -160,8 +189,10 @@
                 rutas_id: 0,
                 direccion : '',
                 ruta : '',
-                latitud : '',
-                longitud : '',
+                latitud_inicial : '',
+                longitud_inicial : '',
+                latitud_final : '',
+                longitud_final : '',
                 arrayRutas : [],
                 modal : 0,
                 tituloModal : '',
@@ -195,19 +226,16 @@
                 if(from < 1) {
                     from = 1;
                 }
-
                 var to = from + (this.offset * 2); 
                 if(to >= this.pagination.last_page){
                     to = this.pagination.last_page;
                 }  
-
                 var pagesArray = [];
                 while(from <= to) {
                     pagesArray.push(from);
                     from++;
                 }
                 return pagesArray;             
-
             }
         },
         methods : {
@@ -236,12 +264,13 @@
                 }
                 
                 let me = this;
-
                 axios.post('/rutas/registrar',{
                     'direccion': this.direccion,
                     'ruta': this.ruta,
-                    'latitud': this.latitud,
-                    'longitud': this.longitud
+                    'latitud_inicial': this.latitud_inicial,
+                    'longitud_inicial': this.longitud_inicial,
+                    'latitud_final': this.latitud_final,
+                    'longitud_final': this.longitud_final
                 }).then(function (response) {
                     me.cerrarModal();
                     me.listarRutas(1,'','direccion');
@@ -255,12 +284,13 @@
                 }
                 
                 let me = this;
-
                 axios.put('/rutas/actualizar',{
                     'direccion': this.direccion,
                     'ruta': this.ruta,
-                    'latitud': this.latitud,
-                    'longitud': this.longitud,
+                    'latitud_inicial': this.latitud_inicial,
+                    'longitud_inicial': this.longitud_inicial,
+                    'latitud_final': this.latitud_final,
+                    'longitud_final': this.longitud_final,
                     'id': this.rutas_id
                 }).then(function (response) {
                     me.cerrarModal();
@@ -285,7 +315,6 @@
                 }).then((result) => {
                 if (result.value) {
                     let me = this;
-
                     axios.put('/rutas/desactivar',{
                         'id': id
                     }).then(function (response) {
@@ -324,7 +353,6 @@
                 }).then((result) => {
                 if (result.value) {
                     let me = this;
-
                     axios.put('/rutas/activar',{
                         'id': id
                     }).then(function (response) {
@@ -349,11 +377,11 @@
             },
             eliminarRutas(id)
             {
-                let me = this;
                 swal({
-                title: 'Estas seguro de eliminar esta ruta?',
-                type: 'warning',
-                showCancelButton: true,
+					title: '¿Está seguro de eliminar esta Ruta?',
+					text: "",
+					type: 'warning',
+		        showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Aceptar!',
@@ -362,29 +390,25 @@
                 cancelButtonClass: 'btn btn-danger',
                 buttonsStyling: false,
                 reverseButtons: true
-                }).then((Delete) => {
-                    if (Delete) 
+				}).then((result) => {
+                    if (result.value) 
                     {
-                        
+                        let me = this;
                         axios.delete('/rutas/delete/'+id,{
+                            //'id' : id,
                             
                         }).then(function (response) 
                         {
                             me.listarRutas(1,'');
-                            swal({
-							    title: 'Eliminado',
-							    text: 'Su ruta ha sido eliminada',
-							    type: 'success',
-							    buttons : {
-								    confirm: {
-									    className : 'btn btn-success'
-								    }
-							    }
-						    });
+                            swal(
+                        'Eliminado!',
+                        'La ruta ha sido eliminada con éxito.',
+                        'success'
+                        )
                         }).catch(function (error) 
                         {
                             console.log(error);
-                            me.notificationError('Error','No se pudo eliminar el registro');
+                           
                         });
 					} else {
 						swal.close();
@@ -394,14 +418,13 @@
             validarRutas(){
                 this.errorRutas=0;
                 this.errorMostrarMsjRutas =[];
-
                 if (!this.direccion) this.errorMostrarMsjRutas.push("El direccion de la categoría no puede estar vacío.");
                 if (!this.ruta) this.errorMostrarMsjRutas.push("El ruta de la categoría no puede estar vacío.");
-                if (!this.latitud) this.errorMostrarMsjRutas.push("El latitud de la categoría no puede estar vacío.");
-                if (!this.longitud) this.errorMostrarMsjRutas.push("El longitud de la categoría no puede estar vacío.");
-
+                if (!this.latitud_inicial) this.errorMostrarMsjRutas.push("El latitud de la categoría no puede estar vacío.");
+                if (!this.longitud_inicial) this.errorMostrarMsjRutas.push("El longitud de la categoría no puede estar vacío.");
+                if (!this.latitud_final) this.errorMostrarMsjRutas.push("El latitud de la categoría no puede estar vacío.");
+                if (!this.longitud_final) this.errorMostrarMsjRutas.push("El longitud de la categoría no puede estar vacío.");
                 if (this.errorMostrarMsjRutas.length) this.errorRutas = 1;
-
                 return this.errorRutas;
             },
             cerrarModal(){
@@ -409,8 +432,10 @@
                 this.tituloModal='';
                 this.direccion='';
                 this.ruta='';
-                this.latitud='';
-                this.longitud='';
+                this.latitud_inicial='';
+                this.longitud_inicial='';
+                this.latitud_final='';
+                this.longitud_final='';
             },
             abrirModal(modelo, accion, data = []){
                 switch(modelo){
@@ -421,10 +446,12 @@
                             {
                                 this.modal = 1;
                                 this.tituloModal = 'Registrar Rutas';
-                                this.direccion= '';
+                                this.direccion= '0';
                                 this.ruta= '';
-                                this.latitud= '';
-                                this.longitud= '';
+                                this.latitud_inicial= '';
+                                this.longitud_inicial= '';
+                                this.latitud_final= '';
+                                this.longitud_final= '';
                                 this.tipoAccion = 1;
                                 break;
                             }
@@ -437,8 +464,10 @@
                                 this.rutas_id=data['id'];
                                 this.direccion = data['direccion'];
                                 this.ruta = data['ruta'];
-                                this.latitud = data['latitud'];
-                                this.longitud = data['longitud'];
+                                this.latitud_inicial = data['latitud_inicial'];
+                                this.longitud_inicial = data['longitud_inicial'];
+                                this.latitud_final = data['latitud_final'];
+                                this.longitud_final = data['longitud_final'];
                                 break;
                             }
                         }

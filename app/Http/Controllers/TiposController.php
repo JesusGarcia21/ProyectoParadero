@@ -10,6 +10,7 @@ class TiposController extends Controller
 {
     public function index(Request $request)
     {
+        
         if (!$request->ajax()) return redirect('/');
 
         $buscar = $request->buscar;
@@ -67,6 +68,7 @@ class TiposController extends Controller
         if (!$request->ajax()) return redirect('/');
         $tipos = Tipos::findOrFail($request->id);
         $tipos->condicion = '1';
+      
         $tipos->save();
     }
 }

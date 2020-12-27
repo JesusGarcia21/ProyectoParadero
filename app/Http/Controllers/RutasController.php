@@ -42,8 +42,10 @@ class RutasController extends Controller
         $rutas = new Rutas();
         $rutas->direccion = $request->direccion;
         $rutas->ruta = $request->ruta;
-        $rutas->latitud = $request->latitud;
-        $rutas->longitud = $request->longitud;
+        $rutas->latitud_inicial = $request->latitud_inicial;
+        $rutas->longitud_inicial = $request->longitud_inicial;
+        $rutas->latitud_final = $request->latitud_final;
+        $rutas->longitud_final = $request->longitud_final;
         $rutas->condicion = '1';
         $rutas->save();
     }
@@ -54,8 +56,10 @@ class RutasController extends Controller
         $rutas = Rutas::findOrFail($request->id);
         $rutas->direccion = $request->direccion;
         $rutas->ruta = $request->ruta;
-        $rutas->latitud = $request->latitud;
-        $rutas->longitud = $request->longitud;
+        $rutas->latitud_inicial = $request->latitud_inicial;
+        $rutas->longitud_inicial = $request->longitud_inicial;
+        $rutas->latitud_final = $request->latitud_final;
+        $rutas->longitud_final = $request->longitud_final;
         $rutas->condicion = '1';
         $rutas->save();
     }

@@ -82540,7 +82540,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -82548,11 +82547,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             rutas_id: 0,
             direccion: '',
             ruta: '',
-            id_placas: 0,
-            latitud: '',
-            longitud: '',
+            latitud_inicial: '',
+            longitud_inicial: '',
+            latitud_final: '',
+            longitud_final: '',
             arrayRutas: [],
-            arrayPlacas: [],
             modal: 0,
             tituloModal: '',
             tipoAccion: 0,
@@ -82586,12 +82585,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             if (from < 1) {
                 from = 1;
             }
-
             var to = from + this.offset * 2;
             if (to >= this.pagination.last_page) {
                 to = this.pagination.last_page;
             }
-
             var pagesArray = [];
             while (from <= to) {
                 pagesArray.push(from);
@@ -82625,13 +82622,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             }
 
             var me = this;
-
             axios.post('/rutas/registrar', {
                 'direccion': this.direccion,
-                'id_placas': this.id_placas,
                 'ruta': this.ruta,
-                'latitud': this.latitud,
-                'longitud': this.longitud
+                'latitud_inicial': this.latitud_inicial,
+                'longitud_inicial': this.longitud_inicial,
+                'latitud_final': this.latitud_final,
+                'longitud_final': this.longitud_final
             }).then(function (response) {
                 me.cerrarModal();
                 me.listarRutas(1, '', 'direccion');
@@ -82645,13 +82642,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             }
 
             var me = this;
-
             axios.put('/rutas/actualizar', {
                 'direccion': this.direccion,
-                'id_placas': this.id_placas,
                 'ruta': this.ruta,
-                'latitud': this.latitud,
-                'longitud': this.longitud,
+                'latitud_inicial': this.latitud_inicial,
+                'longitud_inicial': this.longitud_inicial,
+                'latitud_final': this.latitud_final,
+                'longitud_final': this.longitud_final,
                 'id': this.rutas_id
             }).then(function (response) {
                 me.cerrarModal();
@@ -82678,7 +82675,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             }).then(function (result) {
                 if (result.value) {
                     var me = _this;
-
                     axios.put('/rutas/desactivar', {
                         'id': id
                     }).then(function (response) {
@@ -82710,7 +82706,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             }).then(function (result) {
                 if (result.value) {
                     var me = _this2;
-
                     axios.put('/rutas/activar', {
                         'id': id
                     }).then(function (response) {
@@ -82757,38 +82752,27 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 }
             });
         },
-        selectPlacas: function selectPlacas() {
-            var me = this;
-            var url = '/rutas/selectPlacas';
-            axios.get(url).then(function (response) {
-                var respuesta = response.data;
-                me.arrayPlacas = respuesta.placas;
-            }).catch(function (error) {
-                // handle error
-                console.log(error);
-            });
-        },
         validarRutas: function validarRutas() {
             this.errorRutas = 0;
             this.errorMostrarMsjRutas = [];
-
             if (!this.direccion) this.errorMostrarMsjRutas.push("El direccion de la categoría no puede estar vacío.");
             if (!this.ruta) this.errorMostrarMsjRutas.push("El ruta de la categoría no puede estar vacío.");
-            if (!this.latitud) this.errorMostrarMsjRutas.push("El latitud de la categoría no puede estar vacío.");
-            if (!this.longitud) this.errorMostrarMsjRutas.push("El longitud de la categoría no puede estar vacío.");
-
+            if (!this.latitud_inicial) this.errorMostrarMsjRutas.push("El latitud de la categoría no puede estar vacío.");
+            if (!this.longitud_inicial) this.errorMostrarMsjRutas.push("El longitud de la categoría no puede estar vacío.");
+            if (!this.latitud_final) this.errorMostrarMsjRutas.push("El latitud de la categoría no puede estar vacío.");
+            if (!this.longitud_final) this.errorMostrarMsjRutas.push("El longitud de la categoría no puede estar vacío.");
             if (this.errorMostrarMsjRutas.length) this.errorRutas = 1;
-
             return this.errorRutas;
         },
         cerrarModal: function cerrarModal() {
             this.modal = 0;
             this.tituloModal = '';
             this.direccion = '';
-            this.id_placas = 0;
             this.ruta = '';
-            this.latitud = '';
-            this.longitud = '';
+            this.latitud_inicial = '';
+            this.longitud_inicial = '';
+            this.latitud_final = '';
+            this.longitud_final = '';
         },
         abrirModal: function abrirModal(modelo, accion) {
             var data = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
@@ -82802,10 +82786,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.modal = 1;
                                     this.tituloModal = 'Registrar Rutas';
                                     this.direccion = '0';
-                                    this.id_placas = '0';
-                                    this.ruta = '0';
-                                    this.latitud = '';
-                                    this.longitud = '';
+                                    this.ruta = '';
+                                    this.latitud_inicial = '';
+                                    this.longitud_inicial = '';
+                                    this.latitud_final = '';
+                                    this.longitud_final = '';
                                     this.tipoAccion = 1;
                                     break;
                                 }
@@ -82817,10 +82802,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.tipoAccion = 2;
                                     this.rutas_id = data['id'];
                                     this.direccion = data['direccion'];
-                                    this.id_placas = data['id_placas'];
                                     this.ruta = data['ruta'];
-                                    this.latitud = data['latitud'];
-                                    this.longitud = data['longitud'];
+                                    this.latitud_inicial = data['latitud_inicial'];
+                                    this.longitud_inicial = data['longitud_inicial'];
+                                    this.latitud_final = data['latitud_final'];
+                                    this.longitud_final = data['longitud_final'];
                                     break;
                                 }
                         }
@@ -82830,7 +82816,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     mounted: function mounted() {
         this.listarRutas(1, this.buscar, this.criterio);
-        this.selectPlacas();
     }
 });
 
@@ -83035,18 +83020,22 @@ var render = function() {
                       domProps: { textContent: _vm._s(rutas.direccion) }
                     }),
                     _vm._v(" "),
-                    _c("td", {
-                      domProps: { textContent: _vm._s(rutas.id_placas) }
-                    }),
-                    _vm._v(" "),
                     _c("td", { domProps: { textContent: _vm._s(rutas.ruta) } }),
                     _vm._v(" "),
                     _c("td", {
-                      domProps: { textContent: _vm._s(rutas.latitud) }
+                      domProps: { textContent: _vm._s(rutas.latitud_inicial) }
                     }),
                     _vm._v(" "),
                     _c("td", {
-                      domProps: { textContent: _vm._s(rutas.longitud) }
+                      domProps: { textContent: _vm._s(rutas.longitud_inicial) }
+                    }),
+                    _vm._v(" "),
+                    _c("td", {
+                      domProps: { textContent: _vm._s(rutas.latitud_final) }
+                    }),
+                    _vm._v(" "),
+                    _c("td", {
+                      domProps: { textContent: _vm._s(rutas.longitud_final) }
                     }),
                     _vm._v(" "),
                     _c("td", [
@@ -83210,67 +83199,13 @@ var render = function() {
                   },
                   [
                     _c("div", { staticClass: "form-group row" }, [
-                      _c("div", { staticClass: "col-md-6" }, [
-                        _c("label", { attrs: { for: "text-input" } }, [
-                          _vm._v("Placa")
-                        ]),
-                        _vm._v(" "),
-                        _c(
-                          "select",
-                          {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.id_placas,
-                                expression: "id_placas"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            on: {
-                              change: function($event) {
-                                var $$selectedVal = Array.prototype.filter
-                                  .call($event.target.options, function(o) {
-                                    return o.selected
-                                  })
-                                  .map(function(o) {
-                                    var val = "_value" in o ? o._value : o.value
-                                    return val
-                                  })
-                                _vm.id_placas = $event.target.multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
-                              }
-                            }
-                          },
-                          [
-                            _c("option", { attrs: { value: "0" } }, [
-                              _vm._v("Seleccione")
-                            ]),
-                            _vm._v(" "),
-                            _vm._l(_vm.arrayPlacas, function(placas) {
-                              return _c("option", {
-                                key: placas.id,
-                                domProps: {
-                                  value: placas.id,
-                                  textContent: _vm._s(placas.placa)
-                                }
-                              })
-                            })
-                          ],
-                          2
-                        )
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
                       _c(
                         "label",
                         {
                           staticClass: "col-md-3 form-control-label",
                           attrs: { for: "email-input" }
                         },
-                        [_vm._v("Dirección")]
+                        [_vm._v("Direccion")]
                       ),
                       _vm._v(" "),
                       _c("div", { staticClass: "col-md-9" }, [
@@ -83306,28 +83241,44 @@ var render = function() {
                             _c(
                               "option",
                               { attrs: { value: "0", disabled: "" } },
-                              [_vm._v("--Selecionar--")]
+                              [_vm._v("--Selecionar hacia donde va--")]
                             ),
                             _vm._v(" "),
-                            _c(
-                              "option",
-                              { attrs: { value: "Para Campeche" } },
-                              [_vm._v("Para Campeche")]
-                            ),
-                            _vm._v(" "),
-                            _c("option", { attrs: { value: "Para Merida" } }, [
-                              _vm._v("Para Merida")
+                            _c("option", { attrs: { value: "Campeche" } }, [
+                              _vm._v("Campeche")
                             ]),
                             _vm._v(" "),
-                            _c("option", { attrs: { value: "Para Pomuch" } }, [
-                              _vm._v("Para Pomuch")
+                            _c("option", { attrs: { value: "Hecelchakan" } }, [
+                              _vm._v("Hecelchakan")
                             ]),
                             _vm._v(" "),
-                            _c(
-                              "option",
-                              { attrs: { value: "Para el Itescam" } },
-                              [_vm._v("Para el Itescam")]
-                            )
+                            _c("option", { attrs: { value: "Dzitbalche" } }, [
+                              _vm._v("Dzitbalche")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "Pomuch" } }, [
+                              _vm._v("Pomuch")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "Tenabo" } }, [
+                              _vm._v("Tenabo")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "Becal" } }, [
+                              _vm._v("Becal")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "halacho" } }, [
+                              _vm._v("Halacho")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "Maxcanu" } }, [
+                              _vm._v("Maxcanu")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "Merida" } }, [
+                              _vm._v("Merida")
+                            ])
                           ]
                         )
                       ])
@@ -83340,101 +83291,7 @@ var render = function() {
                           staticClass: "col-md-3 form-control-label",
                           attrs: { for: "email-input" }
                         },
-                        [_vm._v("Rutas")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-9" }, [
-                        _c(
-                          "select",
-                          {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.ruta,
-                                expression: "ruta"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            on: {
-                              change: function($event) {
-                                var $$selectedVal = Array.prototype.filter
-                                  .call($event.target.options, function(o) {
-                                    return o.selected
-                                  })
-                                  .map(function(o) {
-                                    var val = "_value" in o ? o._value : o.value
-                                    return val
-                                  })
-                                _vm.ruta = $event.target.multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
-                              }
-                            }
-                          },
-                          [
-                            _c(
-                              "option",
-                              { attrs: { value: "0", disabled: "" } },
-                              [_vm._v("--Selecionar--")]
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "option",
-                              { attrs: { value: "Merida-Campeche" } },
-                              [_vm._v("Merida-Campeche")]
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "option",
-                              { attrs: { value: "Campeche-Merida" } },
-                              [_vm._v("Campeche-Merida")]
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "option",
-                              { attrs: { value: "Itescam-Pomuch" } },
-                              [_vm._v("Itescam-Pomuch")]
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "option",
-                              { attrs: { value: "Pomuch-Itescam" } },
-                              [_vm._v("Pomuch-Itescam")]
-                            ),
-                            _vm._v(" "),
-                            _c("option", { attrs: { value: "Tenabo-Becal" } }, [
-                              _vm._v("Tenabo-Becal")
-                            ]),
-                            _vm._v(" "),
-                            _c("option", { attrs: { value: "Becal-Tenabo" } }, [
-                              _vm._v("Becal-Tenabo")
-                            ]),
-                            _vm._v(" "),
-                            _c(
-                              "option",
-                              { attrs: { value: "Maxcanu-Dzitbalche" } },
-                              [_vm._v("Maxcanu-Dzitbalche")]
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "option",
-                              { attrs: { value: "Dzitbalche-Maxcanu" } },
-                              [_vm._v("Dzitbalche-Maxcanu")]
-                            )
-                          ]
-                        )
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "email-input" }
-                        },
-                        [_vm._v("Latitud")]
+                        [_vm._v("Ruta")]
                       ),
                       _vm._v(" "),
                       _c("div", { staticClass: "col-md-9" }, [
@@ -83443,22 +83300,22 @@ var render = function() {
                             {
                               name: "model",
                               rawName: "v-model",
-                              value: _vm.latitud,
-                              expression: "latitud"
+                              value: _vm.ruta,
+                              expression: "ruta"
                             }
                           ],
                           staticClass: "form-control",
                           attrs: {
                             type: "email",
-                            placeholder: "Ingrese la latitud del autobús"
+                            placeholder: "Ejemplo Merida-Campeche"
                           },
-                          domProps: { value: _vm.latitud },
+                          domProps: { value: _vm.ruta },
                           on: {
                             input: function($event) {
                               if ($event.target.composing) {
                                 return
                               }
-                              _vm.latitud = $event.target.value
+                              _vm.ruta = $event.target.value
                             }
                           }
                         })
@@ -83472,7 +83329,7 @@ var render = function() {
                           staticClass: "col-md-3 form-control-label",
                           attrs: { for: "email-input" }
                         },
-                        [_vm._v("longitud")]
+                        [_vm._v("Latitud Inicial")]
                       ),
                       _vm._v(" "),
                       _c("div", { staticClass: "col-md-9" }, [
@@ -83481,8 +83338,46 @@ var render = function() {
                             {
                               name: "model",
                               rawName: "v-model",
-                              value: _vm.longitud,
-                              expression: "longitud"
+                              value: _vm.latitud_inicial,
+                              expression: "latitud_inicial"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: {
+                            type: "email",
+                            placeholder: "Ingrese la latitud del autobús"
+                          },
+                          domProps: { value: _vm.latitud_inicial },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.latitud_inicial = $event.target.value
+                            }
+                          }
+                        })
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "email-input" }
+                        },
+                        [_vm._v("longitud Inicial")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-9" }, [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.longitud_inicial,
+                              expression: "longitud_inicial"
                             }
                           ],
                           staticClass: "form-control",
@@ -83490,13 +83385,89 @@ var render = function() {
                             type: "email",
                             placeholder: "Ingrese la longitud del autobús"
                           },
-                          domProps: { value: _vm.longitud },
+                          domProps: { value: _vm.longitud_inicial },
                           on: {
                             input: function($event) {
                               if ($event.target.composing) {
                                 return
                               }
-                              _vm.longitud = $event.target.value
+                              _vm.longitud_inicial = $event.target.value
+                            }
+                          }
+                        })
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "email-input" }
+                        },
+                        [_vm._v("Latitud Final")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-9" }, [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.latitud_final,
+                              expression: "latitud_final"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: {
+                            type: "email",
+                            placeholder: "Ingrese la latitud del autobús"
+                          },
+                          domProps: { value: _vm.latitud_final },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.latitud_final = $event.target.value
+                            }
+                          }
+                        })
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "email-input" }
+                        },
+                        [_vm._v("longitud Final")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-9" }, [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.longitud_final,
+                              expression: "longitud_final"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: {
+                            type: "email",
+                            placeholder: "Ingrese la longitud del autobús"
+                          },
+                          domProps: { value: _vm.longitud_final },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.longitud_final = $event.target.value
                             }
                           }
                         })
@@ -83598,13 +83569,15 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Dirección")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Placa")]),
-        _vm._v(" "),
         _c("th", [_vm._v("Ruta")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Latitud")]),
+        _c("th", [_vm._v("Latitud Inicial")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Longitud")]),
+        _c("th", [_vm._v("Longitud Incial")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Latitud Final")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Longitud Final")]),
         _vm._v(" "),
         _c("th", [_vm._v("Estado")])
       ])

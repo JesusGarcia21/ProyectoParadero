@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\TaskEvent;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -18,6 +19,11 @@ Route::get('/informacion', function () {
     return view('informacion');
 });
 
+
+
+Route::get('event',function(){
+    event(new TaskEvent('hola'));
+});
 
 Route::get('/vehiculo', 'VehiculoController@index');
 Route::post('/vehiculo/registrar', 'VehiculoController@store');
