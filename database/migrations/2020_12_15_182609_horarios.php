@@ -15,12 +15,12 @@ class Horarios extends Migration
     {
         Schema::create('horarios', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('lunes',50);
-            $table->string('martes',50);
-            $table->string('miercoles',50);
-            $table->string('jueves',50);
-            $table->string('viernes',50);
-            $table->string('sabado',50);
+            $table->string('lunes',50)->nullable();
+            $table->string('martes',50)->nullable();
+            $table->string('miercoles',50)->nullable();
+            $table->string('jueves',50)->nullable();
+            $table->string('viernes',50)->nullable();
+            $table->string('sabado',50)->nullable();
             $table->string('domingo',50);
             $table->time('iniciol', $precision = 0);
             $table->time('finl', $precision = 0);

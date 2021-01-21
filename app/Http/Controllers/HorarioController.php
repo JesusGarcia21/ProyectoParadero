@@ -54,8 +54,20 @@ class HorarioController extends Controller
         $horarios->viernes = $request->viernes;
         $horarios->sabado = $request->sabado;
         $horarios->domingo = $request->domingo;
-        $horarios->inicio = $request->inicio;
-        $horarios->fin = $request->fin;
+        $horarios->iniciol = $request->iniciol;
+        $horarios->finl = $request->finl;
+        $horarios->iniciom = $request->iniciom;
+        $horarios->finm = $request->finm;
+        $horarios->iniciomi = $request->iniciomi;
+        $horarios->finmi = $request->finmi;
+        $horarios->inicioj = $request->inicioj;
+        $horarios->finj = $request->finj;
+        $horarios->iniciov = $request->iniciov;
+        $horarios->finv = $request->finv;
+        $horarios->inicios = $request->inicios;
+        $horarios->fins = $request->fins;
+        $horarios->iniciod = $request->iniciod;
+        $horarios->find = $request->find;
        $horarios->condicion = '1';
         $horarios->save();
     }
@@ -79,8 +91,20 @@ class HorarioController extends Controller
         $horarios->viernes = $request->viernes;
         $horarios->sabado = $request->sabado;
         $horarios->domingo = $request->domingo;
-        $horarios->inicio = $request->inicio;
-        $horarios->fin = $request->fin;
+        $horarios->iniciol = $request->iniciol;
+        $horarios->finl = $request->finl;
+        $horarios->iniciom = $request->iniciom;
+        $horarios->finm = $request->finm;
+        $horarios->iniciomi = $request->iniciomi;
+        $horarios->finmi = $request->finmi;
+        $horarios->inicioj = $request->inicioj;
+        $horarios->finj = $request->finj;
+        $horarios->iniciov = $request->iniciov;
+        $horarios->finv = $request->finv;
+        $horarios->inicios = $request->inicios;
+        $horarios->fins = $request->fins;
+        $horarios->iniciod = $request->iniciod;
+        $horarios->find = $request->find;
         $horarios->condicion = '1';
         $horarios->save();
     }

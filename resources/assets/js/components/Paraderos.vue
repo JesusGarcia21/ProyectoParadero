@@ -34,7 +34,6 @@
                                     <th>Opciones</th>
                                     <th>Ubicación</th>
                                     <th>Ruta</th>
-                                    <th>Serie</th>
                                     <th>Latitud</th>
                                     <th>Longitud</th>
                                     <th>Estado</th>
@@ -61,8 +60,7 @@
                                         </template>
                                     </td>
                                     <td v-text="paraderos.ubicacion"></td>
-                                    <td v-text="paraderos.ruta"></td>
-                                    <td v-text="paraderos.serie"></td>
+                                    <td v-text="paraderos.id_rutas"></td>
                                     <td v-text="paraderos.latitud"></td>
                                     <td v-text="paraderos.longitud"></td>
                                     <td>
@@ -106,12 +104,13 @@
                         </div>
 
                         <div class="modal-body">
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-
-                                <div class="form-group row">
+                            <div class="form-group row">
+                                
+                                <div class="col-md-6">
                                     <label class="col-md-3 form-control-label" for="email-input">Ubicación</label>
-                                    <div class="col-md-9">
-                                        <select class="form-control" v-model="ubicacion">       
+                                    <label v-if="error_ubicacion==1" class="form-control-label text-danger">*ubicacion</label>
+                                        <select class="form-control" :class="{'invalid-input': error_ubicacion}" v-model="ubicacion">
+                                        <!--<select class="form-control" v-model="ubicacion">-->       
                                         <option value="0" disabled>--Selecionar--</option>
                                         <option value="Campeche">Campeche</option>
                                         <option value="Hecelchakan">Hecelchakan</option>
@@ -123,49 +122,32 @@
                                         <option value="Maxcanu">Maxcanu</option> 
                                         <option value="Merida">Merida</option>              
                                      </select>
-                                    </div>
                                 </div>
 
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="email-input">Rutas</label>
-                                    <div class="col-md-9">
-                                        <select class="form-control" v-model="ruta">       
-                                        <option value="0" disabled>--Selecionar--</option>
-                                        <option value="Merida-Campeche">Merida-Campeche</option>
-                                        <option value="Campeche-Merida">Campeche-Merida</option>
-                                        <option value="Itescam-Pomuch">Itescam-Pomuch</option>
-                                        <option value="Pomuch-Itescam">Pomuch-Itescam</option>
-                                        <option value="Tenabo-Becal">Tenabo-Becal</option>
-                                        <option value="Becal-Tenabo">Becal-Tenabo</option>
-                                        <option value="Maxcanu-Dzitbalche">Maxcanu-Dzitbalche</option>
-                                        <option value="Dzitbalche-Maxcanu">Dzitbalche-Maxcanu</option>             
-                                     </select>
+                                <div class="col-md-6">
+                                    <label for="text-input">Ruta</label>
+                                    <label v-if="error_ruta==1" class="form-control-label text-danger">*ruta</label>
+                                    <select class="form-control" :class="{'invalid-input': error_ruta}" v-model="id_rutas">
+                                        <option value="0">Seleccione</option>
+                                        <option v-for="rutas in arrayRutas" :key="rutas.id" :value="rutas.id" v-text="rutas.ruta"></option>
+                                    </select>
                                     </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-control-label">Latitud</label>
+                                    <label v-if="error_latitud==1" class="form-control-label text-danger">*latitud</label>
+                                    <!--<input type="email" v-model="latitud" class="form-control" placeholder="Ingrese la latitud del autobús">-->
+                                    <input type="text" maxlength="254" v-model="latitud" class="form-control" :class="{'invalid-input': error_latitud}" placeholder="Ingrese la latitud del autobus">
                                 </div>
 
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="email-input">Serie</label>
-                                    <div class="col-md-9">
-                                        <input type="email" v-model="serie" class="form-control" placeholder="Ingrese la serie del autobus">
-                                    </div>
+                                <div class="col-md-12">
+                                    <label class="form-control-label">Longitud</label>
+                                    <label v-if="error_longitud==1" class="form-control-label text-danger">*longitud</label>
+                                    <!--<input type="email" v-model="longitud" class="form-control" placeholder="Ingrese la longitud del autobús">-->
+                                    <input type="text" maxlength="254" v-model="longitud" class="form-control" :class="{'invalid-input': error_longitud}" placeholder="Ingrese la longitud del autobus">
                                 </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="email-input">Latitud</label>
-                                    <div class="col-md-9">
-                                        <input type="email" v-model="latitud" class="form-control" placeholder="Ingrese la latitud del autobús">
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="email-input">Longitud</label>
-                                    <div class="col-md-9">
-                                        <input type="email" v-model="longitud" class="form-control" placeholder="Ingrese la longitud del autobús">
-                                    </div>
-                                </div>
+                            </div>
                                 
-                                
-
                                 <div v-show="errorParaderos" class="form-group row div-error">
                                     <div class="text-center text-error">
                                         <div v-for="error in errorMostrarMsjParaderos" :key="error" v-text="error">
@@ -173,8 +155,6 @@
                                         </div>
                                     </div>
                                 </div>
-
-                            </form>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
@@ -195,12 +175,12 @@
         data (){
             return {
                 paraderos_id: 0,
+                id_rutas : 0,
                 ubicacion : '',
-                ruta : '',
-                serie : '',
                 latitud : '',
                 longitud : '',
                 arrayParaderos : [],
+                arrayRutas : [],
                 modal : 0,
                 tituloModal : '',
                 tipoAccion : 0,
@@ -216,7 +196,12 @@
                 },
                 offset : 3,
                 criterio : 'ubicacion',
-                buscar : ''
+                buscar : '',
+                notificationClasses: null,
+                error_ubicacion: 0,
+                error_ruta: 0,
+                error_latitud: 0,
+                error_longitud: 0
             }
         },
         computed:{
@@ -268,6 +253,19 @@
                 //Envia la petición para visualizar la data de esa página
                 me.listarParaderos(page,buscar,criterio);
             },
+            selectRuta()
+            {
+                let me=this;
+                var url = '/paraderos/selectRuta';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayRutas = respuesta.rutas;
+                })
+                .catch(function (error) {
+                    // handle error
+                    console.log(error);
+                });
+            },
             registrarParaderos(){
                 if (this.validarParaderos()){
                     return;
@@ -277,13 +275,13 @@
 
                 axios.post('/paraderos/registrar',{
                     'ubicacion': this.ubicacion,
-                    'ruta': this.ruta,
-                    'serie': this.serie,
+                    'id_rutas': this.id_rutas,
                     'latitud': this.latitud,
                     'longitud': this.longitud
                 }).then(function (response) {
                     me.cerrarModal();
                     me.listarParaderos(1,'','ubicacion');
+                    swal("Datos registrados", "¡Tu registro se realizo correctamente!");
                 }).catch(function (error) {
                     console.log(error);
                 });
@@ -297,14 +295,14 @@
 
                 axios.put('/paraderos/actualizar',{
                     'ubicacion': this.ubicacion,
-                    'ruta': this.ruta,
-                    'serie': this.serie,
+                    'id_rutas': this.id_rutas,
                     'latitud': this.latitud,
                     'longitud': this.longitud,
                     'id': this.paraderos_id
                 }).then(function (response) {
                     me.cerrarModal();
                     me.listarParaderos(1,'','ubicacion');
+                    swal("Datos actualizados", "¡Tu registros se han actualizado correctamente!");
                 }).catch(function (error) {
                     console.log(error);
                 }); 
@@ -419,8 +417,8 @@
                         )
                         }).catch(function (error) 
                         {
-                            console.log(error);
-                           
+                            me.listarParaderos(1,'');
+                            swal("¡No se puede eliminar!", "Este paradero esta relacionada a un vehiculo", "info");
                         });
 					} else {
 						swal.close();
@@ -432,11 +430,17 @@
                 this.errorParaderos=0;
                 this.errorMostrarMsjParaderos =[];
 
-                if (!this.ubicacion) this.errorMostrarMsjParaderos.push("La ubicación no puede estar vacia.");
-                if (!this.ruta) this.errorMostrarMsjParaderos.push("La ruta no puede estar vacia.");
-                if (!this.serie) this.errorMostrarMsjParaderos.push("La serie no puede estar vacia.");
-                if (!this.latitud) this.errorMostrarMsjParaderos.push("La latitud no puede estar vacia.");
-                if (!this.longitud) this.errorMostrarMsjParaderos.push("La longitud no puede estar vacia.");
+                //if (!this.ubicacion) this.errorMostrarMsjParaderos.push("La ubicación no puede estar vacia.");
+                if (this.ubicacion == ''){ this.errorMostrarMsjParaderos.push("La ubicación no puede estar vacia."); this.error_ubicacion = 1;}
+                else {this.error_ubicacion = 0;}
+
+                //if (!this.latitud) this.errorMostrarMsjParaderos.push("La latitud no puede estar vacia.");
+                if (this.latitud == ''){ this.errorMostrarMsjParaderos.push("La latitud no puede estar vacia."); this.error_latitud = 1;}
+                else {this.error_latitud = 0;}
+
+                //if (!this.longitud) this.errorMostrarMsjParaderos.push("La longitud no puede estar vacia.");
+                if (this.longitud == ''){ this.errorMostrarMsjParaderos.push("La longitud no puede estar vacia."); this.error_longitud = 1;}
+                else {this.error_longitud = 0;}
 
                 if (this.errorMostrarMsjParaderos.length) this.errorParaderos = 1;
 
@@ -446,10 +450,13 @@
                 this.modal=0;
                 this.tituloModal='';
                 this.ubicacion='';
-                this.ruta='';
-                this.serie='';
+                this.id_rutas=0;
                 this.latitud='';
                 this.longitud='';
+                this.error_ubicacion = 0;
+                this.error_latitud = 0;
+                this.error_longitud = 0;
+                this.errorMostrarMsjParaderos =[];
             },
             abrirModal(modelo, accion, data = []){
                 switch(modelo){
@@ -461,8 +468,7 @@
                                 this.modal = 1;
                                 this.tituloModal = 'Registrar Paradero';
                                 this.ubicacion= '0';
-                                this.ruta= '0';
-                                this.serie= '';
+                                this.id_rutas=0;
                                 this.latitud= '';
                                 this.longitud= '';
                                 this.tipoAccion = 1;
@@ -476,17 +482,27 @@
                                 this.tipoAccion=2;
                                 this.paraderos_id=data['id'];
                                 this.ubicacion = data['ubicacion'];
-                                this.ruta = data['ruta'];
-                                this.serie = data['serie'];
+                                this.id_rutas = data['id_rutas'];
                                 this.latitud = data['latitud'];
                                 this.longitud = data['longitud'];
                                 break;
                             }
                         }
                     }
+                    this.selectRuta();
                 }
             }
         },
+
+        notificationError(title_e,text_e)
+            {
+                this.notificationClasses = 'vue-notification error';
+                this.$notify({
+                    group: 'foo',
+                    title: title_e,
+                    text: text_e
+                });
+            },
         mounted() {
             this.listarParaderos(1,this.buscar,this.criterio);
         }
@@ -510,6 +526,9 @@
     .text-error{
         color: red !important;
         font-weight: bold;
+    }
+    .invalid-input{
+    border: 1px solid #dc0e26;
     }
 
 </style>

@@ -9,7 +9,7 @@ use InvalidArgumentException;
 use Illuminate\Broadcasting\Broadcasters\LogBroadcaster;
 use Illuminate\Broadcasting\Broadcasters\NullBroadcaster;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
-use Illuminate\Broadcasting\Broadcasters\RedisBroadcaster;
+//use Illuminate\Broadcasting\Broadcasters\RedisBroadcaster;
 use Illuminate\Broadcasting\Broadcasters\PusherBroadcaster;
 use Illuminate\Contracts\Broadcasting\Factory as FactoryContract;
 
@@ -221,12 +221,12 @@ class BroadcastManager implements FactoryContract
      * @param  array  $config
      * @return \Illuminate\Contracts\Broadcasting\Broadcaster
      */
-    protected function createRedisDriver(array $config)
+    /*protected function createRedisDriver(array $config)
     {
         return new RedisBroadcaster(
             $this->app->make('redis'), $config['connection'] ?? null
         );
-    }
+    }*/
 
     /**
      * Create an instance of the driver.

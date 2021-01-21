@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Rutas;
+use App\Paraderos;
 use exception;
 
 
@@ -83,5 +84,13 @@ class RutasController extends Controller
     public function destroy($id)
     {
         $rutas = Rutas::where('id',$id)->delete();
+    }
+
+
+    
+    public function rut()
+    {
+        $rutas= Rutas::select('latitud_inicial','latitud_final','longitud_inicial','longitud_final')->get();
+        return [$rutas];
     }
 }

@@ -14,6 +14,7 @@ Vue.use(Vuetify);
 
 import * as VueGoogleMaps from 'vue2-google-maps';
 
+import * as axios from 'axios';
 
 
 Vue.use(VueGoogleMaps, 
@@ -37,9 +38,8 @@ Vue.component('paraderos', require('./components/Paraderos.vue'));
 Vue.component('rutas', require('./components/Rutas.vue'));
 Vue.component('tipos', require('./components/Tipos.vue'));
 Vue.component('horarios', require('./components/Horarios.vue'));
-
 Vue.component('info', require('./components/Informacion.vue'));
-Vue.component('ejemplo', require('./components/ejemplo.vue'));
+Vue.component('prueba', require('./components/prueba.vue'));
 
 const app = new Vue({
     el: '#app',
@@ -47,3 +47,5 @@ const app = new Vue({
         menu : 0
     }
 });
+
+

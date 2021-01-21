@@ -11,7 +11,7 @@
                 <div class="card">
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Lista de Horarios
-                        <button type="button" @click="abrirModal('horario','registrar')" class="btn btn-secondary">
+                        <button type="button" @click="abrirModal('horarios','registrar')" class="btn btn-secondary">
                             <i class="icon-plus"></i>&nbsp;Nuevo
                         </button>
                     </div>
@@ -33,16 +33,20 @@
                                 
                              <tr>
                                     <th>Opciones</th>
-                                    <th>Dias</th>
-                                    <th>Inicio</th>
-                                    <th>Fin</th>
+                                    <th>Lunes</th>
+                                    <th>Martes</th>
+                                    <th>Miercoles</th>
+                                    <th>Jueves</th>
+                                    <th>viernes</th>
+                                    <th>sabado</th>
+                                    <th>domingo</th>
                                     <th>Estado</th>
                                 </tr>
                             </thead>
                            <tbody>
                                 <tr v-for="horarios in arrayHorario" :key="horarios.id">
                                     <td>
-                                        <button type="button" @click="abrirModal('horario','actualizar',horarios)" class="btn btn-warning btn-sm">
+                                        <button type="button" @click="abrirModal('horarios','actualizar',horarios)" class="btn btn-warning btn-sm">
                                           <i class="fas fa-edit"></i>
                                         </button> &nbsp;
                                         <button type="button" class="btn btn-dark btn-sm" @click="eliminarHorario(horarios.id)"><i class="fa fa-trash-alt"></i></button>
@@ -58,9 +62,65 @@
                                             </button>
                                         </template>
                                     </td>
-                                    <td v-text="horarios.dias"></td>
-                                    <td v-text="horarios.inicio"></td>
-                                     <td v-text="horarios.fin"></td>
+                                    <td  >
+                                        <template>
+                                            <tr v-text="horarios.iniciol">
+                                            </tr>
+                                        
+                                            <tr v-text="horarios.finl">
+                                            </tr>
+                                        </template>
+                                    </td>
+                                    <td>
+                                        <template>
+                                            <tr v-text="horarios.iniciom">
+                                            </tr>
+                                        
+                                            <tr v-text="horarios.finm">
+                                            </tr>
+                                        </template>
+                                    </td>
+                                    <td>
+                                        <template>
+                                            <tr v-text="horarios.iniciomi">
+                                            </tr>
+                                            <tr v-text="horarios.finmi">
+                                            </tr>
+                                        </template>
+                                    </td>
+                                    <td>
+                                        <template>
+                                            <tr v-text="horarios.inicioj">
+                                            </tr>
+                                            <tr v-text="horarios.finj">
+                                            </tr>
+                                        </template>
+                                    </td>
+                                    <td>
+                                        <template>
+                                            <tr v-text="horarios.iniciov">
+                                            </tr>
+                                            <tr v-text="horarios.finv">
+                                            </tr>
+                                        </template>
+                                    </td>
+                                    <td>
+                                        <template>
+                                            <tr v-text="horarios.inicios">
+                                            </tr>
+                                            <tr v-text="horarios.fins">
+                                            </tr>
+                                        </template>
+                                    </td>
+                                    <td>
+                                        <template>
+                                            <tr v-text="horarios.iniciod">
+                                            </tr>
+                                            <tr v-text="horarios.iniciod">
+                                            </tr>
+                                        </template>
+                                    </td>
+                                    
                                     <td>
                                         <div v-if="horarios.condicion">
                                             <span class="badge badge-success">Activo</span>
@@ -94,47 +154,185 @@
             </div>
               
             <!--Inicio del modal agregar/actualizar-->
-            <div class="modal fade" tabindex="-1" :class="{'mostrar' : modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+            <div class="modal fade" tabindex="-1" :class="{'mostrar' : modal}" role="dialog" aria-labelledby="myModalLabel" style="overflow-y: scroll;"  aria-hidden="true">
                 <div class="modal-dialog modal-primary modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h4 class="modal-title" v-text="tituloModal"></h4>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
+                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close" data-dismiss="modal">
+                              <span aria-hidden="true">x</span>
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-                            <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Dias de servicio</label>
-                                    <div class="col-md-9">
-                                        <input type="text" v-model="dias" class="form-control" placeholder="Ingrese el numero de placa">
+                            <form action="" metdod="post" enctype="multipart/form-data" class="form-horizontal">
+
+                                
+                                   <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Lunes</label>
+                                    <div class="custom-control custom-checkbox mr-sm-2">                                       
+                                        <input type="checkbox" class="form-check-input " id="switch-lunes" v-model="lunes">
+                                         <template v-if="lunes">
+                                            <div class="form-check">
+                                            <label class="form-check-label" for="switch-lunes" value='activo'></label>
+                                            <div class="col-md-12">inicio
+                                                    <input type="time" v-model="iniciol" class="form-control" >
+                                                </div>
+                                                <div class="col-md-12">fin
+                                                    <input type="time" v-model="finl" class="form-control" >
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template v-else>
+                                            <label class="custom-control-label" for="switch-lunes"></label>
+                                        </template>
                                     </div>
-                                </div>
+                                    </div>
+
                                 <!--<div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Hora de inicio</label>
-                                    <div class="col-md-9">
+                                    <div class="col-md-6">
                                         <input type="text" v-model="inicio" class="form-control" placeholder="Ingrese el numero de placa">
                                     </div>
                                 </div>-->
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Hora de inicio</label>
-                                    <input type="radio" id="uno" value="Uno" v-model="inicio">
-                                    <label for="uno">Uno</label>
-                                </div>    
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Hora de finalización</label>
-                                    <div class="col-md-9">
-                                        <input type="time" v-model="fin" class="form-control" placeholder="Ingrese el nombre del conductor">
+                                   
+                                   <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Martes</label>
+                                    <div class="custom-control custom-checkbox mr-sm-2">                                       
+                                        <input type="checkbox" class="form-check-input " id="switch-martes" v-model="martes">
+                                         <template v-if="martes">
+                                            <div class="form-check">
+                                            <label class="form-check-label" for="switch-martes" value='activo'></label>
+                                            <div class="col-md-12">inicio
+                                                    <input type="time" v-model="iniciom" class="form-control" >
+                                                </div>
+                                                <div class="col-md-12">fin
+                                                    <input type="time" v-model="finm" class="form-control" >
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template v-else>
+                                            <label class="custom-control-label" for="switch-martes"></label>
+                                        </template>
                                     </div>
-                                </div>
-                                <div v-show="errorHorario" class="form-group row div-error">
+                                    </div>
+
+                                   <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Miercoles</label>
+                                    <div class="custom-control custom-checkbox mr-sm-2">                                       
+                                        <input type="checkbox" class="form-check-input " id="switch-miercoles" v-model="miercoles">
+                                         <template v-if="miercoles">
+                                            <div class="form-check">
+                                            <label class="form-check-label" for="switch-miercoles" value='activo'></label>
+                                            <div class="col-md-12">inicio
+                                                    <input type="time" v-model="iniciomi" class="form-control" >
+                                                </div>
+                                                <div class="col-md-12">fin
+                                                    <input type="time" v-model="finmi" class="form-control" >
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template v-else>
+                                            <label class="custom-control-label" for="switch-miercoles"></label>
+                                        </template>
+                                    </div>
+                                    </div>
+
+                                
+                                   <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Jueves</label>
+                                    <div class="custom-control custom-checkbox mr-sm-2">                                       
+                                        <input type="checkbox" class="form-check-input " id="switch-jueves" v-model="jueves">
+                                         <template v-if="jueves">
+                                            <div class="form-check">
+                                            <label class="form-check-label" for="switch-jueves" value='activo'></label>
+                                            <div class="col-md-12">inicio
+                                                    <input type="time" v-model="inicioj" class="form-control" >
+                                                </div>
+                                                <div class="col-md-12">fin
+                                                    <input type="time" v-model="finj" class="form-control" >
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template v-else>
+                                            <label class="custom-control-label" for="switch-jueves"></label>
+                                        </template>
+                                    </div>
+                                    </div>
+
+                                    
+                                   <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Viernes</label>
+                                    <div class="custom-control custom-checkbox mr-sm-2">                                       
+                                        <input type="checkbox" class="form-check-input " id="switch-viernes" v-model="viernes">
+                                         <template v-if="viernes">
+                                            <div class="form-check">
+                                            <label class="form-check-label" for="switch-viernes" value='activo'></label>
+                                            <div class="col-md-12">inicio
+                                                    <input type="time" v-model="iniciov" class="form-control" >
+                                                </div>
+                                                <div class="col-md-12">fin
+                                                    <input type="time" v-model="finv" class="form-control" >
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template v-else>
+                                            <label class="custom-control-label" for="switch-viernes"></label>
+                                        </template>
+                                    </div>
+                                    </div>
+
+                                    
+                                   <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Sabado</label>
+                                    <div class="custom-control custom-checkbox mr-sm-2">                                       
+                                        <input type="checkbox" class="form-check-input " id="switch-sabado" v-model="sabado">
+                                         <template v-if="sabado">
+                                            <div class="form-check">
+                                            <label class="form-check-label" for="switch-sabado" value='activo'></label>
+                                            <div class="col-md-12">inicio
+                                                    <input type="time" v-model="inicios" class="form-control" >
+                                                </div>
+                                                <div class="col-md-12">fin
+                                                    <input type="time" v-model="fins" class="form-control" >
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template v-else>
+                                            <label class="custom-control-label" for="switch-sabado"></label>
+                                        </template>
+                                    </div>
+                                    </div>
+
+                                    
+                                   <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Domingo</label>
+                                    <div class="custom-control custom-checkbox mr-sm-2">                                       
+                                        <input type="checkbox" class="form-check-input " id="switch-domingo" v-model="domingo">
+                                         <template v-if="domingo">
+                                            <div class="form-check">
+                                            <label class="form-check-label" for="switch-domingo" value='activo'></label>
+                                            <div class="col-md-12">inicio
+                                                    <input type="time" v-model="iniciod" class="form-control" >
+                                                </div>
+                                                <div class="col-md-12">fin
+                                                    <input type="time" v-model="find" class="form-control" >
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template v-else>
+                                            <label class="custom-control-label" for="switch-domingo"></label>
+                                        </template>
+                                    </div>
+                                    </div>
+
+                               
+                                <!--<div v-show="errorHorario" class="form-group row div-error">
                                     <div class="text-center text-error">
                                         <div v-for="error in errorMostrarMsjHorario" :key="error" v-text="error">
 
                                         </div>
                                     </div>
-                                </div>
+                                </div>-->
 
                             </form>
                         </div>
@@ -142,6 +340,8 @@
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                             <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarHorario()">Guardar</button>
                             <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarHorario()">Actualizar</button>
+                            
+
                         </div>
                     </div>
                     <!-- /.modal-content -->
@@ -159,6 +359,27 @@
         data (){
             return {
                 id: 0,
+                lunes:'',
+                martes:'',
+                miercoles:'',
+                jueves:'',
+                viernes:'',
+                sabado: '',
+                domingo: '',
+                iniciol:'',
+                finl:'',
+                iniciom:'',
+                finm:'',
+                iniciomi:'',
+                finmi:'',
+                inicioj:'',
+                finj:'',
+                iniciov:'',
+                finv:'',
+                inicios:'',
+                fins:'',
+                iniciod:'',
+                find:'',
                 dias : '',
                 inicio: '',
                 fin: '',
@@ -170,10 +391,6 @@
                 errorHorario : 0,
                 errorMostrarMsjHorario : [],
                 tab: null,
-        items: [
-          'web', 'shopping', 'videos', 'images', 'news',
-        ],
-        text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
                 pagination : {
                     'total' : 0,
                     'current_page' : 0,
@@ -183,7 +400,7 @@
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'placa',
+                criterio : 'lunes',
                 buscar : ''
             }
         },
@@ -237,38 +454,74 @@
                 me.listarHorario(page,buscar,criterio);
             },
             registrarHorario(){
-                if (this.validarHorario()){
+                /*if (this.validarHorario()){
                     return;
-                }
+                }*/
                 
                 let me = this;
 
                 axios.post('/horario/registrar',{
-                    'dias': this.dias,
-                    'inicio': this.inicio,
-                    'fin': this.fin,
+                    'lunes': this.lunes,
+                    'martes': this.martes,
+                    'miercoles': this.miercoles,
+                    'jueves': this.jueves,
+                    'viernes': this.viernes,
+                    'sabado': this.sabado,
+                    'domingo': this.domingo,
+                    'iniciol': this.iniciol,
+                    'finl': this.finl,
+                    'iniciom': this.iniciom,
+                    'finm': this.finm,
+                    'iniciomi': this.iniciomi,
+                    'finmi': this.finmi,
+                    'inicioj': this.inicioj,
+                    'finj': this.finj,
+                    'iniciov': this.iniciov,
+                    'finv': this.finv,
+                    'inicios': this.inicios,
+                    'fins': this.fins,
+                    'iniciod': this.iniciod,
+                    'find': this.find,
                 }).then(function (response) {
                     me.cerrarModal();
-                    me.listarHorario(1,'','inicio');
+                    me.listarHorario(1,'','lunes');
                 }).catch(function (error) {
                     console.log(error);
                 });
             },
             actualizarHorario(){
-               if (this.validarHorario()){
+              /* if (this.validarHorario()){
                     return;
                 }
-                
+                */
                 let me = this;
 
                 axios.put('/horario/actualizar',{
-                    'dias': this.dias,
-                    'inicio': this.inicio,
-                    'fin': this.fin,
+                      'lunes': this.lunes,
+                    'martes': this.martes,
+                    'miercoles': this.miercoles,
+                    'jueves': this.jueves,
+                    'viernes': this.viernes,
+                    'sabado': this.sabado,
+                    'domingo': this.domingo,
+                    'iniciol': this.iniciol,
+                    'finl': this.finl,
+                    'iniciom': this.iniciom,
+                    'finm': this.finm,
+                    'iniciomi': this.iniciomi,
+                    'finmi': this.finmi,
+                    'inicioj': this.inicioj,
+                    'finj': this.finj,
+                    'iniciov': this.iniciov,
+                    'finv': this.finv,
+                    'inicios': this.inicios,
+                    'fins': this.fins,
+                    'iniciod': this.iniciod,
+                    'find': this.find,
                     'id': this.id
                 }).then(function (response) {
                     me.cerrarModal();
-                    me.listarHorario(1,'','inicio');
+                    me.listarHorario(1,'','lunes');
                 }).catch(function (error) {
                     console.log(error);
                 }); 
@@ -293,10 +546,10 @@
                     axios.put('/horario/desactivar',{
                         'id': id
                     }).then(function (response) {
-                        me.listarHorario(1,'','inicio');
+                        me.listarHorario(1,'','lunes');
                         swal(
                         'Desactivado!',
-                        'El vehiculo ha sido desactivado con éxito.',
+                        'El Horario ha sido desactivado con éxito.',
                         'success'
                         )
                     }).catch(function (error) {
@@ -314,7 +567,7 @@
             },
             activarHorario(id){
                swal({
-                title: 'Esta seguro de activar este vehiculo?',
+                title: 'Esta seguro de activar este horario?',
                 type: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -332,10 +585,10 @@
                     axios.put('/horario/activar',{
                         'id': id
                     }).then(function (response) {
-                        me.listarHorario(1,'','inicio');
+                        me.listarHorario(1,'','lunes');
                         swal(
                         'Activado!',
-                        'El vehiculo ha sido activado con éxito.',
+                        'El horario ha sido activado con éxito.',
                         'success'
                         )
                     }).catch(function (error) {
@@ -355,7 +608,7 @@
             eliminarHorario(id)
             {
                 swal({
-					title: '¿Está seguro de eliminar este vehiculo?',
+					title: '¿Está seguro de eliminar este horario?',
 					text: "",
 					type: 'warning',
 		        showCancelButton: true,
@@ -379,7 +632,7 @@
                             me.listarHorario(1,'');
                             swal(
                         'Eliminado!',
-                        'El vehiculo ha sido eliminado con éxito.',
+                        'El horario ha sido eliminado con éxito.',
                         'success'
                         )
                         }).catch(function (error) 
@@ -393,7 +646,7 @@
 				});
             },
 
-            validarHorario(){
+           /* validarHorario(){
                 this.errorHorario=0;
                 this.errorMostrarMsjHorario =[];
 
@@ -409,29 +662,64 @@
                 if (this.errorMostrarMsjHorario.length) this.errorHorario = 1;
 
                 return this.errorHorario;
-            },
+            },*/
             cerrarModal(){
                 this.modal=0;
                 this.tituloModal='';
-                this.dias='';
-                this.inicio='';
-                this.fin= '';
-                this.errorHorario=0;
-                this.errorMostrarMsjHorario = [];
+                this.lunes='';
+                this.martes='';
+                this.miercoles= '';
+                /*this.errorHorario=0;
+                this.errorMostrarMsjHorario = [];*/
+                this.jueves='';
+                this.viernes='';
+                this.sabado='';
+                this.domingo='';
+                this.iniciol='';
+                this.finl='';
+                this.iniciom='';
+                this.finm='';
+                this.iniciomi='';
+                this.finmi='';
+                this.inicioj='';
+                this.finj='';
+                this.iniciov='';
+                this.finv='';
+                this.inicios='';
+                this.fins='';
+                this.iniciod='';
+                this.find='';
             },
             abrirModal(modelo, accion, data = []){
                 switch(modelo){
-                    case "horario":
+                    case "horarios":
                     {
                         switch(accion){
                             case 'registrar':
                             {
                                 this.modal = 1;
-                                this.tituloModal = 'Registrar Vehiculo';
-                                this.dias='';
-                                this.inicio='';
-                                this.fin= '';
-                                this.tipoAccion = 1;
+                                this.tituloModal = 'Registrar Horario';
+                                 this.tipoAccion = 1;
+                                this.lunes='';
+                                this.martes='';
+                                this.miercoles= '';              
+                                this.jueves='';
+                                this.viernes='';
+                                this.sabado='';
+                                this.domingo='';
+                                this.iniciol='';
+                                this.finl='';
+                                this.iniciom='';
+                                this.finm='';
+                                this.iniciomi='';
+                                this.finmi='';
+                                this.inicioj='';
+                                this.finj='';
+                                this.iniciov='';
+                                this.finv='';
+                                this.inicios='';
+                                this.fins='';
+                                this.iniciod='';
                                 break;
                             }
                             case 'actualizar':
@@ -441,9 +729,28 @@
                                 this.tituloModal='Actualizar Horario';
                                 this.tipoAccion=2;
                                 this.id=data['id'];
-                                this.dias = data['dias'];
-                                this.inicio= data['inicio'];
-                                this.fin= data['fin'];
+                                this.lunes = data['lunes'];
+                                this.martes= data['martes'];
+                                this.miercoles= data['miercoles'];
+                                this.jueves= data['jueves'];
+                                this.viernes= data['viernes'];
+                                this.sabado= data['sabado'];
+                                this.domingo= data['domingo'];
+                                this.iniciol= data['iniciol'];
+                                this.finl= data['miercoles'];
+                                this.iniciom= data['iniciom'];
+                                this.finm= data['finm'];
+                                this.iniciomi= data['iniciomi'];
+                                this.finmi= data['miercoles'];
+                                this.inicioj= data['inicioj'];
+                                this.finj= data['finj'];
+                                this.iniciov= data['iniciov'];
+                                this.finv= data['finv'];
+                                this.inicios= data['inicios'];
+                                this.fins= data['fins'];
+                                this.iniciod= data['iniciod'];
+                                this.find= data['find'];
+
                                 break;
                             }
                         }

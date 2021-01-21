@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 21);
+/******/ 	return __webpack_require__(__webpack_require__.s = 22);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -573,13 +573,13 @@ exports.default = function (options) {
 
 exports.mappedPropsToVueProps = mappedPropsToVueProps;
 
-var _bindEvents = __webpack_require__(9);
+var _bindEvents = __webpack_require__(8);
 
 var _bindEvents2 = _interopRequireDefault(_bindEvents);
 
-var _bindProps = __webpack_require__(6);
+var _bindProps = __webpack_require__(5);
 
-var _mapElementMixin = __webpack_require__(18);
+var _mapElementMixin = __webpack_require__(19);
 
 var _mapElementMixin2 = _interopRequireDefault(_mapElementMixin);
 
@@ -978,33 +978,6 @@ function applyToTag (styleElement, obj) {
 
 /***/ }),
 /* 5 */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
-/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1016,7 +989,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.getPropsValues = getPropsValues;
 exports.bindProps = bindProps;
 
-var _WatchPrimitiveProperties = __webpack_require__(10);
+var _WatchPrimitiveProperties = __webpack_require__(9);
 
 var _WatchPrimitiveProperties2 = _interopRequireDefault(_WatchPrimitiveProperties);
 
@@ -1099,6 +1072,33 @@ function bindProps(vueInst, googleMapsInst, props) {
 }
 
 /***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
 /* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1122,10 +1122,10 @@ function getDefaultAdapter() {
   var adapter;
   if (typeof XMLHttpRequest !== 'undefined') {
     // For browsers use XHR adapter
-    adapter = __webpack_require__(13);
+    adapter = __webpack_require__(14);
   } else if (typeof process !== 'undefined') {
     // For node use HTTP adapter
-    adapter = __webpack_require__(13);
+    adapter = __webpack_require__(14);
   }
   return adapter;
 }
@@ -1196,10 +1196,210 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = defaults;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13)))
 
 /***/ }),
 /* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+exports.default = function (vueInst, googleMapsInst, events) {
+  var _loop = function (eventName) {
+    if (vueInst.$gmapOptions.autobindAllEvents || vueInst.$listeners[eventName]) {
+      googleMapsInst.addListener(eventName, function (ev) {
+        vueInst.$emit(eventName, ev);
+      });
+    }
+  };
+
+  var _iteratorNormalCompletion = true;
+  var _didIteratorError = false;
+  var _iteratorError = undefined;
+
+  try {
+    for (var _iterator = events[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+      var eventName = _step.value;
+
+      _loop(eventName);
+    }
+  } catch (err) {
+    _didIteratorError = true;
+    _iteratorError = err;
+  } finally {
+    try {
+      if (!_iteratorNormalCompletion && _iterator.return) {
+        _iterator.return();
+      }
+    } finally {
+      if (_didIteratorError) {
+        throw _iteratorError;
+      }
+    }
+  }
+};
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = WatchPrimitiveProperties;
+/**
+ * Watch the individual properties of a PoD object, instead of the object
+ * per se. This is different from a deep watch where both the reference
+ * and the individual values are watched.
+ *
+ * In effect, it throttles the multiple $watch to execute at most once per tick.
+ */
+function WatchPrimitiveProperties(vueInst, propertiesToTrack, handler) {
+  var immediate = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+
+  var isHandled = false;
+
+  function requestHandle() {
+    if (!isHandled) {
+      isHandled = true;
+      vueInst.$nextTick(function () {
+        isHandled = false;
+        handler();
+      });
+    }
+  }
+
+  var _iteratorNormalCompletion = true;
+  var _didIteratorError = false;
+  var _iteratorError = undefined;
+
+  try {
+    for (var _iterator = propertiesToTrack[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+      var prop = _step.value;
+
+      vueInst.$watch(prop, requestHandle, { immediate: immediate });
+    }
+  } catch (err) {
+    _didIteratorError = true;
+    _iteratorError = err;
+  } finally {
+    try {
+      if (!_iteratorNormalCompletion && _iterator.return) {
+        _iterator.return();
+      }
+    } finally {
+      if (_didIteratorError) {
+        throw _iteratorError;
+      }
+    }
+  }
+}
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+/*
+Mixin for objects that are mounted by Google Maps
+Javascript API.
+
+These are objects that are sensitive to element resize
+operations so it exposes a property which accepts a bus
+
+*/
+
+exports.default = {
+  props: ['resizeBus'],
+
+  data: function data() {
+    return {
+      _actualResizeBus: null
+    };
+  },
+  created: function created() {
+    if (typeof this.resizeBus === 'undefined') {
+      this.$data._actualResizeBus = this.$gmapDefaultResizeBus;
+    } else {
+      this.$data._actualResizeBus = this.resizeBus;
+    }
+  },
+
+
+  methods: {
+    _resizeCallback: function _resizeCallback() {
+      this.resize();
+    },
+    _delayedResizeCallback: function _delayedResizeCallback() {
+      var _this = this;
+
+      this.$nextTick(function () {
+        return _this._resizeCallback();
+      });
+    }
+  },
+
+  watch: {
+    resizeBus: function resizeBus(newVal) {
+      // eslint-disable-line no-unused-vars
+      this.$data._actualResizeBus = newVal;
+    },
+    '$data._actualResizeBus': function $data_actualResizeBus(newVal, oldVal) {
+      if (oldVal) {
+        oldVal.$off('resize', this._delayedResizeCallback);
+      }
+      if (newVal) {
+        newVal.$on('resize', this._delayedResizeCallback);
+      }
+    }
+  },
+
+  destroyed: function destroyed() {
+    if (this.$data._actualResizeBus) {
+      this.$data._actualResizeBus.$off('resize', this._delayedResizeCallback);
+    }
+  }
+};
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(28);
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = function bind(fn, thisArg) {
+  return function wrap() {
+    var args = new Array(arguments.length);
+    for (var i = 0; i < args.length; i++) {
+      args[i] = arguments[i];
+    }
+    return fn.apply(thisArg, args);
+  };
+};
+
+
+/***/ }),
+/* 13 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -1389,201 +1589,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-exports.default = function (vueInst, googleMapsInst, events) {
-  var _loop = function (eventName) {
-    if (vueInst.$gmapOptions.autobindAllEvents || vueInst.$listeners[eventName]) {
-      googleMapsInst.addListener(eventName, function (ev) {
-        vueInst.$emit(eventName, ev);
-      });
-    }
-  };
-
-  var _iteratorNormalCompletion = true;
-  var _didIteratorError = false;
-  var _iteratorError = undefined;
-
-  try {
-    for (var _iterator = events[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-      var eventName = _step.value;
-
-      _loop(eventName);
-    }
-  } catch (err) {
-    _didIteratorError = true;
-    _iteratorError = err;
-  } finally {
-    try {
-      if (!_iteratorNormalCompletion && _iterator.return) {
-        _iterator.return();
-      }
-    } finally {
-      if (_didIteratorError) {
-        throw _iteratorError;
-      }
-    }
-  }
-};
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = WatchPrimitiveProperties;
-/**
- * Watch the individual properties of a PoD object, instead of the object
- * per se. This is different from a deep watch where both the reference
- * and the individual values are watched.
- *
- * In effect, it throttles the multiple $watch to execute at most once per tick.
- */
-function WatchPrimitiveProperties(vueInst, propertiesToTrack, handler) {
-  var immediate = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-
-  var isHandled = false;
-
-  function requestHandle() {
-    if (!isHandled) {
-      isHandled = true;
-      vueInst.$nextTick(function () {
-        isHandled = false;
-        handler();
-      });
-    }
-  }
-
-  var _iteratorNormalCompletion = true;
-  var _didIteratorError = false;
-  var _iteratorError = undefined;
-
-  try {
-    for (var _iterator = propertiesToTrack[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-      var prop = _step.value;
-
-      vueInst.$watch(prop, requestHandle, { immediate: immediate });
-    }
-  } catch (err) {
-    _didIteratorError = true;
-    _iteratorError = err;
-  } finally {
-    try {
-      if (!_iteratorNormalCompletion && _iterator.return) {
-        _iterator.return();
-      }
-    } finally {
-      if (_didIteratorError) {
-        throw _iteratorError;
-      }
-    }
-  }
-}
-
-/***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-/*
-Mixin for objects that are mounted by Google Maps
-Javascript API.
-
-These are objects that are sensitive to element resize
-operations so it exposes a property which accepts a bus
-
-*/
-
-exports.default = {
-  props: ['resizeBus'],
-
-  data: function data() {
-    return {
-      _actualResizeBus: null
-    };
-  },
-  created: function created() {
-    if (typeof this.resizeBus === 'undefined') {
-      this.$data._actualResizeBus = this.$gmapDefaultResizeBus;
-    } else {
-      this.$data._actualResizeBus = this.resizeBus;
-    }
-  },
-
-
-  methods: {
-    _resizeCallback: function _resizeCallback() {
-      this.resize();
-    },
-    _delayedResizeCallback: function _delayedResizeCallback() {
-      var _this = this;
-
-      this.$nextTick(function () {
-        return _this._resizeCallback();
-      });
-    }
-  },
-
-  watch: {
-    resizeBus: function resizeBus(newVal) {
-      // eslint-disable-line no-unused-vars
-      this.$data._actualResizeBus = newVal;
-    },
-    '$data._actualResizeBus': function $data_actualResizeBus(newVal, oldVal) {
-      if (oldVal) {
-        oldVal.$off('resize', this._delayedResizeCallback);
-      }
-      if (newVal) {
-        newVal.$on('resize', this._delayedResizeCallback);
-      }
-    }
-  },
-
-  destroyed: function destroyed() {
-    if (this.$data._actualResizeBus) {
-      this.$data._actualResizeBus.$off('resize', this._delayedResizeCallback);
-    }
-  }
-};
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-module.exports = function bind(fn, thisArg) {
-  return function wrap() {
-    var args = new Array(arguments.length);
-    for (var i = 0; i < args.length; i++) {
-      args[i] = arguments[i];
-    }
-    return fn.apply(thisArg, args);
-  };
-};
-
-
-/***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1594,7 +1600,7 @@ var settle = __webpack_require__(32);
 var buildURL = __webpack_require__(34);
 var parseHeaders = __webpack_require__(35);
 var isURLSameOrigin = __webpack_require__(36);
-var createError = __webpack_require__(14);
+var createError = __webpack_require__(15);
 var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(37);
 
 module.exports = function xhrAdapter(config) {
@@ -1770,7 +1776,7 @@ module.exports = function xhrAdapter(config) {
 
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1795,7 +1801,7 @@ module.exports = function createError(message, config, code, request, response) 
 
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1807,7 +1813,7 @@ module.exports = function isCancel(value) {
 
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1833,7 +1839,7 @@ module.exports = Cancel;
 
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12647,10 +12653,10 @@ Vue$3.compile = compileToFunctions;
 
 module.exports = Vue$3;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(46).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6), __webpack_require__(46).setImmediate))
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12694,7 +12700,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12756,7 +12762,7 @@ function TwoWayBindingWrapper(fn) {
 }
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12796,14 +12802,14 @@ exports.default = function (input) {
 };
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(22);
+module.exports = __webpack_require__(23);
 
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -12812,6 +12818,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuetify___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vuetify__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue2_google_maps__ = __webpack_require__(49);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue2_google_maps___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vue2_google_maps__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_axios__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_axios__);
 
 /**
  * First we will load all of this project's JavaScript dependencies which
@@ -12819,12 +12827,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-__webpack_require__(23);
+__webpack_require__(24);
 
-window.Vue = __webpack_require__(17);
+window.Vue = __webpack_require__(18);
 
 
 Vue.use(__WEBPACK_IMPORTED_MODULE_0_vuetify___default.a);
+
+
 
 
 
@@ -12846,9 +12856,8 @@ Vue.component('paraderos', __webpack_require__(86));
 Vue.component('rutas', __webpack_require__(91));
 Vue.component('tipos', __webpack_require__(96));
 Vue.component('horarios', __webpack_require__(101));
-
 Vue.component('info', __webpack_require__(106));
-Vue.component('ejemplo', __webpack_require__(109));
+Vue.component('prueba', __webpack_require__(109));
 
 var app = new Vue({
     el: '#app',
@@ -12858,11 +12867,11 @@ var app = new Vue({
 });
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-window._ = __webpack_require__(24);
+window._ = __webpack_require__(25);
 
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -12873,7 +12882,7 @@ window._ = __webpack_require__(24);
 try {
   //window.$ = window.jQuery = require('jquery');
 
-  __webpack_require__(26);
+  __webpack_require__(27);
 } catch (e) {}
 
 /**
@@ -12882,7 +12891,7 @@ try {
  * CSRF token as a header based on the value of the "XSRF" token cookie.
  */
 
-window.axios = __webpack_require__(27);
+window.axios = __webpack_require__(11);
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
@@ -12918,7 +12927,7 @@ if (token) {
 // });
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, module) {var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -30007,10 +30016,10 @@ if (token) {
   }
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(25)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6), __webpack_require__(26)(module)))
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -30038,7 +30047,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports) {
 
 /*!
@@ -32421,12 +32430,6 @@ if (typeof jQuery === 'undefined') {
 
 
 /***/ }),
-/* 27 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(28);
-
-/***/ }),
 /* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -32469,9 +32472,9 @@ axios.create = function create(instanceConfig) {
 };
 
 // Expose Cancel & CancelToken
-axios.Cancel = __webpack_require__(16);
+axios.Cancel = __webpack_require__(17);
 axios.CancelToken = __webpack_require__(44);
-axios.isCancel = __webpack_require__(15);
+axios.isCancel = __webpack_require__(16);
 
 // Expose all/spread
 axios.all = function all(promises) {
@@ -32624,7 +32627,7 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 "use strict";
 
 
-var createError = __webpack_require__(14);
+var createError = __webpack_require__(15);
 
 /**
  * Resolve or reject a Promise based on response status.
@@ -33059,7 +33062,7 @@ module.exports = InterceptorManager;
 
 var utils = __webpack_require__(0);
 var transformData = __webpack_require__(41);
-var isCancel = __webpack_require__(15);
+var isCancel = __webpack_require__(16);
 var defaults = __webpack_require__(7);
 var isAbsoluteURL = __webpack_require__(42);
 var combineURLs = __webpack_require__(43);
@@ -33219,7 +33222,7 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 "use strict";
 
 
-var Cancel = __webpack_require__(16);
+var Cancel = __webpack_require__(17);
 
 /**
  * A `CancelToken` is an object that can be used to request cancellation of an operation.
@@ -33375,7 +33378,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
                          (typeof global !== "undefined" && global.clearImmediate) ||
                          (this && this.clearImmediate);
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 
 /***/ }),
 /* 47 */
@@ -33568,7 +33571,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(8)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6), __webpack_require__(13)))
 
 /***/ }),
 /* 48 */
@@ -33576,7 +33579,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(true)
-		module.exports = factory(__webpack_require__(17));
+		module.exports = factory(__webpack_require__(18));
 	else if(typeof define === 'function' && define.amd)
 		define(["vue"], factory);
 	else if(typeof exports === 'object')
@@ -77645,7 +77648,7 @@ var _autocomplete = __webpack_require__(77);
 
 var _autocomplete2 = _interopRequireDefault(_autocomplete);
 
-var _mapElementMixin = __webpack_require__(18);
+var _mapElementMixin = __webpack_require__(19);
 
 var _mapElementMixin2 = _interopRequireDefault(_mapElementMixin);
 
@@ -77653,7 +77656,7 @@ var _mapElementFactory = __webpack_require__(2);
 
 var _mapElementFactory2 = _interopRequireDefault(_mapElementFactory);
 
-var _mountableMixin = __webpack_require__(11);
+var _mountableMixin = __webpack_require__(10);
 
 var _mountableMixin2 = _interopRequireDefault(_mountableMixin);
 
@@ -78718,21 +78721,21 @@ Object.defineProperty(exports, "__esModule", {
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _bindEvents = __webpack_require__(9);
+var _bindEvents = __webpack_require__(8);
 
 var _bindEvents2 = _interopRequireDefault(_bindEvents);
 
-var _bindProps = __webpack_require__(6);
+var _bindProps = __webpack_require__(5);
 
-var _mountableMixin = __webpack_require__(11);
+var _mountableMixin = __webpack_require__(10);
 
 var _mountableMixin2 = _interopRequireDefault(_mountableMixin);
 
-var _TwoWayBindingWrapper = __webpack_require__(19);
+var _TwoWayBindingWrapper = __webpack_require__(20);
 
 var _TwoWayBindingWrapper2 = _interopRequireDefault(_TwoWayBindingWrapper);
 
-var _WatchPrimitiveProperties = __webpack_require__(10);
+var _WatchPrimitiveProperties = __webpack_require__(9);
 
 var _WatchPrimitiveProperties2 = _interopRequireDefault(_WatchPrimitiveProperties);
 
@@ -79049,21 +79052,21 @@ Object.defineProperty(exports, "__esModule", {
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _bindEvents = __webpack_require__(9);
+var _bindEvents = __webpack_require__(8);
 
 var _bindEvents2 = _interopRequireDefault(_bindEvents);
 
-var _bindProps = __webpack_require__(6);
+var _bindProps = __webpack_require__(5);
 
-var _mountableMixin = __webpack_require__(11);
+var _mountableMixin = __webpack_require__(10);
 
 var _mountableMixin2 = _interopRequireDefault(_mountableMixin);
 
-var _TwoWayBindingWrapper = __webpack_require__(19);
+var _TwoWayBindingWrapper = __webpack_require__(20);
 
 var _TwoWayBindingWrapper2 = _interopRequireDefault(_TwoWayBindingWrapper);
 
-var _WatchPrimitiveProperties = __webpack_require__(10);
+var _WatchPrimitiveProperties = __webpack_require__(9);
 
 var _WatchPrimitiveProperties2 = _interopRequireDefault(_WatchPrimitiveProperties);
 
@@ -79293,9 +79296,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _bindProps = __webpack_require__(6);
+var _bindProps = __webpack_require__(5);
 
-var _simulateArrowDown = __webpack_require__(20);
+var _simulateArrowDown = __webpack_require__(21);
 
 var _simulateArrowDown2 = _interopRequireDefault(_simulateArrowDown);
 
@@ -79501,9 +79504,9 @@ Object.defineProperty(exports, "__esModule", {
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _bindProps = __webpack_require__(6);
+var _bindProps = __webpack_require__(5);
 
-var _simulateArrowDown = __webpack_require__(20);
+var _simulateArrowDown = __webpack_require__(21);
 
 var _simulateArrowDown2 = _interopRequireDefault(_simulateArrowDown);
 
@@ -80983,7 +80986,7 @@ exports = module.exports = __webpack_require__(3)(false);
 
 
 // module
-exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: absolute !important;\n    background-color: #3c29297a !important;\n}\n.div-error{\n    display: flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n\n", ""]);
+exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: absolute !important;\n    background-color: #3c29297a !important;\n}\n.div-error{\n    display: flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n.invalid-input{\nborder: 1px solid #dc0e26;\n}\n\n", ""]);
 
 // exports
 
@@ -81166,37 +81169,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
             paraderos_id: 0,
+            id_rutas: 0,
             ubicacion: '',
-            ruta: '',
-            serie: '',
             latitud: '',
             longitud: '',
             arrayParaderos: [],
+            arrayRutas: [],
             modal: 0,
             tituloModal: '',
             tipoAccion: 0,
@@ -81212,7 +81195,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             },
             offset: 3,
             criterio: 'ubicacion',
-            buscar: ''
+            buscar: '',
+            notificationClasses: null,
+            error_ubicacion: 0,
+            error_ruta: 0,
+            error_latitud: 0,
+            error_longitud: 0
         };
     },
 
@@ -81263,6 +81251,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             //Envia la petición para visualizar la data de esa página
             me.listarParaderos(page, buscar, criterio);
         },
+        selectRuta: function selectRuta() {
+            var me = this;
+            var url = '/paraderos/selectRuta';
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayRutas = respuesta.rutas;
+            }).catch(function (error) {
+                // handle error
+                console.log(error);
+            });
+        },
         registrarParaderos: function registrarParaderos() {
             if (this.validarParaderos()) {
                 return;
@@ -81272,13 +81271,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             axios.post('/paraderos/registrar', {
                 'ubicacion': this.ubicacion,
-                'ruta': this.ruta,
-                'serie': this.serie,
+                'id_rutas': this.id_rutas,
                 'latitud': this.latitud,
                 'longitud': this.longitud
             }).then(function (response) {
                 me.cerrarModal();
                 me.listarParaderos(1, '', 'ubicacion');
+                swal("Datos registrados", "¡Tu registro se realizo correctamente!");
             }).catch(function (error) {
                 console.log(error);
             });
@@ -81292,14 +81291,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             axios.put('/paraderos/actualizar', {
                 'ubicacion': this.ubicacion,
-                'ruta': this.ruta,
-                'serie': this.serie,
+                'id_rutas': this.id_rutas,
                 'latitud': this.latitud,
                 'longitud': this.longitud,
                 'id': this.paraderos_id
             }).then(function (response) {
                 me.cerrarModal();
                 me.listarParaderos(1, '', 'ubicacion');
+                swal("Datos actualizados", "¡Tu registros se han actualizado correctamente!");
             }).catch(function (error) {
                 console.log(error);
             });
@@ -81394,7 +81393,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                         me.listarParaderos(1, '');
                         swal('Eliminado!', 'El Paradero ha sido eliminada con éxito.', 'success');
                     }).catch(function (error) {
-                        console.log(error);
+                        me.listarParaderos(1, '');
+                        swal("¡No se puede eliminar!", "Este paradero esta relacionada a un vehiculo", "info");
                     });
                 } else {
                     swal.close();
@@ -81405,11 +81405,26 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.errorParaderos = 0;
             this.errorMostrarMsjParaderos = [];
 
-            if (!this.ubicacion) this.errorMostrarMsjParaderos.push("La ubicación no puede estar vacia.");
-            if (!this.ruta) this.errorMostrarMsjParaderos.push("La ruta no puede estar vacia.");
-            if (!this.serie) this.errorMostrarMsjParaderos.push("La serie no puede estar vacia.");
-            if (!this.latitud) this.errorMostrarMsjParaderos.push("La latitud no puede estar vacia.");
-            if (!this.longitud) this.errorMostrarMsjParaderos.push("La longitud no puede estar vacia.");
+            //if (!this.ubicacion) this.errorMostrarMsjParaderos.push("La ubicación no puede estar vacia.");
+            if (this.ubicacion == '') {
+                this.errorMostrarMsjParaderos.push("La ubicación no puede estar vacia.");this.error_ubicacion = 1;
+            } else {
+                this.error_ubicacion = 0;
+            }
+
+            //if (!this.latitud) this.errorMostrarMsjParaderos.push("La latitud no puede estar vacia.");
+            if (this.latitud == '') {
+                this.errorMostrarMsjParaderos.push("La latitud no puede estar vacia.");this.error_latitud = 1;
+            } else {
+                this.error_latitud = 0;
+            }
+
+            //if (!this.longitud) this.errorMostrarMsjParaderos.push("La longitud no puede estar vacia.");
+            if (this.longitud == '') {
+                this.errorMostrarMsjParaderos.push("La longitud no puede estar vacia.");this.error_longitud = 1;
+            } else {
+                this.error_longitud = 0;
+            }
 
             if (this.errorMostrarMsjParaderos.length) this.errorParaderos = 1;
 
@@ -81419,10 +81434,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.modal = 0;
             this.tituloModal = '';
             this.ubicacion = '';
-            this.ruta = '';
-            this.serie = '';
+            this.id_rutas = 0;
             this.latitud = '';
             this.longitud = '';
+            this.error_ubicacion = 0;
+            this.error_latitud = 0;
+            this.error_longitud = 0;
+            this.errorMostrarMsjParaderos = [];
         },
         abrirModal: function abrirModal(modelo, accion) {
             var data = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
@@ -81436,8 +81454,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.modal = 1;
                                     this.tituloModal = 'Registrar Paradero';
                                     this.ubicacion = '0';
-                                    this.ruta = '0';
-                                    this.serie = '';
+                                    this.id_rutas = 0;
                                     this.latitud = '';
                                     this.longitud = '';
                                     this.tipoAccion = 1;
@@ -81451,16 +81468,25 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.tipoAccion = 2;
                                     this.paraderos_id = data['id'];
                                     this.ubicacion = data['ubicacion'];
-                                    this.ruta = data['ruta'];
-                                    this.serie = data['serie'];
+                                    this.id_rutas = data['id_rutas'];
                                     this.latitud = data['latitud'];
                                     this.longitud = data['longitud'];
                                     break;
                                 }
                         }
                     }
+                    this.selectRuta();
             }
         }
+    },
+
+    notificationError: function notificationError(title_e, text_e) {
+        this.notificationClasses = 'vue-notification error';
+        this.$notify({
+            group: 'foo',
+            title: title_e,
+            text: text_e
+        });
     },
     mounted: function mounted() {
         this.listarParaderos(1, this.buscar, this.criterio);
@@ -81673,11 +81699,7 @@ var render = function() {
                     }),
                     _vm._v(" "),
                     _c("td", {
-                      domProps: { textContent: _vm._s(paraderos.ruta) }
-                    }),
-                    _vm._v(" "),
-                    _c("td", {
-                      domProps: { textContent: _vm._s(paraderos.serie) }
+                      domProps: { textContent: _vm._s(paraderos.id_rutas) }
                     }),
                     _vm._v(" "),
                     _c("td", {
@@ -81837,336 +81859,265 @@ var render = function() {
               ]),
               _vm._v(" "),
               _c("div", { staticClass: "modal-body" }, [
-                _c(
-                  "form",
-                  {
-                    staticClass: "form-horizontal",
-                    attrs: {
-                      action: "",
-                      method: "post",
-                      enctype: "multipart/form-data"
-                    }
-                  },
-                  [
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "email-input" }
-                        },
-                        [_vm._v("Ubicación")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-9" }, [
-                        _c(
-                          "select",
-                          {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.ubicacion,
-                                expression: "ubicacion"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            on: {
-                              change: function($event) {
-                                var $$selectedVal = Array.prototype.filter
-                                  .call($event.target.options, function(o) {
-                                    return o.selected
-                                  })
-                                  .map(function(o) {
-                                    var val = "_value" in o ? o._value : o.value
-                                    return val
-                                  })
-                                _vm.ubicacion = $event.target.multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
-                              }
-                            }
-                          },
-                          [
-                            _c(
-                              "option",
-                              { attrs: { value: "0", disabled: "" } },
-                              [_vm._v("--Selecionar--")]
-                            ),
-                            _vm._v(" "),
-                            _c("option", { attrs: { value: "Campeche" } }, [
-                              _vm._v("Campeche")
-                            ]),
-                            _vm._v(" "),
-                            _c("option", { attrs: { value: "Hecelchakan" } }, [
-                              _vm._v("Hecelchakan")
-                            ]),
-                            _vm._v(" "),
-                            _c("option", { attrs: { value: "Dzitbalche" } }, [
-                              _vm._v("Dzitbalche")
-                            ]),
-                            _vm._v(" "),
-                            _c("option", { attrs: { value: "Pomuch" } }, [
-                              _vm._v("Pomuch")
-                            ]),
-                            _vm._v(" "),
-                            _c("option", { attrs: { value: "Tenabo" } }, [
-                              _vm._v("Tenabo")
-                            ]),
-                            _vm._v(" "),
-                            _c("option", { attrs: { value: "Becal" } }, [
-                              _vm._v("Becal")
-                            ]),
-                            _vm._v(" "),
-                            _c("option", { attrs: { value: "halacho" } }, [
-                              _vm._v("Halacho")
-                            ]),
-                            _vm._v(" "),
-                            _c("option", { attrs: { value: "Maxcanu" } }, [
-                              _vm._v("Maxcanu")
-                            ]),
-                            _vm._v(" "),
-                            _c("option", { attrs: { value: "Merida" } }, [
-                              _vm._v("Merida")
-                            ])
-                          ]
+                _c("div", { staticClass: "form-group row" }, [
+                  _c("div", { staticClass: "col-md-6" }, [
+                    _c(
+                      "label",
+                      {
+                        staticClass: "col-md-3 form-control-label",
+                        attrs: { for: "email-input" }
+                      },
+                      [_vm._v("Ubicación")]
+                    ),
+                    _vm._v(" "),
+                    _vm.error_ubicacion == 1
+                      ? _c(
+                          "label",
+                          { staticClass: "form-control-label text-danger" },
+                          [_vm._v("*ubicacion")]
                         )
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "email-input" }
-                        },
-                        [_vm._v("Rutas")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-9" }, [
-                        _c(
-                          "select",
-                          {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.ruta,
-                                expression: "ruta"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            on: {
-                              change: function($event) {
-                                var $$selectedVal = Array.prototype.filter
-                                  .call($event.target.options, function(o) {
-                                    return o.selected
-                                  })
-                                  .map(function(o) {
-                                    var val = "_value" in o ? o._value : o.value
-                                    return val
-                                  })
-                                _vm.ruta = $event.target.multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
-                              }
-                            }
-                          },
-                          [
-                            _c(
-                              "option",
-                              { attrs: { value: "0", disabled: "" } },
-                              [_vm._v("--Selecionar--")]
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "option",
-                              { attrs: { value: "Merida-Campeche" } },
-                              [_vm._v("Merida-Campeche")]
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "option",
-                              { attrs: { value: "Campeche-Merida" } },
-                              [_vm._v("Campeche-Merida")]
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "option",
-                              { attrs: { value: "Itescam-Pomuch" } },
-                              [_vm._v("Itescam-Pomuch")]
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "option",
-                              { attrs: { value: "Pomuch-Itescam" } },
-                              [_vm._v("Pomuch-Itescam")]
-                            ),
-                            _vm._v(" "),
-                            _c("option", { attrs: { value: "Tenabo-Becal" } }, [
-                              _vm._v("Tenabo-Becal")
-                            ]),
-                            _vm._v(" "),
-                            _c("option", { attrs: { value: "Becal-Tenabo" } }, [
-                              _vm._v("Becal-Tenabo")
-                            ]),
-                            _vm._v(" "),
-                            _c(
-                              "option",
-                              { attrs: { value: "Maxcanu-Dzitbalche" } },
-                              [_vm._v("Maxcanu-Dzitbalche")]
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "option",
-                              { attrs: { value: "Dzitbalche-Maxcanu" } },
-                              [_vm._v("Dzitbalche-Maxcanu")]
-                            )
-                          ]
-                        )
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "email-input" }
-                        },
-                        [_vm._v("Serie")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-9" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.serie,
-                              expression: "serie"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: {
-                            type: "email",
-                            placeholder: "Ingrese la serie del autobus"
-                          },
-                          domProps: { value: _vm.serie },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.serie = $event.target.value
-                            }
-                          }
-                        })
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "email-input" }
-                        },
-                        [_vm._v("Latitud")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-9" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.latitud,
-                              expression: "latitud"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: {
-                            type: "email",
-                            placeholder: "Ingrese la latitud del autobús"
-                          },
-                          domProps: { value: _vm.latitud },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.latitud = $event.target.value
-                            }
-                          }
-                        })
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "email-input" }
-                        },
-                        [_vm._v("Longitud")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-9" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.longitud,
-                              expression: "longitud"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: {
-                            type: "email",
-                            placeholder: "Ingrese la longitud del autobús"
-                          },
-                          domProps: { value: _vm.longitud },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.longitud = $event.target.value
-                            }
-                          }
-                        })
-                      ])
-                    ]),
+                      : _vm._e(),
                     _vm._v(" "),
                     _c(
-                      "div",
+                      "select",
                       {
                         directives: [
                           {
-                            name: "show",
-                            rawName: "v-show",
-                            value: _vm.errorParaderos,
-                            expression: "errorParaderos"
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.ubicacion,
+                            expression: "ubicacion"
                           }
                         ],
-                        staticClass: "form-group row div-error"
+                        staticClass: "form-control",
+                        class: { "invalid-input": _vm.error_ubicacion },
+                        on: {
+                          change: function($event) {
+                            var $$selectedVal = Array.prototype.filter
+                              .call($event.target.options, function(o) {
+                                return o.selected
+                              })
+                              .map(function(o) {
+                                var val = "_value" in o ? o._value : o.value
+                                return val
+                              })
+                            _vm.ubicacion = $event.target.multiple
+                              ? $$selectedVal
+                              : $$selectedVal[0]
+                          }
+                        }
                       },
                       [
-                        _c(
-                          "div",
-                          { staticClass: "text-center text-error" },
-                          _vm._l(_vm.errorMostrarMsjParaderos, function(error) {
-                            return _c("div", {
-                              key: error,
-                              domProps: { textContent: _vm._s(error) }
-                            })
-                          })
-                        )
+                        _c("option", { attrs: { value: "0", disabled: "" } }, [
+                          _vm._v("--Selecionar--")
+                        ]),
+                        _vm._v(" "),
+                        _c("option", { attrs: { value: "Campeche" } }, [
+                          _vm._v("Campeche")
+                        ]),
+                        _vm._v(" "),
+                        _c("option", { attrs: { value: "Hecelchakan" } }, [
+                          _vm._v("Hecelchakan")
+                        ]),
+                        _vm._v(" "),
+                        _c("option", { attrs: { value: "Dzitbalche" } }, [
+                          _vm._v("Dzitbalche")
+                        ]),
+                        _vm._v(" "),
+                        _c("option", { attrs: { value: "Pomuch" } }, [
+                          _vm._v("Pomuch")
+                        ]),
+                        _vm._v(" "),
+                        _c("option", { attrs: { value: "Tenabo" } }, [
+                          _vm._v("Tenabo")
+                        ]),
+                        _vm._v(" "),
+                        _c("option", { attrs: { value: "Becal" } }, [
+                          _vm._v("Becal")
+                        ]),
+                        _vm._v(" "),
+                        _c("option", { attrs: { value: "halacho" } }, [
+                          _vm._v("Halacho")
+                        ]),
+                        _vm._v(" "),
+                        _c("option", { attrs: { value: "Maxcanu" } }, [
+                          _vm._v("Maxcanu")
+                        ]),
+                        _vm._v(" "),
+                        _c("option", { attrs: { value: "Merida" } }, [
+                          _vm._v("Merida")
+                        ])
                       ]
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-md-6" }, [
+                    _c("label", { attrs: { for: "text-input" } }, [
+                      _vm._v("Ruta")
+                    ]),
+                    _vm._v(" "),
+                    _vm.error_ruta == 1
+                      ? _c(
+                          "label",
+                          { staticClass: "form-control-label text-danger" },
+                          [_vm._v("*ruta")]
+                        )
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _c(
+                      "select",
+                      {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.id_rutas,
+                            expression: "id_rutas"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        class: { "invalid-input": _vm.error_ruta },
+                        on: {
+                          change: function($event) {
+                            var $$selectedVal = Array.prototype.filter
+                              .call($event.target.options, function(o) {
+                                return o.selected
+                              })
+                              .map(function(o) {
+                                var val = "_value" in o ? o._value : o.value
+                                return val
+                              })
+                            _vm.id_rutas = $event.target.multiple
+                              ? $$selectedVal
+                              : $$selectedVal[0]
+                          }
+                        }
+                      },
+                      [
+                        _c("option", { attrs: { value: "0" } }, [
+                          _vm._v("Seleccione")
+                        ]),
+                        _vm._v(" "),
+                        _vm._l(_vm.arrayRutas, function(rutas) {
+                          return _c("option", {
+                            key: rutas.id,
+                            domProps: {
+                              value: rutas.id,
+                              textContent: _vm._s(rutas.ruta)
+                            }
+                          })
+                        })
+                      ],
+                      2
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-md-6" }, [
+                    _c("label", { staticClass: "form-control-label" }, [
+                      _vm._v("Latitud")
+                    ]),
+                    _vm._v(" "),
+                    _vm.error_latitud == 1
+                      ? _c(
+                          "label",
+                          { staticClass: "form-control-label text-danger" },
+                          [_vm._v("*latitud")]
+                        )
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.latitud,
+                          expression: "latitud"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      class: { "invalid-input": _vm.error_latitud },
+                      attrs: {
+                        type: "text",
+                        maxlength: "254",
+                        placeholder: "Ingrese la latitud del autobus"
+                      },
+                      domProps: { value: _vm.latitud },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.latitud = $event.target.value
+                        }
+                      }
+                    })
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-md-12" }, [
+                    _c("label", { staticClass: "form-control-label" }, [
+                      _vm._v("Longitud")
+                    ]),
+                    _vm._v(" "),
+                    _vm.error_longitud == 1
+                      ? _c(
+                          "label",
+                          { staticClass: "form-control-label text-danger" },
+                          [_vm._v("*longitud")]
+                        )
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.longitud,
+                          expression: "longitud"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      class: { "invalid-input": _vm.error_longitud },
+                      attrs: {
+                        type: "text",
+                        maxlength: "254",
+                        placeholder: "Ingrese la longitud del autobus"
+                      },
+                      domProps: { value: _vm.longitud },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.longitud = $event.target.value
+                        }
+                      }
+                    })
+                  ])
+                ]),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  {
+                    directives: [
+                      {
+                        name: "show",
+                        rawName: "v-show",
+                        value: _vm.errorParaderos,
+                        expression: "errorParaderos"
+                      }
+                    ],
+                    staticClass: "form-group row div-error"
+                  },
+                  [
+                    _c(
+                      "div",
+                      { staticClass: "text-center text-error" },
+                      _vm._l(_vm.errorMostrarMsjParaderos, function(error) {
+                        return _c("div", {
+                          key: error,
+                          domProps: { textContent: _vm._s(error) }
+                        })
+                      })
                     )
                   ]
                 )
@@ -82238,8 +82189,6 @@ var staticRenderFns = [
         _c("th", [_vm._v("Ubicación")]),
         _vm._v(" "),
         _c("th", [_vm._v("Ruta")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Serie")]),
         _vm._v(" "),
         _c("th", [_vm._v("Latitud")]),
         _vm._v(" "),
@@ -82345,7 +82294,7 @@ exports = module.exports = __webpack_require__(3)(false);
 
 
 // module
-exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: absolute !important;\n    background-color: #3c29297a !important;\n}\n.div-error{\n    display: flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n", ""]);
+exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: absolute !important;\n    background-color: #3c29297a !important;\n}\n.div-error{\n    display: flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n.invalid-input{\nborder: 1px solid #dc0e26;\n}\n", ""]);
 
 // exports
 
@@ -82567,7 +82516,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             },
             offset: 3,
             criterio: 'direccion',
-            buscar: ''
+            buscar: '',
+            notificationClasses: null,
+            error_direccion: 0,
+            error_ruta: 0,
+            error_paradero: 0,
+            error_latitud_inicial: 0,
+            error_longitud_inicial: 0,
+            error_latitud_final: 0,
+            error_longitud_final: 0
         };
     },
 
@@ -82632,6 +82589,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             }).then(function (response) {
                 me.cerrarModal();
                 me.listarRutas(1, '', 'direccion');
+                swal("Datos registrados", "¡Tu registro se realizo correctamente!");
             }).catch(function (error) {
                 console.log(error);
             });
@@ -82653,6 +82611,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             }).then(function (response) {
                 me.cerrarModal();
                 me.listarRutas(1, '', 'direccion');
+                swal("Datos actualizados", "¡Tu registros se han actualizado correctamente!");
             }).catch(function (error) {
                 console.log(error);
             });
@@ -82745,22 +82704,107 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                         me.listarRutas(1, '');
                         swal('Eliminado!', 'La ruta ha sido eliminada con éxito.', 'success');
                     }).catch(function (error) {
-                        console.log(error);
+                        me.listarRutas(1, '');
+                        swal("¡No se puede eliminar!", "Esta ruta esta relacionada a un vehiculo", "info");
                     });
                 } else {
                     swal.close();
                 }
             });
         },
+
+        /*eliminarRutas(id)
+        {
+            swal({
+        title: '¿Está seguro de eliminar esta ruta?',
+        text: "",
+        type: 'warning',
+        buttons:{
+        confirm: {
+        text : 'Si, aceptar',
+        className : 'btn btn-success'
+        },
+        cancel: {
+                        visible: true,
+                        text : 'No, cancelar!',
+        className: 'btn btn-danger'
+        }
+        }
+        }).then((Delete) => {
+                if (Delete) 
+                {
+                    let me = this;
+                    axios.delete('/rutas/delete/'+id,{
+                        //'id' : id,
+                        
+                    }).then(function (response) 
+                    {
+                        me.listarRutas(1,'');
+                        swal({
+        title: 'Eliminado',
+        text: 'Su ruta ha sido eliminado',
+        type: 'success',
+        buttons : {
+        confirm: {
+         className : 'btn btn-success'
+        }
+        }
+        });
+                    }).catch(function (error) 
+                    {
+                        console.log(error);
+                        me.notificationError('Error','La ruta esta asignado a un vehiculo');
+                    });
+        } else {
+        swal.close();
+        }
+        });
+        },*/
         validarRutas: function validarRutas() {
             this.errorRutas = 0;
             this.errorMostrarMsjRutas = [];
-            if (!this.direccion) this.errorMostrarMsjRutas.push("El direccion de la categoría no puede estar vacío.");
-            if (!this.ruta) this.errorMostrarMsjRutas.push("El ruta de la categoría no puede estar vacío.");
-            if (!this.latitud_inicial) this.errorMostrarMsjRutas.push("El latitud de la categoría no puede estar vacío.");
-            if (!this.longitud_inicial) this.errorMostrarMsjRutas.push("El longitud de la categoría no puede estar vacío.");
-            if (!this.latitud_final) this.errorMostrarMsjRutas.push("El latitud de la categoría no puede estar vacío.");
-            if (!this.longitud_final) this.errorMostrarMsjRutas.push("El longitud de la categoría no puede estar vacío.");
+            //if (!this.direccion) this.errorMostrarMsjRutas.push("La direccion de la categoría no puede estar vacía.");
+            if (this.direccion == '') {
+                this.errorMostrarMsjRutas.push("La direccion de la categoría no puede estar vacía.");this.error_direccion = 1;
+            } else {
+                this.error_direccion = 0;
+            }
+
+            //if (!this.ruta) this.errorMostrarMsjRutas.push("La ruta de la categoría no puede estar vacío.");
+            if (this.ruta == '') {
+                this.errorMostrarMsjRutas.push("La ruta de la categoría no puede estar vacío.");this.error_ruta = 1;
+            } else {
+                this.error_ruta = 0;
+            }
+
+            //if (!this.latitud_inicial) this.errorMostrarMsjRutas.push("La latitud de la categoría no puede estar vacía.");
+            if (this.latitud_inicial == '') {
+                this.errorMostrarMsjRutas.push("La latitud de la categoría no puede estar vacía.");this.error_latitud_inicial = 1;
+            } else {
+                this.error_latitud_inicial = 0;
+            }
+
+            //if (!this.longitud_inicial) this.errorMostrarMsjRutas.push("La longitud de la categoría no puede estar vacía.");
+            if (this.longitud_inicial == '') {
+                this.errorMostrarMsjRutas.push("La longitud de la categoría no puede estar vacía.");this.error_longitud_inicial = 1;
+            } else {
+                this.error_longitud_inicial = 0;
+            }
+
+            //if (!this.latitud_final) this.errorMostrarMsjRutas.push("La latitud de la categoría no puede estar vacía.");
+            if (this.latitud_final == '') {
+                this.errorMostrarMsjRutas.push("La latitud de la categoría no puede estar vacía.");this.error_latitud_final = 1;
+            } else {
+                this.error_latitud_final = 0;
+            }
+
+            //if (!this.longitud_final) this.errorMostrarMsjRutas.push("La longitud de la categoría no puede estar vacía.");
+            if (this.longitud_final == '') {
+                this.errorMostrarMsjRutas.push("La longitud de la categoría no puede estar vacía.");this.error_longitud_final = 1;
+            } else {
+                this.error_longitud_final = 0;
+            }
+
             if (this.errorMostrarMsjRutas.length) this.errorRutas = 1;
             return this.errorRutas;
         },
@@ -82773,6 +82817,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.longitud_inicial = '';
             this.latitud_final = '';
             this.longitud_final = '';
+            this.error_direccion = 0;
+            this.error_ruta = 0;
+            this.error_direccion = 0;
+            this.error_latitud_inicial = 0;
+            this.error_longitud_inicial = 0;
+            this.error_latitud_final = 0;
+            this.error_longitud_final = 0;
+            this.errorMostrarMsjRutas = [];
         },
         abrirModal: function abrirModal(modelo, accion) {
             var data = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
@@ -82792,6 +82844,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.latitud_final = '';
                                     this.longitud_final = '';
                                     this.tipoAccion = 1;
+                                    this.notificationClasses = null;
                                     break;
                                 }
                             case 'actualizar':
@@ -82807,12 +82860,38 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.longitud_inicial = data['longitud_inicial'];
                                     this.latitud_final = data['latitud_final'];
                                     this.longitud_final = data['longitud_final'];
+                                    this.notificationClasses = null;
                                     break;
                                 }
                         }
                     }
+                    this.selectParadero();
             }
         }
+    },
+    notificationSuccess: function notificationSuccess(title_s, text_s) {
+        this.notificationClasses = 'vue-notification success';
+        this.$notify({
+            group: 'foo',
+            title: title_s,
+            text: text_s
+        });
+    },
+    notificationWarning: function notificationWarning(title_w, text_w) {
+        this.notificationClasses = 'vue-notification warn';
+        this.$notify({
+            group: 'foo',
+            title: title_w,
+            text: text_w
+        });
+    },
+    notificationError: function notificationError(title_e, text_e) {
+        this.notificationClasses = 'vue-notification error';
+        this.$notify({
+            group: 'foo',
+            title: title_e,
+            text: text_e
+        });
     },
     mounted: function mounted() {
         this.listarRutas(1, this.buscar, this.criterio);
@@ -82827,378 +82906,388 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("main", { staticClass: "main" }, [
-    _c("div", { staticClass: "container-fluid" }, [
-      _c("div", { staticClass: "card" }, [
-        _c("div", { staticClass: "card-header" }, [
-          _c("i", { staticClass: "fa fa-align-justify" }),
-          _vm._v(" Rutas\n                "),
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-secondary",
-              attrs: { type: "button" },
-              on: {
-                click: function($event) {
-                  _vm.abrirModal("rutas", "registrar")
+  return _c(
+    "main",
+    { staticClass: "main" },
+    [
+      _c("notifications", {
+        attrs: { group: "foo", classes: _vm.notificationClasses }
+      }),
+      _vm._v(" "),
+      _c("div", { staticClass: "container-fluid" }, [
+        _c("div", { staticClass: "card" }, [
+          _c("div", { staticClass: "card-header" }, [
+            _c("i", { staticClass: "fa fa-align-justify" }),
+            _vm._v(" Rutas\n                "),
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-secondary",
+                attrs: { type: "button" },
+                on: {
+                  click: function($event) {
+                    _vm.abrirModal("rutas", "registrar")
+                  }
                 }
-              }
-            },
-            [
-              _c("i", { staticClass: "icon-plus" }),
-              _vm._v(" Nuevo\n                ")
-            ]
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "card-body" }, [
-          _c("div", { staticClass: "form-group row" }, [
-            _c("div", { staticClass: "col-md-6" }, [
-              _c("div", { staticClass: "input-group" }, [
-                _c(
-                  "select",
-                  {
+              },
+              [
+                _c("i", { staticClass: "icon-plus" }),
+                _vm._v(" Nuevo\n                ")
+              ]
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "card-body" }, [
+            _c("div", { staticClass: "form-group row" }, [
+              _c("div", { staticClass: "col-md-6" }, [
+                _c("div", { staticClass: "input-group" }, [
+                  _c(
+                    "select",
+                    {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.criterio,
+                          expression: "criterio"
+                        }
+                      ],
+                      staticClass: "form-control col-md-3",
+                      on: {
+                        change: function($event) {
+                          var $$selectedVal = Array.prototype.filter
+                            .call($event.target.options, function(o) {
+                              return o.selected
+                            })
+                            .map(function(o) {
+                              var val = "_value" in o ? o._value : o.value
+                              return val
+                            })
+                          _vm.criterio = $event.target.multiple
+                            ? $$selectedVal
+                            : $$selectedVal[0]
+                        }
+                      }
+                    },
+                    [
+                      _c("option", { attrs: { value: "direccion" } }, [
+                        _vm._v("Dirección")
+                      ]),
+                      _vm._v(" "),
+                      _c("option", { attrs: { value: "ruta" } }, [
+                        _vm._v("Ruta")
+                      ])
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c("input", {
                     directives: [
                       {
                         name: "model",
                         rawName: "v-model",
-                        value: _vm.criterio,
-                        expression: "criterio"
+                        value: _vm.buscar,
+                        expression: "buscar"
                       }
                     ],
-                    staticClass: "form-control col-md-3",
+                    staticClass: "form-control",
+                    attrs: { type: "text", placeholder: "Texto a buscar" },
+                    domProps: { value: _vm.buscar },
                     on: {
-                      change: function($event) {
-                        var $$selectedVal = Array.prototype.filter
-                          .call($event.target.options, function(o) {
-                            return o.selected
-                          })
-                          .map(function(o) {
-                            var val = "_value" in o ? o._value : o.value
-                            return val
-                          })
-                        _vm.criterio = $event.target.multiple
-                          ? $$selectedVal
-                          : $$selectedVal[0]
-                      }
-                    }
-                  },
-                  [
-                    _c("option", { attrs: { value: "direccion" } }, [
-                      _vm._v("Dirección")
-                    ]),
-                    _vm._v(" "),
-                    _c("option", { attrs: { value: "ruta" } }, [_vm._v("Ruta")])
-                  ]
-                ),
-                _vm._v(" "),
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.buscar,
-                      expression: "buscar"
-                    }
-                  ],
-                  staticClass: "form-control",
-                  attrs: { type: "text", placeholder: "Texto a buscar" },
-                  domProps: { value: _vm.buscar },
-                  on: {
-                    keyup: function($event) {
-                      if (
-                        !("button" in $event) &&
-                        _vm._k($event.keyCode, "enter", 13, $event.key)
-                      ) {
-                        return null
-                      }
-                      _vm.listarRutas(1, _vm.buscar, _vm.criterio)
-                    },
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
-                      }
-                      _vm.buscar = $event.target.value
-                    }
-                  }
-                }),
-                _vm._v(" "),
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-primary",
-                    attrs: { type: "submit" },
-                    on: {
-                      click: function($event) {
+                      keyup: function($event) {
+                        if (
+                          !("button" in $event) &&
+                          _vm._k($event.keyCode, "enter", 13, $event.key)
+                        ) {
+                          return null
+                        }
                         _vm.listarRutas(1, _vm.buscar, _vm.criterio)
+                      },
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.buscar = $event.target.value
                       }
                     }
-                  },
-                  [_c("i", { staticClass: "fa fa-search" }), _vm._v(" Buscar")]
-                )
-              ])
-            ])
-          ]),
-          _vm._v(" "),
-          _c(
-            "table",
-            { staticClass: "table table-bordered table-striped table-sm" },
-            [
-              _vm._m(0),
-              _vm._v(" "),
-              _c(
-                "tbody",
-                _vm._l(_vm.arrayRutas, function(rutas) {
-                  return _c("tr", { key: rutas.id }, [
-                    _c(
-                      "td",
-                      [
-                        _c(
-                          "button",
-                          {
-                            staticClass: "btn btn-warning btn-sm",
-                            attrs: { type: "button" },
-                            on: {
-                              click: function($event) {
-                                _vm.abrirModal("rutas", "actualizar", rutas)
-                              }
-                            }
-                          },
-                          [_c("i", { staticClass: "fas fa-edit" })]
-                        ),
-                        _vm._v("  \n                                "),
-                        _c(
-                          "button",
-                          {
-                            staticClass: "btn btn-dark btn-sm",
-                            attrs: { type: "button" },
-                            on: {
-                              click: function($event) {
-                                _vm.eliminarRutas(rutas.id)
-                              }
-                            }
-                          },
-                          [_c("i", { staticClass: "fa fa-trash-alt" })]
-                        ),
-                        _vm._v(" "),
-                        rutas.condicion
-                          ? [
-                              _c(
-                                "button",
-                                {
-                                  staticClass: "btn btn-danger btn-sm",
-                                  attrs: { type: "button" },
-                                  on: {
-                                    click: function($event) {
-                                      _vm.desactivarRutas(rutas.id)
-                                    }
-                                  }
-                                },
-                                [_c("i", { staticClass: "fas fa-ban" })]
-                              )
-                            ]
-                          : [
-                              _c(
-                                "button",
-                                {
-                                  staticClass: "btn btn-info btn-sm",
-                                  attrs: { type: "button" },
-                                  on: {
-                                    click: function($event) {
-                                      _vm.activarRutas(rutas.id)
-                                    }
-                                  }
-                                },
-                                [_c("i", { staticClass: "icon-check" })]
-                              )
-                            ]
-                      ],
-                      2
-                    ),
-                    _vm._v(" "),
-                    _c("td", {
-                      domProps: { textContent: _vm._s(rutas.direccion) }
-                    }),
-                    _vm._v(" "),
-                    _c("td", { domProps: { textContent: _vm._s(rutas.ruta) } }),
-                    _vm._v(" "),
-                    _c("td", {
-                      domProps: { textContent: _vm._s(rutas.latitud_inicial) }
-                    }),
-                    _vm._v(" "),
-                    _c("td", {
-                      domProps: { textContent: _vm._s(rutas.longitud_inicial) }
-                    }),
-                    _vm._v(" "),
-                    _c("td", {
-                      domProps: { textContent: _vm._s(rutas.latitud_final) }
-                    }),
-                    _vm._v(" "),
-                    _c("td", {
-                      domProps: { textContent: _vm._s(rutas.longitud_final) }
-                    }),
-                    _vm._v(" "),
-                    _c("td", [
-                      rutas.condicion
-                        ? _c("div", [
-                            _c("span", { staticClass: "badge badge-success" }, [
-                              _vm._v("Activo")
-                            ])
-                          ])
-                        : _c("div", [
-                            _c("span", { staticClass: "badge badge-danger" }, [
-                              _vm._v("Desactivado")
-                            ])
-                          ])
-                    ])
-                  ])
-                })
-              )
-            ]
-          ),
-          _vm._v(" "),
-          _c("nav", [
-            _c(
-              "ul",
-              { staticClass: "pagination" },
-              [
-                _vm.pagination.current_page > 1
-                  ? _c("li", { staticClass: "page-item" }, [
-                      _c(
-                        "a",
-                        {
-                          staticClass: "page-link",
-                          attrs: { href: "#" },
-                          on: {
-                            click: function($event) {
-                              $event.preventDefault()
-                              _vm.cambiarPagina(
-                                _vm.pagination.current_page - 1,
-                                _vm.buscar,
-                                _vm.criterio
-                              )
-                            }
-                          }
-                        },
-                        [_vm._v("Ant")]
-                      )
-                    ])
-                  : _vm._e(),
-                _vm._v(" "),
-                _vm._l(_vm.pagesNumber, function(page) {
-                  return _c(
-                    "li",
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "button",
                     {
-                      key: page,
-                      staticClass: "page-item",
-                      class: [page == _vm.isActived ? "active" : ""]
+                      staticClass: "btn btn-primary",
+                      attrs: { type: "submit" },
+                      on: {
+                        click: function($event) {
+                          _vm.listarRutas(1, _vm.buscar, _vm.criterio)
+                        }
+                      }
                     },
                     [
-                      _c("a", {
-                        staticClass: "page-link",
-                        attrs: { href: "#" },
-                        domProps: { textContent: _vm._s(page) },
-                        on: {
-                          click: function($event) {
-                            $event.preventDefault()
-                            _vm.cambiarPagina(page, _vm.buscar, _vm.criterio)
-                          }
-                        }
-                      })
+                      _c("i", { staticClass: "fa fa-search" }),
+                      _vm._v(" Buscar")
                     ]
                   )
-                }),
+                ])
+              ])
+            ]),
+            _vm._v(" "),
+            _c(
+              "table",
+              { staticClass: "table table-bordered table-striped table-sm" },
+              [
+                _vm._m(0),
                 _vm._v(" "),
-                _vm.pagination.current_page < _vm.pagination.last_page
-                  ? _c("li", { staticClass: "page-item" }, [
+                _c(
+                  "tbody",
+                  _vm._l(_vm.arrayRutas, function(rutas) {
+                    return _c("tr", { key: rutas.id }, [
                       _c(
-                        "a",
-                        {
+                        "td",
+                        [
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-warning btn-sm",
+                              attrs: { type: "button" },
+                              on: {
+                                click: function($event) {
+                                  _vm.abrirModal("rutas", "actualizar", rutas)
+                                }
+                              }
+                            },
+                            [_c("i", { staticClass: "fas fa-edit" })]
+                          ),
+                          _vm._v("  \n                                "),
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-dark btn-sm",
+                              attrs: { type: "button" },
+                              on: {
+                                click: function($event) {
+                                  _vm.eliminarRutas(rutas.id)
+                                }
+                              }
+                            },
+                            [_c("i", { staticClass: "fa fa-trash-alt" })]
+                          ),
+                          _vm._v(" "),
+                          rutas.condicion
+                            ? [
+                                _c(
+                                  "button",
+                                  {
+                                    staticClass: "btn btn-danger btn-sm",
+                                    attrs: { type: "button" },
+                                    on: {
+                                      click: function($event) {
+                                        _vm.desactivarRutas(rutas.id)
+                                      }
+                                    }
+                                  },
+                                  [_c("i", { staticClass: "fas fa-ban" })]
+                                )
+                              ]
+                            : [
+                                _c(
+                                  "button",
+                                  {
+                                    staticClass: "btn btn-info btn-sm",
+                                    attrs: { type: "button" },
+                                    on: {
+                                      click: function($event) {
+                                        _vm.activarRutas(rutas.id)
+                                      }
+                                    }
+                                  },
+                                  [_c("i", { staticClass: "icon-check" })]
+                                )
+                              ]
+                        ],
+                        2
+                      ),
+                      _vm._v(" "),
+                      _c("td", {
+                        domProps: { textContent: _vm._s(rutas.direccion) }
+                      }),
+                      _vm._v(" "),
+                      _c("td", {
+                        domProps: { textContent: _vm._s(rutas.ruta) }
+                      }),
+                      _vm._v(" "),
+                      _c("td", {
+                        domProps: { textContent: _vm._s(rutas.latitud_inicial) }
+                      }),
+                      _vm._v(" "),
+                      _c("td", {
+                        domProps: {
+                          textContent: _vm._s(rutas.longitud_inicial)
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("td", {
+                        domProps: { textContent: _vm._s(rutas.latitud_final) }
+                      }),
+                      _vm._v(" "),
+                      _c("td", {
+                        domProps: { textContent: _vm._s(rutas.longitud_final) }
+                      }),
+                      _vm._v(" "),
+                      _c("td", [
+                        rutas.condicion
+                          ? _c("div", [
+                              _c(
+                                "span",
+                                { staticClass: "badge badge-success" },
+                                [_vm._v("Activo")]
+                              )
+                            ])
+                          : _c("div", [
+                              _c(
+                                "span",
+                                { staticClass: "badge badge-danger" },
+                                [_vm._v("Desactivado")]
+                              )
+                            ])
+                      ])
+                    ])
+                  })
+                )
+              ]
+            ),
+            _vm._v(" "),
+            _c("nav", [
+              _c(
+                "ul",
+                { staticClass: "pagination" },
+                [
+                  _vm.pagination.current_page > 1
+                    ? _c("li", { staticClass: "page-item" }, [
+                        _c(
+                          "a",
+                          {
+                            staticClass: "page-link",
+                            attrs: { href: "#" },
+                            on: {
+                              click: function($event) {
+                                $event.preventDefault()
+                                _vm.cambiarPagina(
+                                  _vm.pagination.current_page - 1,
+                                  _vm.buscar,
+                                  _vm.criterio
+                                )
+                              }
+                            }
+                          },
+                          [_vm._v("Ant")]
+                        )
+                      ])
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm._l(_vm.pagesNumber, function(page) {
+                    return _c(
+                      "li",
+                      {
+                        key: page,
+                        staticClass: "page-item",
+                        class: [page == _vm.isActived ? "active" : ""]
+                      },
+                      [
+                        _c("a", {
                           staticClass: "page-link",
                           attrs: { href: "#" },
+                          domProps: { textContent: _vm._s(page) },
                           on: {
                             click: function($event) {
                               $event.preventDefault()
-                              _vm.cambiarPagina(
-                                _vm.pagination.current_page + 1,
-                                _vm.buscar,
-                                _vm.criterio
-                              )
+                              _vm.cambiarPagina(page, _vm.buscar, _vm.criterio)
                             }
                           }
-                        },
-                        [_vm._v("Sig")]
-                      )
-                    ])
-                  : _vm._e()
-              ],
-              2
-            )
+                        })
+                      ]
+                    )
+                  }),
+                  _vm._v(" "),
+                  _vm.pagination.current_page < _vm.pagination.last_page
+                    ? _c("li", { staticClass: "page-item" }, [
+                        _c(
+                          "a",
+                          {
+                            staticClass: "page-link",
+                            attrs: { href: "#" },
+                            on: {
+                              click: function($event) {
+                                $event.preventDefault()
+                                _vm.cambiarPagina(
+                                  _vm.pagination.current_page + 1,
+                                  _vm.buscar,
+                                  _vm.criterio
+                                )
+                              }
+                            }
+                          },
+                          [_vm._v("Sig")]
+                        )
+                      ])
+                    : _vm._e()
+                ],
+                2
+              )
+            ])
           ])
         ])
-      ])
-    ]),
-    _vm._v(" "),
-    _c(
-      "div",
-      {
-        staticClass: "modal fade",
-        class: { mostrar: _vm.modal },
-        staticStyle: { display: "none" },
-        attrs: {
-          tabindex: "-1",
-          role: "dialog",
-          "aria-labelledby": "myModalLabel",
-          "aria-hidden": "true"
-        }
-      },
-      [
-        _c(
-          "div",
-          {
-            staticClass: "modal-dialog modal-primary modal-lg",
-            attrs: { role: "document" }
-          },
-          [
-            _c("div", { staticClass: "modal-content" }, [
-              _c("div", { staticClass: "modal-header" }, [
-                _c("h4", {
-                  staticClass: "modal-title",
-                  domProps: { textContent: _vm._s(_vm.tituloModal) }
-                }),
-                _vm._v(" "),
-                _c(
-                  "button",
-                  {
-                    staticClass: "close",
-                    attrs: { type: "button", "aria-label": "Close" },
-                    on: {
-                      click: function($event) {
-                        _vm.cerrarModal()
+      ]),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "modal fade",
+          class: { mostrar: _vm.modal },
+          staticStyle: { display: "none" },
+          attrs: {
+            tabindex: "-1",
+            role: "dialog",
+            "aria-labelledby": "myModalLabel",
+            "aria-hidden": "true"
+          }
+        },
+        [
+          _c(
+            "div",
+            {
+              staticClass: "modal-dialog modal-primary modal-lg",
+              attrs: { role: "document" }
+            },
+            [
+              _c("div", { staticClass: "modal-content" }, [
+                _c("div", { staticClass: "modal-header" }, [
+                  _c("h4", {
+                    staticClass: "modal-title",
+                    domProps: { textContent: _vm._s(_vm.tituloModal) }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "button",
+                    {
+                      staticClass: "close",
+                      attrs: { type: "button", "aria-label": "Close" },
+                      on: {
+                        click: function($event) {
+                          _vm.cerrarModal()
+                        }
                       }
-                    }
-                  },
-                  [
-                    _c("span", { attrs: { "aria-hidden": "true" } }, [
-                      _vm._v("×")
-                    ])
-                  ]
-                )
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "modal-body" }, [
-                _c(
-                  "form",
-                  {
-                    staticClass: "form-horizontal",
-                    attrs: {
-                      action: "",
-                      method: "post",
-                      enctype: "multipart/form-data"
-                    }
-                  },
-                  [
-                    _c("div", { staticClass: "form-group row" }, [
+                    },
+                    [
+                      _c("span", { attrs: { "aria-hidden": "true" } }, [
+                        _vm._v("×")
+                      ])
+                    ]
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "modal-body" }, [
+                  _c("div", { staticClass: "form-group row" }, [
+                    _c("div", { staticClass: "col-md-6" }, [
                       _c(
                         "label",
                         {
@@ -83208,355 +83297,378 @@ var render = function() {
                         [_vm._v("Direccion")]
                       ),
                       _vm._v(" "),
-                      _c("div", { staticClass: "col-md-9" }, [
-                        _c(
-                          "select",
-                          {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.direccion,
-                                expression: "direccion"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            on: {
-                              change: function($event) {
-                                var $$selectedVal = Array.prototype.filter
-                                  .call($event.target.options, function(o) {
-                                    return o.selected
-                                  })
-                                  .map(function(o) {
-                                    var val = "_value" in o ? o._value : o.value
-                                    return val
-                                  })
-                                _vm.direccion = $event.target.multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
-                              }
-                            }
-                          },
-                          [
-                            _c(
-                              "option",
-                              { attrs: { value: "0", disabled: "" } },
-                              [_vm._v("--Selecionar hacia donde va--")]
-                            ),
-                            _vm._v(" "),
-                            _c("option", { attrs: { value: "Campeche" } }, [
-                              _vm._v("Campeche")
-                            ]),
-                            _vm._v(" "),
-                            _c("option", { attrs: { value: "Hecelchakan" } }, [
-                              _vm._v("Hecelchakan")
-                            ]),
-                            _vm._v(" "),
-                            _c("option", { attrs: { value: "Dzitbalche" } }, [
-                              _vm._v("Dzitbalche")
-                            ]),
-                            _vm._v(" "),
-                            _c("option", { attrs: { value: "Pomuch" } }, [
-                              _vm._v("Pomuch")
-                            ]),
-                            _vm._v(" "),
-                            _c("option", { attrs: { value: "Tenabo" } }, [
-                              _vm._v("Tenabo")
-                            ]),
-                            _vm._v(" "),
-                            _c("option", { attrs: { value: "Becal" } }, [
-                              _vm._v("Becal")
-                            ]),
-                            _vm._v(" "),
-                            _c("option", { attrs: { value: "halacho" } }, [
-                              _vm._v("Halacho")
-                            ]),
-                            _vm._v(" "),
-                            _c("option", { attrs: { value: "Maxcanu" } }, [
-                              _vm._v("Maxcanu")
-                            ]),
-                            _vm._v(" "),
-                            _c("option", { attrs: { value: "Merida" } }, [
-                              _vm._v("Merida")
-                            ])
-                          ]
-                        )
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "email-input" }
-                        },
-                        [_vm._v("Ruta")]
-                      ),
+                      _vm.error_direccion == 1
+                        ? _c(
+                            "label",
+                            { staticClass: "form-control-label text-danger" },
+                            [_vm._v("*direccion")]
+                          )
+                        : _vm._e(),
                       _vm._v(" "),
-                      _c("div", { staticClass: "col-md-9" }, [
-                        _c("input", {
+                      _c(
+                        "select",
+                        {
                           directives: [
                             {
                               name: "model",
                               rawName: "v-model",
-                              value: _vm.ruta,
-                              expression: "ruta"
+                              value: _vm.direccion,
+                              expression: "direccion"
                             }
                           ],
                           staticClass: "form-control",
-                          attrs: {
-                            type: "email",
-                            placeholder: "Ejemplo Merida-Campeche"
-                          },
-                          domProps: { value: _vm.ruta },
+                          class: { "invalid-input": _vm.error_direccion },
                           on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.ruta = $event.target.value
+                            change: function($event) {
+                              var $$selectedVal = Array.prototype.filter
+                                .call($event.target.options, function(o) {
+                                  return o.selected
+                                })
+                                .map(function(o) {
+                                  var val = "_value" in o ? o._value : o.value
+                                  return val
+                                })
+                              _vm.direccion = $event.target.multiple
+                                ? $$selectedVal
+                                : $$selectedVal[0]
                             }
                           }
-                        })
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "email-input" }
                         },
-                        [_vm._v("Latitud Inicial")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-9" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.latitud_inicial,
-                              expression: "latitud_inicial"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: {
-                            type: "email",
-                            placeholder: "Ingrese la latitud del autobús"
-                          },
-                          domProps: { value: _vm.latitud_inicial },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.latitud_inicial = $event.target.value
-                            }
-                          }
-                        })
-                      ])
+                        [
+                          _c(
+                            "option",
+                            { attrs: { value: "0", disabled: "" } },
+                            [_vm._v("--Selecionar hacia donde va--")]
+                          ),
+                          _vm._v(" "),
+                          _c("option", { attrs: { value: "Campeche" } }, [
+                            _vm._v("Campeche")
+                          ]),
+                          _vm._v(" "),
+                          _c("option", { attrs: { value: "Hecelchakan" } }, [
+                            _vm._v("Hecelchakan")
+                          ]),
+                          _vm._v(" "),
+                          _c("option", { attrs: { value: "Dzitbalche" } }, [
+                            _vm._v("Dzitbalche")
+                          ]),
+                          _vm._v(" "),
+                          _c("option", { attrs: { value: "Pomuch" } }, [
+                            _vm._v("Pomuch")
+                          ]),
+                          _vm._v(" "),
+                          _c("option", { attrs: { value: "Tenabo" } }, [
+                            _vm._v("Tenabo")
+                          ]),
+                          _vm._v(" "),
+                          _c("option", { attrs: { value: "Becal" } }, [
+                            _vm._v("Becal")
+                          ]),
+                          _vm._v(" "),
+                          _c("option", { attrs: { value: "halacho" } }, [
+                            _vm._v("Halacho")
+                          ]),
+                          _vm._v(" "),
+                          _c("option", { attrs: { value: "Maxcanu" } }, [
+                            _vm._v("Maxcanu")
+                          ]),
+                          _vm._v(" "),
+                          _c("option", { attrs: { value: "Merida" } }, [
+                            _vm._v("Merida")
+                          ])
+                        ]
+                      )
                     ]),
                     _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "email-input" }
-                        },
-                        [_vm._v("longitud Inicial")]
-                      ),
+                    _c("div", { staticClass: "col-md-6" }, [
+                      _c("label", { staticClass: "form-control-label" }, [
+                        _vm._v("Ruta")
+                      ]),
                       _vm._v(" "),
-                      _c("div", { staticClass: "col-md-9" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.longitud_inicial,
-                              expression: "longitud_inicial"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: {
-                            type: "email",
-                            placeholder: "Ingrese la longitud del autobús"
-                          },
-                          domProps: { value: _vm.longitud_inicial },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.longitud_inicial = $event.target.value
-                            }
-                          }
-                        })
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "email-input" }
-                        },
-                        [_vm._v("Latitud Final")]
-                      ),
+                      _vm.error_ruta == 1
+                        ? _c(
+                            "label",
+                            { staticClass: "form-control-label text-danger" },
+                            [_vm._v("*ruta")]
+                          )
+                        : _vm._e(),
                       _vm._v(" "),
-                      _c("div", { staticClass: "col-md-9" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.latitud_final,
-                              expression: "latitud_final"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: {
-                            type: "email",
-                            placeholder: "Ingrese la latitud del autobús"
-                          },
-                          domProps: { value: _vm.latitud_final },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.latitud_final = $event.target.value
-                            }
-                          }
-                        })
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "email-input" }
-                        },
-                        [_vm._v("longitud Final")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-9" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.longitud_final,
-                              expression: "longitud_final"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: {
-                            type: "email",
-                            placeholder: "Ingrese la longitud del autobús"
-                          },
-                          domProps: { value: _vm.longitud_final },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.longitud_final = $event.target.value
-                            }
-                          }
-                        })
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c(
-                      "div",
-                      {
+                      _c("input", {
                         directives: [
                           {
-                            name: "show",
-                            rawName: "v-show",
-                            value: _vm.errorRutas,
-                            expression: "errorRutas"
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.ruta,
+                            expression: "ruta"
                           }
                         ],
-                        staticClass: "form-group row div-error"
-                      },
-                      [
-                        _c(
-                          "div",
-                          { staticClass: "text-center text-error" },
-                          _vm._l(_vm.errorMostrarMsjRutas, function(error) {
-                            return _c("div", {
-                              key: error,
-                              domProps: { textContent: _vm._s(error) }
-                            })
+                        staticClass: "form-control",
+                        class: { "invalid-input": _vm.error_ruta },
+                        attrs: {
+                          type: "text",
+                          maxlength: "254",
+                          placeholder: "Ejemplo Merida-Campeche"
+                        },
+                        domProps: { value: _vm.ruta },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.ruta = $event.target.value
+                          }
+                        }
+                      })
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col-md-6" }, [
+                      _c("label", { staticClass: "form-control-label" }, [
+                        _vm._v("Latitud Inicial")
+                      ]),
+                      _vm._v(" "),
+                      _vm.error_latitud_inicial == 1
+                        ? _c(
+                            "label",
+                            { staticClass: "form-control-label text-danger" },
+                            [_vm._v("*latitud inicial")]
+                          )
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.latitud_inicial,
+                            expression: "latitud_inicial"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        class: { "invalid-input": _vm.error_latitud_inicial },
+                        attrs: {
+                          type: "text",
+                          maxlength: "254",
+                          placeholder: "Ingrese la latitud del autobús"
+                        },
+                        domProps: { value: _vm.latitud_inicial },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.latitud_inicial = $event.target.value
+                          }
+                        }
+                      })
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col-md-6" }, [
+                      _c("label", { staticClass: "form-control-label" }, [
+                        _vm._v("longitud Inicial")
+                      ]),
+                      _vm._v(" "),
+                      _vm.error_longitud_inicial == 1
+                        ? _c(
+                            "label",
+                            { staticClass: "form-control-label text-danger" },
+                            [_vm._v("*longitud inicial")]
+                          )
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.longitud_inicial,
+                            expression: "longitud_inicial"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        class: { "invalid-input": _vm.error_longitud_inicial },
+                        attrs: {
+                          type: "text",
+                          maxlength: "254",
+                          placeholder: "Ingrese la longitud del autobús"
+                        },
+                        domProps: { value: _vm.longitud_inicial },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.longitud_inicial = $event.target.value
+                          }
+                        }
+                      })
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col-md-6" }, [
+                      _c("label", { staticClass: "form-control-label" }, [
+                        _vm._v("Latitud Final")
+                      ]),
+                      _vm._v(" "),
+                      _vm.error_latitud_final == 1
+                        ? _c(
+                            "label",
+                            { staticClass: "form-control-label text-danger" },
+                            [_vm._v("*latitud final")]
+                          )
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.latitud_final,
+                            expression: "latitud_final"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        class: { "invalid-input": _vm.error_latitud_final },
+                        attrs: {
+                          type: "text",
+                          maxlength: "254",
+                          placeholder: "Ingrese la latitud del autobús"
+                        },
+                        domProps: { value: _vm.latitud_final },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.latitud_final = $event.target.value
+                          }
+                        }
+                      })
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col-md-12" }, [
+                      _c("label", { staticClass: "form-control-label" }, [
+                        _vm._v("longitud Final")
+                      ]),
+                      _vm._v(" "),
+                      _vm.error_longitud_final == 1
+                        ? _c(
+                            "label",
+                            { staticClass: "form-control-label text-danger" },
+                            [_vm._v("*longitud final")]
+                          )
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.longitud_final,
+                            expression: "longitud_final"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        class: { "invalid-input": _vm.error_longitud_final },
+                        attrs: {
+                          type: "text",
+                          maxlength: "254",
+                          placeholder: "Ingrese la longitud del autobús"
+                        },
+                        domProps: { value: _vm.longitud_final },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.longitud_final = $event.target.value
+                          }
+                        }
+                      })
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    {
+                      directives: [
+                        {
+                          name: "show",
+                          rawName: "v-show",
+                          value: _vm.errorRutas,
+                          expression: "errorRutas"
+                        }
+                      ],
+                      staticClass: "form-group row div-error"
+                    },
+                    [
+                      _c(
+                        "div",
+                        { staticClass: "text-center text-error" },
+                        _vm._l(_vm.errorMostrarMsjRutas, function(error) {
+                          return _c("div", {
+                            key: error,
+                            domProps: { textContent: _vm._s(error) }
                           })
-                        )
-                      ]
-                    )
-                  ]
-                )
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "modal-footer" }, [
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-secondary",
-                    attrs: { type: "button" },
-                    on: {
-                      click: function($event) {
-                        _vm.cerrarModal()
+                        })
+                      )
+                    ]
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "modal-footer" }, [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-secondary",
+                      attrs: { type: "button" },
+                      on: {
+                        click: function($event) {
+                          _vm.cerrarModal()
+                        }
                       }
-                    }
-                  },
-                  [_vm._v("Cerrar")]
-                ),
-                _vm._v(" "),
-                _vm.tipoAccion == 1
-                  ? _c(
-                      "button",
-                      {
-                        staticClass: "btn btn-primary",
-                        attrs: { type: "button" },
-                        on: {
-                          click: function($event) {
-                            _vm.registrarRutas()
+                    },
+                    [_vm._v("Cerrar")]
+                  ),
+                  _vm._v(" "),
+                  _vm.tipoAccion == 1
+                    ? _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-primary",
+                          attrs: { type: "button" },
+                          on: {
+                            click: function($event) {
+                              _vm.registrarRutas()
+                            }
                           }
-                        }
-                      },
-                      [_vm._v("Guardar")]
-                    )
-                  : _vm._e(),
-                _vm._v(" "),
-                _vm.tipoAccion == 2
-                  ? _c(
-                      "button",
-                      {
-                        staticClass: "btn btn-primary",
-                        attrs: { type: "button" },
-                        on: {
-                          click: function($event) {
-                            _vm.actualizarRutas()
+                        },
+                        [_vm._v("Guardar")]
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.tipoAccion == 2
+                    ? _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-primary",
+                          attrs: { type: "button" },
+                          on: {
+                            click: function($event) {
+                              _vm.actualizarRutas()
+                            }
                           }
-                        }
-                      },
-                      [_vm._v("Actualizar")]
-                    )
-                  : _vm._e()
+                        },
+                        [_vm._v("Actualizar")]
+                      )
+                    : _vm._e()
+                ])
               ])
-            ])
-          ]
-        )
-      ]
-    )
-  ])
+            ]
+          )
+        ]
+      )
+    ],
+    1
+  )
 }
 var staticRenderFns = [
   function() {
@@ -84784,11 +84896,232 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
             id: 0,
+            lunes: '',
+            martes: '',
+            miercoles: '',
+            jueves: '',
+            viernes: '',
+            sabado: '',
+            domingo: '',
+            iniciol: '',
+            finl: '',
+            iniciom: '',
+            finm: '',
+            iniciomi: '',
+            finmi: '',
+            inicioj: '',
+            finj: '',
+            iniciov: '',
+            finv: '',
+            inicios: '',
+            fins: '',
+            iniciod: '',
+            find: '',
             dias: '',
             inicio: '',
             fin: '',
@@ -84800,8 +85133,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             errorHorario: 0,
             errorMostrarMsjHorario: [],
             tab: null,
-            items: ['web', 'shopping', 'videos', 'images', 'news'],
-            text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
             pagination: {
                 'total': 0,
                 'current_page': 0,
@@ -84811,7 +85142,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'to': 0
             },
             offset: 3,
-            criterio: 'placa',
+            criterio: 'lunes',
             buscar: ''
         };
     },
@@ -84864,38 +85195,74 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             me.listarHorario(page, buscar, criterio);
         },
         registrarHorario: function registrarHorario() {
-            if (this.validarHorario()) {
+            /*if (this.validarHorario()){
                 return;
-            }
+            }*/
 
             var me = this;
 
             axios.post('/horario/registrar', {
-                'dias': this.dias,
-                'inicio': this.inicio,
-                'fin': this.fin
+                'lunes': this.lunes,
+                'martes': this.martes,
+                'miercoles': this.miercoles,
+                'jueves': this.jueves,
+                'viernes': this.viernes,
+                'sabado': this.sabado,
+                'domingo': this.domingo,
+                'iniciol': this.iniciol,
+                'finl': this.finl,
+                'iniciom': this.iniciom,
+                'finm': this.finm,
+                'iniciomi': this.iniciomi,
+                'finmi': this.finmi,
+                'inicioj': this.inicioj,
+                'finj': this.finj,
+                'iniciov': this.iniciov,
+                'finv': this.finv,
+                'inicios': this.inicios,
+                'fins': this.fins,
+                'iniciod': this.iniciod,
+                'find': this.find
             }).then(function (response) {
                 me.cerrarModal();
-                me.listarHorario(1, '', 'inicio');
+                me.listarHorario(1, '', 'lunes');
             }).catch(function (error) {
                 console.log(error);
             });
         },
         actualizarHorario: function actualizarHorario() {
-            if (this.validarHorario()) {
-                return;
-            }
-
+            /* if (this.validarHorario()){
+                  return;
+              }
+              */
             var me = this;
 
             axios.put('/horario/actualizar', {
-                'dias': this.dias,
-                'inicio': this.inicio,
-                'fin': this.fin,
+                'lunes': this.lunes,
+                'martes': this.martes,
+                'miercoles': this.miercoles,
+                'jueves': this.jueves,
+                'viernes': this.viernes,
+                'sabado': this.sabado,
+                'domingo': this.domingo,
+                'iniciol': this.iniciol,
+                'finl': this.finl,
+                'iniciom': this.iniciom,
+                'finm': this.finm,
+                'iniciomi': this.iniciomi,
+                'finmi': this.finmi,
+                'inicioj': this.inicioj,
+                'finj': this.finj,
+                'iniciov': this.iniciov,
+                'finv': this.finv,
+                'inicios': this.inicios,
+                'fins': this.fins,
+                'iniciod': this.iniciod,
+                'find': this.find,
                 'id': this.id
             }).then(function (response) {
                 me.cerrarModal();
-                me.listarHorario(1, '', 'inicio');
+                me.listarHorario(1, '', 'lunes');
             }).catch(function (error) {
                 console.log(error);
             });
@@ -84922,8 +85289,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     axios.put('/horario/desactivar', {
                         'id': id
                     }).then(function (response) {
-                        me.listarHorario(1, '', 'inicio');
-                        swal('Desactivado!', 'El vehiculo ha sido desactivado con éxito.', 'success');
+                        me.listarHorario(1, '', 'lunes');
+                        swal('Desactivado!', 'El Horario ha sido desactivado con éxito.', 'success');
                     }).catch(function (error) {
                         console.log(error);
                     });
@@ -84936,7 +85303,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var _this2 = this;
 
             swal({
-                title: 'Esta seguro de activar este vehiculo?',
+                title: 'Esta seguro de activar este horario?',
                 type: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -84954,8 +85321,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     axios.put('/horario/activar', {
                         'id': id
                     }).then(function (response) {
-                        me.listarHorario(1, '', 'inicio');
-                        swal('Activado!', 'El vehiculo ha sido activado con éxito.', 'success');
+                        me.listarHorario(1, '', 'lunes');
+                        swal('Activado!', 'El horario ha sido activado con éxito.', 'success');
                     }).catch(function (error) {
                         console.log(error);
                     });
@@ -84968,7 +85335,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var _this3 = this;
 
             swal({
-                title: '¿Está seguro de eliminar este vehiculo?',
+                title: '¿Está seguro de eliminar este horario?',
                 text: "",
                 type: 'warning',
                 showCancelButton: true,
@@ -84988,7 +85355,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
                     }).then(function (response) {
                         me.listarHorario(1, '');
-                        swal('Eliminado!', 'El vehiculo ha sido eliminado con éxito.', 'success');
+                        swal('Eliminado!', 'El horario ha sido eliminado con éxito.', 'success');
                     }).catch(function (error) {
                         console.log(error);
                     });
@@ -84997,47 +85364,79 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 }
             });
         },
-        validarHorario: function validarHorario() {
-            this.errorHorario = 0;
-            this.errorMostrarMsjHorario = [];
 
-            if (this.errorMostrarMsjHorario.length) this.errorHorario = 1;
-            if (!this.dias) this.errorMostrarMsjHorario.push("El numero de placa no puede estar vacío.");
 
-            if (this.errorMostrarMsjHorario.length) this.errorHorario = 1;
-            if (!this.inicio) this.errorMostrarMsjHorario.push("El nombre del conductor no puede estar vacío.");
-
-            if (this.errorMostrarMsjHorario.length) this.errorHorario = 1;
-            if (!this.fin) this.errorMostrarMsjHorario.push("El destino no puede estar vacío.");
-
-            if (this.errorMostrarMsjHorario.length) this.errorHorario = 1;
-
-            return this.errorHorario;
-        },
+        /* validarHorario(){
+             this.errorHorario=0;
+             this.errorMostrarMsjHorario =[];
+              if (this.errorMostrarMsjHorario.length) this.errorHorario = 1;
+             if (!this.dias) this.errorMostrarMsjHorario.push("El numero de placa no puede estar vacío.");
+              if (this.errorMostrarMsjHorario.length) this.errorHorario = 1;
+             if (!this.inicio) this.errorMostrarMsjHorario.push("El nombre del conductor no puede estar vacío.");
+              if (this.errorMostrarMsjHorario.length) this.errorHorario = 1;
+             if (!this.fin) this.errorMostrarMsjHorario.push("El destino no puede estar vacío.");
+              if (this.errorMostrarMsjHorario.length) this.errorHorario = 1;
+              return this.errorHorario;
+         },*/
         cerrarModal: function cerrarModal() {
             this.modal = 0;
             this.tituloModal = '';
-            this.dias = '';
-            this.inicio = '';
-            this.fin = '';
-            this.errorHorario = 0;
-            this.errorMostrarMsjHorario = [];
+            this.lunes = '';
+            this.martes = '';
+            this.miercoles = '';
+            /*this.errorHorario=0;
+            this.errorMostrarMsjHorario = [];*/
+            this.jueves = '';
+            this.viernes = '';
+            this.sabado = '';
+            this.domingo = '';
+            this.iniciol = '';
+            this.finl = '';
+            this.iniciom = '';
+            this.finm = '';
+            this.iniciomi = '';
+            this.finmi = '';
+            this.inicioj = '';
+            this.finj = '';
+            this.iniciov = '';
+            this.finv = '';
+            this.inicios = '';
+            this.fins = '';
+            this.iniciod = '';
+            this.find = '';
         },
         abrirModal: function abrirModal(modelo, accion) {
             var data = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
 
             switch (modelo) {
-                case "horario":
+                case "horarios":
                     {
                         switch (accion) {
                             case 'registrar':
                                 {
                                     this.modal = 1;
-                                    this.tituloModal = 'Registrar Vehiculo';
-                                    this.dias = '';
-                                    this.inicio = '';
-                                    this.fin = '';
+                                    this.tituloModal = 'Registrar Horario';
                                     this.tipoAccion = 1;
+                                    this.lunes = '';
+                                    this.martes = '';
+                                    this.miercoles = '';
+                                    this.jueves = '';
+                                    this.viernes = '';
+                                    this.sabado = '';
+                                    this.domingo = '';
+                                    this.iniciol = '';
+                                    this.finl = '';
+                                    this.iniciom = '';
+                                    this.finm = '';
+                                    this.iniciomi = '';
+                                    this.finmi = '';
+                                    this.inicioj = '';
+                                    this.finj = '';
+                                    this.iniciov = '';
+                                    this.finv = '';
+                                    this.inicios = '';
+                                    this.fins = '';
+                                    this.iniciod = '';
                                     break;
                                 }
                             case 'actualizar':
@@ -85047,9 +85446,28 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.tituloModal = 'Actualizar Horario';
                                     this.tipoAccion = 2;
                                     this.id = data['id'];
-                                    this.dias = data['dias'];
-                                    this.inicio = data['inicio'];
-                                    this.fin = data['fin'];
+                                    this.lunes = data['lunes'];
+                                    this.martes = data['martes'];
+                                    this.miercoles = data['miercoles'];
+                                    this.jueves = data['jueves'];
+                                    this.viernes = data['viernes'];
+                                    this.sabado = data['sabado'];
+                                    this.domingo = data['domingo'];
+                                    this.iniciol = data['iniciol'];
+                                    this.finl = data['miercoles'];
+                                    this.iniciom = data['iniciom'];
+                                    this.finm = data['finm'];
+                                    this.iniciomi = data['iniciomi'];
+                                    this.finmi = data['miercoles'];
+                                    this.inicioj = data['inicioj'];
+                                    this.finj = data['finj'];
+                                    this.iniciov = data['iniciov'];
+                                    this.finv = data['finv'];
+                                    this.inicios = data['inicios'];
+                                    this.fins = data['fins'];
+                                    this.iniciod = data['iniciod'];
+                                    this.find = data['find'];
+
                                     break;
                                 }
                         }
@@ -85084,7 +85502,7 @@ var render = function() {
               attrs: { type: "button" },
               on: {
                 click: function($event) {
-                  _vm.abrirModal("horario", "registrar")
+                  _vm.abrirModal("horarios", "registrar")
                 }
               }
             },
@@ -85203,7 +85621,7 @@ var render = function() {
                             on: {
                               click: function($event) {
                                 _vm.abrirModal(
-                                  "horario",
+                                  "horarios",
                                   "actualizar",
                                   horarios
                                 )
@@ -85262,17 +85680,117 @@ var render = function() {
                       2
                     ),
                     _vm._v(" "),
-                    _c("td", {
-                      domProps: { textContent: _vm._s(horarios.dias) }
-                    }),
+                    _c(
+                      "td",
+                      [
+                        [
+                          _c("tr", {
+                            domProps: { textContent: _vm._s(horarios.iniciol) }
+                          }),
+                          _vm._v(" "),
+                          _c("tr", {
+                            domProps: { textContent: _vm._s(horarios.finl) }
+                          })
+                        ]
+                      ],
+                      2
+                    ),
                     _vm._v(" "),
-                    _c("td", {
-                      domProps: { textContent: _vm._s(horarios.inicio) }
-                    }),
+                    _c(
+                      "td",
+                      [
+                        [
+                          _c("tr", {
+                            domProps: { textContent: _vm._s(horarios.iniciom) }
+                          }),
+                          _vm._v(" "),
+                          _c("tr", {
+                            domProps: { textContent: _vm._s(horarios.finm) }
+                          })
+                        ]
+                      ],
+                      2
+                    ),
                     _vm._v(" "),
-                    _c("td", {
-                      domProps: { textContent: _vm._s(horarios.fin) }
-                    }),
+                    _c(
+                      "td",
+                      [
+                        [
+                          _c("tr", {
+                            domProps: { textContent: _vm._s(horarios.iniciomi) }
+                          }),
+                          _vm._v(" "),
+                          _c("tr", {
+                            domProps: { textContent: _vm._s(horarios.finmi) }
+                          })
+                        ]
+                      ],
+                      2
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "td",
+                      [
+                        [
+                          _c("tr", {
+                            domProps: { textContent: _vm._s(horarios.inicioj) }
+                          }),
+                          _vm._v(" "),
+                          _c("tr", {
+                            domProps: { textContent: _vm._s(horarios.finj) }
+                          })
+                        ]
+                      ],
+                      2
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "td",
+                      [
+                        [
+                          _c("tr", {
+                            domProps: { textContent: _vm._s(horarios.iniciov) }
+                          }),
+                          _vm._v(" "),
+                          _c("tr", {
+                            domProps: { textContent: _vm._s(horarios.finv) }
+                          })
+                        ]
+                      ],
+                      2
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "td",
+                      [
+                        [
+                          _c("tr", {
+                            domProps: { textContent: _vm._s(horarios.inicios) }
+                          }),
+                          _vm._v(" "),
+                          _c("tr", {
+                            domProps: { textContent: _vm._s(horarios.fins) }
+                          })
+                        ]
+                      ],
+                      2
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "td",
+                      [
+                        [
+                          _c("tr", {
+                            domProps: { textContent: _vm._s(horarios.iniciod) }
+                          }),
+                          _vm._v(" "),
+                          _c("tr", {
+                            domProps: { textContent: _vm._s(horarios.iniciod) }
+                          })
+                        ]
+                      ],
+                      2
+                    ),
                     _vm._v(" "),
                     _c("td", [
                       horarios.condicion
@@ -85380,7 +85898,7 @@ var render = function() {
       {
         staticClass: "modal fade",
         class: { mostrar: _vm.modal },
-        staticStyle: { display: "none" },
+        staticStyle: { "overflow-y": "scroll" },
         attrs: {
           tabindex: "-1",
           role: "dialog",
@@ -85407,7 +85925,11 @@ var render = function() {
                   "button",
                   {
                     staticClass: "close",
-                    attrs: { type: "button", "aria-label": "Close" },
+                    attrs: {
+                      type: "button",
+                      "aria-label": "Close",
+                      "data-dismiss": "modal"
+                    },
                     on: {
                       click: function($event) {
                         _vm.cerrarModal()
@@ -85416,7 +85938,7 @@ var render = function() {
                   },
                   [
                     _c("span", { attrs: { "aria-hidden": "true" } }, [
-                      _vm._v("×")
+                      _vm._v("x")
                     ])
                   ]
                 )
@@ -85429,7 +85951,7 @@ var render = function() {
                     staticClass: "form-horizontal",
                     attrs: {
                       action: "",
-                      method: "post",
+                      metdod: "post",
                       enctype: "multipart/form-data"
                     }
                   },
@@ -85441,35 +85963,129 @@ var render = function() {
                           staticClass: "col-md-3 form-control-label",
                           attrs: { for: "text-input" }
                         },
-                        [_vm._v("Dias de servicio")]
+                        [_vm._v("Lunes")]
                       ),
                       _vm._v(" "),
-                      _c("div", { staticClass: "col-md-9" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.dias,
-                              expression: "dias"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: {
-                            type: "text",
-                            placeholder: "Ingrese el numero de placa"
-                          },
-                          domProps: { value: _vm.dias },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
+                      _c(
+                        "div",
+                        {
+                          staticClass: "custom-control custom-checkbox mr-sm-2"
+                        },
+                        [
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.lunes,
+                                expression: "lunes"
                               }
-                              _vm.dias = $event.target.value
+                            ],
+                            staticClass: "form-check-input ",
+                            attrs: { type: "checkbox", id: "switch-lunes" },
+                            domProps: {
+                              checked: Array.isArray(_vm.lunes)
+                                ? _vm._i(_vm.lunes, null) > -1
+                                : _vm.lunes
+                            },
+                            on: {
+                              change: function($event) {
+                                var $$a = _vm.lunes,
+                                  $$el = $event.target,
+                                  $$c = $$el.checked ? true : false
+                                if (Array.isArray($$a)) {
+                                  var $$v = null,
+                                    $$i = _vm._i($$a, $$v)
+                                  if ($$el.checked) {
+                                    $$i < 0 && (_vm.lunes = $$a.concat([$$v]))
+                                  } else {
+                                    $$i > -1 &&
+                                      (_vm.lunes = $$a
+                                        .slice(0, $$i)
+                                        .concat($$a.slice($$i + 1)))
+                                  }
+                                } else {
+                                  _vm.lunes = $$c
+                                }
+                              }
                             }
-                          }
-                        })
-                      ])
+                          }),
+                          _vm._v(" "),
+                          _vm.lunes
+                            ? [
+                                _c("div", { staticClass: "form-check" }, [
+                                  _c("label", {
+                                    staticClass: "form-check-label",
+                                    attrs: {
+                                      for: "switch-lunes",
+                                      value: "activo"
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "col-md-12" }, [
+                                    _vm._v(
+                                      "inicio\n                                            "
+                                    ),
+                                    _c("input", {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.iniciol,
+                                          expression: "iniciol"
+                                        }
+                                      ],
+                                      staticClass: "form-control",
+                                      attrs: { type: "time" },
+                                      domProps: { value: _vm.iniciol },
+                                      on: {
+                                        input: function($event) {
+                                          if ($event.target.composing) {
+                                            return
+                                          }
+                                          _vm.iniciol = $event.target.value
+                                        }
+                                      }
+                                    })
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "col-md-12" }, [
+                                    _vm._v(
+                                      "fin\n                                            "
+                                    ),
+                                    _c("input", {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.finl,
+                                          expression: "finl"
+                                        }
+                                      ],
+                                      staticClass: "form-control",
+                                      attrs: { type: "time" },
+                                      domProps: { value: _vm.finl },
+                                      on: {
+                                        input: function($event) {
+                                          if ($event.target.composing) {
+                                            return
+                                          }
+                                          _vm.finl = $event.target.value
+                                        }
+                                      }
+                                    })
+                                  ])
+                                ])
+                              ]
+                            : [
+                                _c("label", {
+                                  staticClass: "custom-control-label",
+                                  attrs: { for: "switch-lunes" }
+                                })
+                              ]
+                        ],
+                        2
+                      )
                     ]),
                     _vm._v(" "),
                     _c("div", { staticClass: "form-group row" }, [
@@ -85479,28 +86095,129 @@ var render = function() {
                           staticClass: "col-md-3 form-control-label",
                           attrs: { for: "text-input" }
                         },
-                        [_vm._v("Hora de inicio")]
+                        [_vm._v("Martes")]
                       ),
                       _vm._v(" "),
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.inicio,
-                            expression: "inicio"
-                          }
+                      _c(
+                        "div",
+                        {
+                          staticClass: "custom-control custom-checkbox mr-sm-2"
+                        },
+                        [
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.martes,
+                                expression: "martes"
+                              }
+                            ],
+                            staticClass: "form-check-input ",
+                            attrs: { type: "checkbox", id: "switch-martes" },
+                            domProps: {
+                              checked: Array.isArray(_vm.martes)
+                                ? _vm._i(_vm.martes, null) > -1
+                                : _vm.martes
+                            },
+                            on: {
+                              change: function($event) {
+                                var $$a = _vm.martes,
+                                  $$el = $event.target,
+                                  $$c = $$el.checked ? true : false
+                                if (Array.isArray($$a)) {
+                                  var $$v = null,
+                                    $$i = _vm._i($$a, $$v)
+                                  if ($$el.checked) {
+                                    $$i < 0 && (_vm.martes = $$a.concat([$$v]))
+                                  } else {
+                                    $$i > -1 &&
+                                      (_vm.martes = $$a
+                                        .slice(0, $$i)
+                                        .concat($$a.slice($$i + 1)))
+                                  }
+                                } else {
+                                  _vm.martes = $$c
+                                }
+                              }
+                            }
+                          }),
+                          _vm._v(" "),
+                          _vm.martes
+                            ? [
+                                _c("div", { staticClass: "form-check" }, [
+                                  _c("label", {
+                                    staticClass: "form-check-label",
+                                    attrs: {
+                                      for: "switch-martes",
+                                      value: "activo"
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "col-md-12" }, [
+                                    _vm._v(
+                                      "inicio\n                                            "
+                                    ),
+                                    _c("input", {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.iniciom,
+                                          expression: "iniciom"
+                                        }
+                                      ],
+                                      staticClass: "form-control",
+                                      attrs: { type: "time" },
+                                      domProps: { value: _vm.iniciom },
+                                      on: {
+                                        input: function($event) {
+                                          if ($event.target.composing) {
+                                            return
+                                          }
+                                          _vm.iniciom = $event.target.value
+                                        }
+                                      }
+                                    })
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "col-md-12" }, [
+                                    _vm._v(
+                                      "fin\n                                            "
+                                    ),
+                                    _c("input", {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.finm,
+                                          expression: "finm"
+                                        }
+                                      ],
+                                      staticClass: "form-control",
+                                      attrs: { type: "time" },
+                                      domProps: { value: _vm.finm },
+                                      on: {
+                                        input: function($event) {
+                                          if ($event.target.composing) {
+                                            return
+                                          }
+                                          _vm.finm = $event.target.value
+                                        }
+                                      }
+                                    })
+                                  ])
+                                ])
+                              ]
+                            : [
+                                _c("label", {
+                                  staticClass: "custom-control-label",
+                                  attrs: { for: "switch-martes" }
+                                })
+                              ]
                         ],
-                        attrs: { type: "radio", id: "uno", value: "Uno" },
-                        domProps: { checked: _vm._q(_vm.inicio, "Uno") },
-                        on: {
-                          change: function($event) {
-                            _vm.inicio = "Uno"
-                          }
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("label", { attrs: { for: "uno" } }, [_vm._v("Uno")])
+                        2
+                      )
                     ]),
                     _vm._v(" "),
                     _c("div", { staticClass: "form-group row" }, [
@@ -85510,63 +86227,659 @@ var render = function() {
                           staticClass: "col-md-3 form-control-label",
                           attrs: { for: "text-input" }
                         },
-                        [_vm._v("Hora de finalización")]
+                        [_vm._v("Miercoles")]
                       ),
                       _vm._v(" "),
-                      _c("div", { staticClass: "col-md-9" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.fin,
-                              expression: "fin"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: {
-                            type: "time",
-                            placeholder: "Ingrese el nombre del conductor"
-                          },
-                          domProps: { value: _vm.fin },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
+                      _c(
+                        "div",
+                        {
+                          staticClass: "custom-control custom-checkbox mr-sm-2"
+                        },
+                        [
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.miercoles,
+                                expression: "miercoles"
                               }
-                              _vm.fin = $event.target.value
+                            ],
+                            staticClass: "form-check-input ",
+                            attrs: { type: "checkbox", id: "switch-miercoles" },
+                            domProps: {
+                              checked: Array.isArray(_vm.miercoles)
+                                ? _vm._i(_vm.miercoles, null) > -1
+                                : _vm.miercoles
+                            },
+                            on: {
+                              change: function($event) {
+                                var $$a = _vm.miercoles,
+                                  $$el = $event.target,
+                                  $$c = $$el.checked ? true : false
+                                if (Array.isArray($$a)) {
+                                  var $$v = null,
+                                    $$i = _vm._i($$a, $$v)
+                                  if ($$el.checked) {
+                                    $$i < 0 &&
+                                      (_vm.miercoles = $$a.concat([$$v]))
+                                  } else {
+                                    $$i > -1 &&
+                                      (_vm.miercoles = $$a
+                                        .slice(0, $$i)
+                                        .concat($$a.slice($$i + 1)))
+                                  }
+                                } else {
+                                  _vm.miercoles = $$c
+                                }
+                              }
                             }
-                          }
-                        })
-                      ])
+                          }),
+                          _vm._v(" "),
+                          _vm.miercoles
+                            ? [
+                                _c("div", { staticClass: "form-check" }, [
+                                  _c("label", {
+                                    staticClass: "form-check-label",
+                                    attrs: {
+                                      for: "switch-miercoles",
+                                      value: "activo"
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "col-md-12" }, [
+                                    _vm._v(
+                                      "inicio\n                                            "
+                                    ),
+                                    _c("input", {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.iniciomi,
+                                          expression: "iniciomi"
+                                        }
+                                      ],
+                                      staticClass: "form-control",
+                                      attrs: { type: "time" },
+                                      domProps: { value: _vm.iniciomi },
+                                      on: {
+                                        input: function($event) {
+                                          if ($event.target.composing) {
+                                            return
+                                          }
+                                          _vm.iniciomi = $event.target.value
+                                        }
+                                      }
+                                    })
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "col-md-12" }, [
+                                    _vm._v(
+                                      "fin\n                                            "
+                                    ),
+                                    _c("input", {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.finmi,
+                                          expression: "finmi"
+                                        }
+                                      ],
+                                      staticClass: "form-control",
+                                      attrs: { type: "time" },
+                                      domProps: { value: _vm.finmi },
+                                      on: {
+                                        input: function($event) {
+                                          if ($event.target.composing) {
+                                            return
+                                          }
+                                          _vm.finmi = $event.target.value
+                                        }
+                                      }
+                                    })
+                                  ])
+                                ])
+                              ]
+                            : [
+                                _c("label", {
+                                  staticClass: "custom-control-label",
+                                  attrs: { for: "switch-miercoles" }
+                                })
+                              ]
+                        ],
+                        2
+                      )
                     ]),
                     _vm._v(" "),
-                    _c(
-                      "div",
-                      {
-                        directives: [
-                          {
-                            name: "show",
-                            rawName: "v-show",
-                            value: _vm.errorHorario,
-                            expression: "errorHorario"
-                          }
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "text-input" }
+                        },
+                        [_vm._v("Jueves")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        {
+                          staticClass: "custom-control custom-checkbox mr-sm-2"
+                        },
+                        [
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.jueves,
+                                expression: "jueves"
+                              }
+                            ],
+                            staticClass: "form-check-input ",
+                            attrs: { type: "checkbox", id: "switch-jueves" },
+                            domProps: {
+                              checked: Array.isArray(_vm.jueves)
+                                ? _vm._i(_vm.jueves, null) > -1
+                                : _vm.jueves
+                            },
+                            on: {
+                              change: function($event) {
+                                var $$a = _vm.jueves,
+                                  $$el = $event.target,
+                                  $$c = $$el.checked ? true : false
+                                if (Array.isArray($$a)) {
+                                  var $$v = null,
+                                    $$i = _vm._i($$a, $$v)
+                                  if ($$el.checked) {
+                                    $$i < 0 && (_vm.jueves = $$a.concat([$$v]))
+                                  } else {
+                                    $$i > -1 &&
+                                      (_vm.jueves = $$a
+                                        .slice(0, $$i)
+                                        .concat($$a.slice($$i + 1)))
+                                  }
+                                } else {
+                                  _vm.jueves = $$c
+                                }
+                              }
+                            }
+                          }),
+                          _vm._v(" "),
+                          _vm.jueves
+                            ? [
+                                _c("div", { staticClass: "form-check" }, [
+                                  _c("label", {
+                                    staticClass: "form-check-label",
+                                    attrs: {
+                                      for: "switch-jueves",
+                                      value: "activo"
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "col-md-12" }, [
+                                    _vm._v(
+                                      "inicio\n                                            "
+                                    ),
+                                    _c("input", {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.inicioj,
+                                          expression: "inicioj"
+                                        }
+                                      ],
+                                      staticClass: "form-control",
+                                      attrs: { type: "time" },
+                                      domProps: { value: _vm.inicioj },
+                                      on: {
+                                        input: function($event) {
+                                          if ($event.target.composing) {
+                                            return
+                                          }
+                                          _vm.inicioj = $event.target.value
+                                        }
+                                      }
+                                    })
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "col-md-12" }, [
+                                    _vm._v(
+                                      "fin\n                                            "
+                                    ),
+                                    _c("input", {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.finj,
+                                          expression: "finj"
+                                        }
+                                      ],
+                                      staticClass: "form-control",
+                                      attrs: { type: "time" },
+                                      domProps: { value: _vm.finj },
+                                      on: {
+                                        input: function($event) {
+                                          if ($event.target.composing) {
+                                            return
+                                          }
+                                          _vm.finj = $event.target.value
+                                        }
+                                      }
+                                    })
+                                  ])
+                                ])
+                              ]
+                            : [
+                                _c("label", {
+                                  staticClass: "custom-control-label",
+                                  attrs: { for: "switch-jueves" }
+                                })
+                              ]
                         ],
-                        staticClass: "form-group row div-error"
-                      },
-                      [
-                        _c(
-                          "div",
-                          { staticClass: "text-center text-error" },
-                          _vm._l(_vm.errorMostrarMsjHorario, function(error) {
-                            return _c("div", {
-                              key: error,
-                              domProps: { textContent: _vm._s(error) }
-                            })
-                          })
-                        )
-                      ]
-                    )
+                        2
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "text-input" }
+                        },
+                        [_vm._v("Viernes")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        {
+                          staticClass: "custom-control custom-checkbox mr-sm-2"
+                        },
+                        [
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.viernes,
+                                expression: "viernes"
+                              }
+                            ],
+                            staticClass: "form-check-input ",
+                            attrs: { type: "checkbox", id: "switch-viernes" },
+                            domProps: {
+                              checked: Array.isArray(_vm.viernes)
+                                ? _vm._i(_vm.viernes, null) > -1
+                                : _vm.viernes
+                            },
+                            on: {
+                              change: function($event) {
+                                var $$a = _vm.viernes,
+                                  $$el = $event.target,
+                                  $$c = $$el.checked ? true : false
+                                if (Array.isArray($$a)) {
+                                  var $$v = null,
+                                    $$i = _vm._i($$a, $$v)
+                                  if ($$el.checked) {
+                                    $$i < 0 && (_vm.viernes = $$a.concat([$$v]))
+                                  } else {
+                                    $$i > -1 &&
+                                      (_vm.viernes = $$a
+                                        .slice(0, $$i)
+                                        .concat($$a.slice($$i + 1)))
+                                  }
+                                } else {
+                                  _vm.viernes = $$c
+                                }
+                              }
+                            }
+                          }),
+                          _vm._v(" "),
+                          _vm.viernes
+                            ? [
+                                _c("div", { staticClass: "form-check" }, [
+                                  _c("label", {
+                                    staticClass: "form-check-label",
+                                    attrs: {
+                                      for: "switch-viernes",
+                                      value: "activo"
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "col-md-12" }, [
+                                    _vm._v(
+                                      "inicio\n                                            "
+                                    ),
+                                    _c("input", {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.iniciov,
+                                          expression: "iniciov"
+                                        }
+                                      ],
+                                      staticClass: "form-control",
+                                      attrs: { type: "time" },
+                                      domProps: { value: _vm.iniciov },
+                                      on: {
+                                        input: function($event) {
+                                          if ($event.target.composing) {
+                                            return
+                                          }
+                                          _vm.iniciov = $event.target.value
+                                        }
+                                      }
+                                    })
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "col-md-12" }, [
+                                    _vm._v(
+                                      "fin\n                                            "
+                                    ),
+                                    _c("input", {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.finv,
+                                          expression: "finv"
+                                        }
+                                      ],
+                                      staticClass: "form-control",
+                                      attrs: { type: "time" },
+                                      domProps: { value: _vm.finv },
+                                      on: {
+                                        input: function($event) {
+                                          if ($event.target.composing) {
+                                            return
+                                          }
+                                          _vm.finv = $event.target.value
+                                        }
+                                      }
+                                    })
+                                  ])
+                                ])
+                              ]
+                            : [
+                                _c("label", {
+                                  staticClass: "custom-control-label",
+                                  attrs: { for: "switch-viernes" }
+                                })
+                              ]
+                        ],
+                        2
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "text-input" }
+                        },
+                        [_vm._v("Sabado")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        {
+                          staticClass: "custom-control custom-checkbox mr-sm-2"
+                        },
+                        [
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.sabado,
+                                expression: "sabado"
+                              }
+                            ],
+                            staticClass: "form-check-input ",
+                            attrs: { type: "checkbox", id: "switch-sabado" },
+                            domProps: {
+                              checked: Array.isArray(_vm.sabado)
+                                ? _vm._i(_vm.sabado, null) > -1
+                                : _vm.sabado
+                            },
+                            on: {
+                              change: function($event) {
+                                var $$a = _vm.sabado,
+                                  $$el = $event.target,
+                                  $$c = $$el.checked ? true : false
+                                if (Array.isArray($$a)) {
+                                  var $$v = null,
+                                    $$i = _vm._i($$a, $$v)
+                                  if ($$el.checked) {
+                                    $$i < 0 && (_vm.sabado = $$a.concat([$$v]))
+                                  } else {
+                                    $$i > -1 &&
+                                      (_vm.sabado = $$a
+                                        .slice(0, $$i)
+                                        .concat($$a.slice($$i + 1)))
+                                  }
+                                } else {
+                                  _vm.sabado = $$c
+                                }
+                              }
+                            }
+                          }),
+                          _vm._v(" "),
+                          _vm.sabado
+                            ? [
+                                _c("div", { staticClass: "form-check" }, [
+                                  _c("label", {
+                                    staticClass: "form-check-label",
+                                    attrs: {
+                                      for: "switch-sabado",
+                                      value: "activo"
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "col-md-12" }, [
+                                    _vm._v(
+                                      "inicio\n                                            "
+                                    ),
+                                    _c("input", {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.inicios,
+                                          expression: "inicios"
+                                        }
+                                      ],
+                                      staticClass: "form-control",
+                                      attrs: { type: "time" },
+                                      domProps: { value: _vm.inicios },
+                                      on: {
+                                        input: function($event) {
+                                          if ($event.target.composing) {
+                                            return
+                                          }
+                                          _vm.inicios = $event.target.value
+                                        }
+                                      }
+                                    })
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "col-md-12" }, [
+                                    _vm._v(
+                                      "fin\n                                            "
+                                    ),
+                                    _c("input", {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.fins,
+                                          expression: "fins"
+                                        }
+                                      ],
+                                      staticClass: "form-control",
+                                      attrs: { type: "time" },
+                                      domProps: { value: _vm.fins },
+                                      on: {
+                                        input: function($event) {
+                                          if ($event.target.composing) {
+                                            return
+                                          }
+                                          _vm.fins = $event.target.value
+                                        }
+                                      }
+                                    })
+                                  ])
+                                ])
+                              ]
+                            : [
+                                _c("label", {
+                                  staticClass: "custom-control-label",
+                                  attrs: { for: "switch-sabado" }
+                                })
+                              ]
+                        ],
+                        2
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "text-input" }
+                        },
+                        [_vm._v("Domingo")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        {
+                          staticClass: "custom-control custom-checkbox mr-sm-2"
+                        },
+                        [
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.domingo,
+                                expression: "domingo"
+                              }
+                            ],
+                            staticClass: "form-check-input ",
+                            attrs: { type: "checkbox", id: "switch-domingo" },
+                            domProps: {
+                              checked: Array.isArray(_vm.domingo)
+                                ? _vm._i(_vm.domingo, null) > -1
+                                : _vm.domingo
+                            },
+                            on: {
+                              change: function($event) {
+                                var $$a = _vm.domingo,
+                                  $$el = $event.target,
+                                  $$c = $$el.checked ? true : false
+                                if (Array.isArray($$a)) {
+                                  var $$v = null,
+                                    $$i = _vm._i($$a, $$v)
+                                  if ($$el.checked) {
+                                    $$i < 0 && (_vm.domingo = $$a.concat([$$v]))
+                                  } else {
+                                    $$i > -1 &&
+                                      (_vm.domingo = $$a
+                                        .slice(0, $$i)
+                                        .concat($$a.slice($$i + 1)))
+                                  }
+                                } else {
+                                  _vm.domingo = $$c
+                                }
+                              }
+                            }
+                          }),
+                          _vm._v(" "),
+                          _vm.domingo
+                            ? [
+                                _c("div", { staticClass: "form-check" }, [
+                                  _c("label", {
+                                    staticClass: "form-check-label",
+                                    attrs: {
+                                      for: "switch-domingo",
+                                      value: "activo"
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "col-md-12" }, [
+                                    _vm._v(
+                                      "inicio\n                                            "
+                                    ),
+                                    _c("input", {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.iniciod,
+                                          expression: "iniciod"
+                                        }
+                                      ],
+                                      staticClass: "form-control",
+                                      attrs: { type: "time" },
+                                      domProps: { value: _vm.iniciod },
+                                      on: {
+                                        input: function($event) {
+                                          if ($event.target.composing) {
+                                            return
+                                          }
+                                          _vm.iniciod = $event.target.value
+                                        }
+                                      }
+                                    })
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "col-md-12" }, [
+                                    _vm._v(
+                                      "fin\n                                            "
+                                    ),
+                                    _c("input", {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.find,
+                                          expression: "find"
+                                        }
+                                      ],
+                                      staticClass: "form-control",
+                                      attrs: { type: "time" },
+                                      domProps: { value: _vm.find },
+                                      on: {
+                                        input: function($event) {
+                                          if ($event.target.composing) {
+                                            return
+                                          }
+                                          _vm.find = $event.target.value
+                                        }
+                                      }
+                                    })
+                                  ])
+                                ])
+                              ]
+                            : [
+                                _c("label", {
+                                  staticClass: "custom-control-label",
+                                  attrs: { for: "switch-domingo" }
+                                })
+                              ]
+                        ],
+                        2
+                      )
+                    ])
                   ]
                 )
               ]),
@@ -85634,11 +86947,19 @@ var staticRenderFns = [
       _c("tr", [
         _c("th", [_vm._v("Opciones")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Dias")]),
+        _c("th", [_vm._v("Lunes")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Inicio")]),
+        _c("th", [_vm._v("Martes")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Fin")]),
+        _c("th", [_vm._v("Miercoles")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Jueves")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("viernes")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("sabado")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("domingo")]),
         _vm._v(" "),
         _c("th", [_vm._v("Estado")])
       ])
@@ -85842,7 +87163,7 @@ var normalizeComponent = __webpack_require__(1)
 /* script */
 var __vue_script__ = __webpack_require__(110)
 /* template */
-var __vue_template__ = __webpack_require__(118)
+var __vue_template__ = __webpack_require__(111)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -85859,7 +87180,7 @@ var Component = normalizeComponent(
   __vue_scopeId__,
   __vue_module_identifier__
 )
-Component.options.__file = "resources\\assets\\js\\components\\ejemplo.vue"
+Component.options.__file = "resources\\assets\\js\\components\\prueba.vue"
 
 /* hot reload */
 if (false) {(function () {
@@ -85868,9 +87189,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-36bae2bf", Component.options)
+    hotAPI.createRecord("data-v-1b235968", Component.options)
   } else {
-    hotAPI.reload("data-v-36bae2bf", Component.options)
+    hotAPI.reload("data-v-1b235968", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -85886,14 +87207,50 @@ module.exports = Component.exports
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator__ = __webpack_require__(111);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_google_maps_api_loader__ = __webpack_require__(114);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_google_maps_api_loader___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_google_maps_api_loader__);
-
-
-function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
-
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -85916,2154 +87273,39 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+    data: function data() {
+        return {
+            inicio: 20.182380492250974,
+            fin: -90.13451586456678,
+            markers: [{
+                position: { lat: 19.830073498894144, lng: -90.53314707610431 }
+            }],
+            info_marker: null,
+            infowindow: { lat: 10, lng: 10.0 },
+            window_open: false
 
-  props: {
-    mapConfig: Object,
-    apiKey: String
-  },
-  data: function data() {
-    return {
-      google: null,
-      map: null
-    };
-  },
-  mounted: function () {
-    var _ref = _asyncToGenerator( /*#__PURE__*/__WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator___default.a.mark(function _callee() {
-      var googleMapApi;
-      return __WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator___default.a.wrap(function _callee$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              _context.next = 2;
-              return __WEBPACK_IMPORTED_MODULE_1_google_maps_api_loader___default()({
-                apiKey: this.apiKey
-              });
+        };
+    },
 
-            case 2:
-              googleMapApi = _context.sent;
 
-              this.google = googleMapApi;
-              this.initializeMap();
-
-            case 5:
-            case 'end':
-              return _context.stop();
-          }
+    computed: {
+        marcadores: function marcadores() {
+            this.getPosition().lat() + " " + this.getPosition().lng();
         }
-      }, _callee, this);
-    }));
 
-    function mounted() {
-      return _ref.apply(this, arguments);
+    },
+    methods: {
+        openWindow: function openWindow() {
+            this.window_open = true;
+        },
+        marcadores: function marcadores() {
+            this.getPosition().lat() + " " + this.getPosition().lng();
+        }
     }
-
-    return mounted;
-  }(),
-
-
-  methods: {
-    initializeMap: function initializeMap() {
-      var mapContainer = this.$refs.googleMap;
-      this.map = new this.google.maps.Map(mapContainer, this.mapConfig);
-    }
-  }
-
 });
 
 /***/ }),
 /* 111 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(112);
-
-
-/***/ }),
-/* 112 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/**
- * Copyright (c) 2014-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-// This method of obtaining a reference to the global object needs to be
-// kept identical to the way it is obtained in runtime.js
-var g = (function() { return this })() || Function("return this")();
-
-// Use `getOwnPropertyNames` because not all browsers support calling
-// `hasOwnProperty` on the global `self` object in a worker. See #183.
-var hadRuntime = g.regeneratorRuntime &&
-  Object.getOwnPropertyNames(g).indexOf("regeneratorRuntime") >= 0;
-
-// Save the old regeneratorRuntime in case it needs to be restored later.
-var oldRuntime = hadRuntime && g.regeneratorRuntime;
-
-// Force reevalutation of runtime.js.
-g.regeneratorRuntime = undefined;
-
-module.exports = __webpack_require__(113);
-
-if (hadRuntime) {
-  // Restore the original runtime.
-  g.regeneratorRuntime = oldRuntime;
-} else {
-  // Remove the global property added by runtime.js.
-  try {
-    delete g.regeneratorRuntime;
-  } catch(e) {
-    g.regeneratorRuntime = undefined;
-  }
-}
-
-
-/***/ }),
-/* 113 */
-/***/ (function(module, exports) {
-
-/**
- * Copyright (c) 2014-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-!(function(global) {
-  "use strict";
-
-  var Op = Object.prototype;
-  var hasOwn = Op.hasOwnProperty;
-  var undefined; // More compressible than void 0.
-  var $Symbol = typeof Symbol === "function" ? Symbol : {};
-  var iteratorSymbol = $Symbol.iterator || "@@iterator";
-  var asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator";
-  var toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag";
-
-  var inModule = typeof module === "object";
-  var runtime = global.regeneratorRuntime;
-  if (runtime) {
-    if (inModule) {
-      // If regeneratorRuntime is defined globally and we're in a module,
-      // make the exports object identical to regeneratorRuntime.
-      module.exports = runtime;
-    }
-    // Don't bother evaluating the rest of this file if the runtime was
-    // already defined globally.
-    return;
-  }
-
-  // Define the runtime globally (as expected by generated code) as either
-  // module.exports (if we're in a module) or a new, empty object.
-  runtime = global.regeneratorRuntime = inModule ? module.exports : {};
-
-  function wrap(innerFn, outerFn, self, tryLocsList) {
-    // If outerFn provided and outerFn.prototype is a Generator, then outerFn.prototype instanceof Generator.
-    var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator;
-    var generator = Object.create(protoGenerator.prototype);
-    var context = new Context(tryLocsList || []);
-
-    // The ._invoke method unifies the implementations of the .next,
-    // .throw, and .return methods.
-    generator._invoke = makeInvokeMethod(innerFn, self, context);
-
-    return generator;
-  }
-  runtime.wrap = wrap;
-
-  // Try/catch helper to minimize deoptimizations. Returns a completion
-  // record like context.tryEntries[i].completion. This interface could
-  // have been (and was previously) designed to take a closure to be
-  // invoked without arguments, but in all the cases we care about we
-  // already have an existing method we want to call, so there's no need
-  // to create a new function object. We can even get away with assuming
-  // the method takes exactly one argument, since that happens to be true
-  // in every case, so we don't have to touch the arguments object. The
-  // only additional allocation required is the completion record, which
-  // has a stable shape and so hopefully should be cheap to allocate.
-  function tryCatch(fn, obj, arg) {
-    try {
-      return { type: "normal", arg: fn.call(obj, arg) };
-    } catch (err) {
-      return { type: "throw", arg: err };
-    }
-  }
-
-  var GenStateSuspendedStart = "suspendedStart";
-  var GenStateSuspendedYield = "suspendedYield";
-  var GenStateExecuting = "executing";
-  var GenStateCompleted = "completed";
-
-  // Returning this object from the innerFn has the same effect as
-  // breaking out of the dispatch switch statement.
-  var ContinueSentinel = {};
-
-  // Dummy constructor functions that we use as the .constructor and
-  // .constructor.prototype properties for functions that return Generator
-  // objects. For full spec compliance, you may wish to configure your
-  // minifier not to mangle the names of these two functions.
-  function Generator() {}
-  function GeneratorFunction() {}
-  function GeneratorFunctionPrototype() {}
-
-  // This is a polyfill for %IteratorPrototype% for environments that
-  // don't natively support it.
-  var IteratorPrototype = {};
-  IteratorPrototype[iteratorSymbol] = function () {
-    return this;
-  };
-
-  var getProto = Object.getPrototypeOf;
-  var NativeIteratorPrototype = getProto && getProto(getProto(values([])));
-  if (NativeIteratorPrototype &&
-      NativeIteratorPrototype !== Op &&
-      hasOwn.call(NativeIteratorPrototype, iteratorSymbol)) {
-    // This environment has a native %IteratorPrototype%; use it instead
-    // of the polyfill.
-    IteratorPrototype = NativeIteratorPrototype;
-  }
-
-  var Gp = GeneratorFunctionPrototype.prototype =
-    Generator.prototype = Object.create(IteratorPrototype);
-  GeneratorFunction.prototype = Gp.constructor = GeneratorFunctionPrototype;
-  GeneratorFunctionPrototype.constructor = GeneratorFunction;
-  GeneratorFunctionPrototype[toStringTagSymbol] =
-    GeneratorFunction.displayName = "GeneratorFunction";
-
-  // Helper for defining the .next, .throw, and .return methods of the
-  // Iterator interface in terms of a single ._invoke method.
-  function defineIteratorMethods(prototype) {
-    ["next", "throw", "return"].forEach(function(method) {
-      prototype[method] = function(arg) {
-        return this._invoke(method, arg);
-      };
-    });
-  }
-
-  runtime.isGeneratorFunction = function(genFun) {
-    var ctor = typeof genFun === "function" && genFun.constructor;
-    return ctor
-      ? ctor === GeneratorFunction ||
-        // For the native GeneratorFunction constructor, the best we can
-        // do is to check its .name property.
-        (ctor.displayName || ctor.name) === "GeneratorFunction"
-      : false;
-  };
-
-  runtime.mark = function(genFun) {
-    if (Object.setPrototypeOf) {
-      Object.setPrototypeOf(genFun, GeneratorFunctionPrototype);
-    } else {
-      genFun.__proto__ = GeneratorFunctionPrototype;
-      if (!(toStringTagSymbol in genFun)) {
-        genFun[toStringTagSymbol] = "GeneratorFunction";
-      }
-    }
-    genFun.prototype = Object.create(Gp);
-    return genFun;
-  };
-
-  // Within the body of any async function, `await x` is transformed to
-  // `yield regeneratorRuntime.awrap(x)`, so that the runtime can test
-  // `hasOwn.call(value, "__await")` to determine if the yielded value is
-  // meant to be awaited.
-  runtime.awrap = function(arg) {
-    return { __await: arg };
-  };
-
-  function AsyncIterator(generator) {
-    function invoke(method, arg, resolve, reject) {
-      var record = tryCatch(generator[method], generator, arg);
-      if (record.type === "throw") {
-        reject(record.arg);
-      } else {
-        var result = record.arg;
-        var value = result.value;
-        if (value &&
-            typeof value === "object" &&
-            hasOwn.call(value, "__await")) {
-          return Promise.resolve(value.__await).then(function(value) {
-            invoke("next", value, resolve, reject);
-          }, function(err) {
-            invoke("throw", err, resolve, reject);
-          });
-        }
-
-        return Promise.resolve(value).then(function(unwrapped) {
-          // When a yielded Promise is resolved, its final value becomes
-          // the .value of the Promise<{value,done}> result for the
-          // current iteration. If the Promise is rejected, however, the
-          // result for this iteration will be rejected with the same
-          // reason. Note that rejections of yielded Promises are not
-          // thrown back into the generator function, as is the case
-          // when an awaited Promise is rejected. This difference in
-          // behavior between yield and await is important, because it
-          // allows the consumer to decide what to do with the yielded
-          // rejection (swallow it and continue, manually .throw it back
-          // into the generator, abandon iteration, whatever). With
-          // await, by contrast, there is no opportunity to examine the
-          // rejection reason outside the generator function, so the
-          // only option is to throw it from the await expression, and
-          // let the generator function handle the exception.
-          result.value = unwrapped;
-          resolve(result);
-        }, reject);
-      }
-    }
-
-    var previousPromise;
-
-    function enqueue(method, arg) {
-      function callInvokeWithMethodAndArg() {
-        return new Promise(function(resolve, reject) {
-          invoke(method, arg, resolve, reject);
-        });
-      }
-
-      return previousPromise =
-        // If enqueue has been called before, then we want to wait until
-        // all previous Promises have been resolved before calling invoke,
-        // so that results are always delivered in the correct order. If
-        // enqueue has not been called before, then it is important to
-        // call invoke immediately, without waiting on a callback to fire,
-        // so that the async generator function has the opportunity to do
-        // any necessary setup in a predictable way. This predictability
-        // is why the Promise constructor synchronously invokes its
-        // executor callback, and why async functions synchronously
-        // execute code before the first await. Since we implement simple
-        // async functions in terms of async generators, it is especially
-        // important to get this right, even though it requires care.
-        previousPromise ? previousPromise.then(
-          callInvokeWithMethodAndArg,
-          // Avoid propagating failures to Promises returned by later
-          // invocations of the iterator.
-          callInvokeWithMethodAndArg
-        ) : callInvokeWithMethodAndArg();
-    }
-
-    // Define the unified helper method that is used to implement .next,
-    // .throw, and .return (see defineIteratorMethods).
-    this._invoke = enqueue;
-  }
-
-  defineIteratorMethods(AsyncIterator.prototype);
-  AsyncIterator.prototype[asyncIteratorSymbol] = function () {
-    return this;
-  };
-  runtime.AsyncIterator = AsyncIterator;
-
-  // Note that simple async functions are implemented on top of
-  // AsyncIterator objects; they just return a Promise for the value of
-  // the final result produced by the iterator.
-  runtime.async = function(innerFn, outerFn, self, tryLocsList) {
-    var iter = new AsyncIterator(
-      wrap(innerFn, outerFn, self, tryLocsList)
-    );
-
-    return runtime.isGeneratorFunction(outerFn)
-      ? iter // If outerFn is a generator, return the full iterator.
-      : iter.next().then(function(result) {
-          return result.done ? result.value : iter.next();
-        });
-  };
-
-  function makeInvokeMethod(innerFn, self, context) {
-    var state = GenStateSuspendedStart;
-
-    return function invoke(method, arg) {
-      if (state === GenStateExecuting) {
-        throw new Error("Generator is already running");
-      }
-
-      if (state === GenStateCompleted) {
-        if (method === "throw") {
-          throw arg;
-        }
-
-        // Be forgiving, per 25.3.3.3.3 of the spec:
-        // https://people.mozilla.org/~jorendorff/es6-draft.html#sec-generatorresume
-        return doneResult();
-      }
-
-      context.method = method;
-      context.arg = arg;
-
-      while (true) {
-        var delegate = context.delegate;
-        if (delegate) {
-          var delegateResult = maybeInvokeDelegate(delegate, context);
-          if (delegateResult) {
-            if (delegateResult === ContinueSentinel) continue;
-            return delegateResult;
-          }
-        }
-
-        if (context.method === "next") {
-          // Setting context._sent for legacy support of Babel's
-          // function.sent implementation.
-          context.sent = context._sent = context.arg;
-
-        } else if (context.method === "throw") {
-          if (state === GenStateSuspendedStart) {
-            state = GenStateCompleted;
-            throw context.arg;
-          }
-
-          context.dispatchException(context.arg);
-
-        } else if (context.method === "return") {
-          context.abrupt("return", context.arg);
-        }
-
-        state = GenStateExecuting;
-
-        var record = tryCatch(innerFn, self, context);
-        if (record.type === "normal") {
-          // If an exception is thrown from innerFn, we leave state ===
-          // GenStateExecuting and loop back for another invocation.
-          state = context.done
-            ? GenStateCompleted
-            : GenStateSuspendedYield;
-
-          if (record.arg === ContinueSentinel) {
-            continue;
-          }
-
-          return {
-            value: record.arg,
-            done: context.done
-          };
-
-        } else if (record.type === "throw") {
-          state = GenStateCompleted;
-          // Dispatch the exception by looping back around to the
-          // context.dispatchException(context.arg) call above.
-          context.method = "throw";
-          context.arg = record.arg;
-        }
-      }
-    };
-  }
-
-  // Call delegate.iterator[context.method](context.arg) and handle the
-  // result, either by returning a { value, done } result from the
-  // delegate iterator, or by modifying context.method and context.arg,
-  // setting context.delegate to null, and returning the ContinueSentinel.
-  function maybeInvokeDelegate(delegate, context) {
-    var method = delegate.iterator[context.method];
-    if (method === undefined) {
-      // A .throw or .return when the delegate iterator has no .throw
-      // method always terminates the yield* loop.
-      context.delegate = null;
-
-      if (context.method === "throw") {
-        if (delegate.iterator.return) {
-          // If the delegate iterator has a return method, give it a
-          // chance to clean up.
-          context.method = "return";
-          context.arg = undefined;
-          maybeInvokeDelegate(delegate, context);
-
-          if (context.method === "throw") {
-            // If maybeInvokeDelegate(context) changed context.method from
-            // "return" to "throw", let that override the TypeError below.
-            return ContinueSentinel;
-          }
-        }
-
-        context.method = "throw";
-        context.arg = new TypeError(
-          "The iterator does not provide a 'throw' method");
-      }
-
-      return ContinueSentinel;
-    }
-
-    var record = tryCatch(method, delegate.iterator, context.arg);
-
-    if (record.type === "throw") {
-      context.method = "throw";
-      context.arg = record.arg;
-      context.delegate = null;
-      return ContinueSentinel;
-    }
-
-    var info = record.arg;
-
-    if (! info) {
-      context.method = "throw";
-      context.arg = new TypeError("iterator result is not an object");
-      context.delegate = null;
-      return ContinueSentinel;
-    }
-
-    if (info.done) {
-      // Assign the result of the finished delegate to the temporary
-      // variable specified by delegate.resultName (see delegateYield).
-      context[delegate.resultName] = info.value;
-
-      // Resume execution at the desired location (see delegateYield).
-      context.next = delegate.nextLoc;
-
-      // If context.method was "throw" but the delegate handled the
-      // exception, let the outer generator proceed normally. If
-      // context.method was "next", forget context.arg since it has been
-      // "consumed" by the delegate iterator. If context.method was
-      // "return", allow the original .return call to continue in the
-      // outer generator.
-      if (context.method !== "return") {
-        context.method = "next";
-        context.arg = undefined;
-      }
-
-    } else {
-      // Re-yield the result returned by the delegate method.
-      return info;
-    }
-
-    // The delegate iterator is finished, so forget it and continue with
-    // the outer generator.
-    context.delegate = null;
-    return ContinueSentinel;
-  }
-
-  // Define Generator.prototype.{next,throw,return} in terms of the
-  // unified ._invoke helper method.
-  defineIteratorMethods(Gp);
-
-  Gp[toStringTagSymbol] = "Generator";
-
-  // A Generator should always return itself as the iterator object when the
-  // @@iterator function is called on it. Some browsers' implementations of the
-  // iterator prototype chain incorrectly implement this, causing the Generator
-  // object to not be returned from this call. This ensures that doesn't happen.
-  // See https://github.com/facebook/regenerator/issues/274 for more details.
-  Gp[iteratorSymbol] = function() {
-    return this;
-  };
-
-  Gp.toString = function() {
-    return "[object Generator]";
-  };
-
-  function pushTryEntry(locs) {
-    var entry = { tryLoc: locs[0] };
-
-    if (1 in locs) {
-      entry.catchLoc = locs[1];
-    }
-
-    if (2 in locs) {
-      entry.finallyLoc = locs[2];
-      entry.afterLoc = locs[3];
-    }
-
-    this.tryEntries.push(entry);
-  }
-
-  function resetTryEntry(entry) {
-    var record = entry.completion || {};
-    record.type = "normal";
-    delete record.arg;
-    entry.completion = record;
-  }
-
-  function Context(tryLocsList) {
-    // The root entry object (effectively a try statement without a catch
-    // or a finally block) gives us a place to store values thrown from
-    // locations where there is no enclosing try statement.
-    this.tryEntries = [{ tryLoc: "root" }];
-    tryLocsList.forEach(pushTryEntry, this);
-    this.reset(true);
-  }
-
-  runtime.keys = function(object) {
-    var keys = [];
-    for (var key in object) {
-      keys.push(key);
-    }
-    keys.reverse();
-
-    // Rather than returning an object with a next method, we keep
-    // things simple and return the next function itself.
-    return function next() {
-      while (keys.length) {
-        var key = keys.pop();
-        if (key in object) {
-          next.value = key;
-          next.done = false;
-          return next;
-        }
-      }
-
-      // To avoid creating an additional object, we just hang the .value
-      // and .done properties off the next function object itself. This
-      // also ensures that the minifier will not anonymize the function.
-      next.done = true;
-      return next;
-    };
-  };
-
-  function values(iterable) {
-    if (iterable) {
-      var iteratorMethod = iterable[iteratorSymbol];
-      if (iteratorMethod) {
-        return iteratorMethod.call(iterable);
-      }
-
-      if (typeof iterable.next === "function") {
-        return iterable;
-      }
-
-      if (!isNaN(iterable.length)) {
-        var i = -1, next = function next() {
-          while (++i < iterable.length) {
-            if (hasOwn.call(iterable, i)) {
-              next.value = iterable[i];
-              next.done = false;
-              return next;
-            }
-          }
-
-          next.value = undefined;
-          next.done = true;
-
-          return next;
-        };
-
-        return next.next = next;
-      }
-    }
-
-    // Return an iterator with no values.
-    return { next: doneResult };
-  }
-  runtime.values = values;
-
-  function doneResult() {
-    return { value: undefined, done: true };
-  }
-
-  Context.prototype = {
-    constructor: Context,
-
-    reset: function(skipTempReset) {
-      this.prev = 0;
-      this.next = 0;
-      // Resetting context._sent for legacy support of Babel's
-      // function.sent implementation.
-      this.sent = this._sent = undefined;
-      this.done = false;
-      this.delegate = null;
-
-      this.method = "next";
-      this.arg = undefined;
-
-      this.tryEntries.forEach(resetTryEntry);
-
-      if (!skipTempReset) {
-        for (var name in this) {
-          // Not sure about the optimal order of these conditions:
-          if (name.charAt(0) === "t" &&
-              hasOwn.call(this, name) &&
-              !isNaN(+name.slice(1))) {
-            this[name] = undefined;
-          }
-        }
-      }
-    },
-
-    stop: function() {
-      this.done = true;
-
-      var rootEntry = this.tryEntries[0];
-      var rootRecord = rootEntry.completion;
-      if (rootRecord.type === "throw") {
-        throw rootRecord.arg;
-      }
-
-      return this.rval;
-    },
-
-    dispatchException: function(exception) {
-      if (this.done) {
-        throw exception;
-      }
-
-      var context = this;
-      function handle(loc, caught) {
-        record.type = "throw";
-        record.arg = exception;
-        context.next = loc;
-
-        if (caught) {
-          // If the dispatched exception was caught by a catch block,
-          // then let that catch block handle the exception normally.
-          context.method = "next";
-          context.arg = undefined;
-        }
-
-        return !! caught;
-      }
-
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        var record = entry.completion;
-
-        if (entry.tryLoc === "root") {
-          // Exception thrown outside of any try block that could handle
-          // it, so set the completion value of the entire function to
-          // throw the exception.
-          return handle("end");
-        }
-
-        if (entry.tryLoc <= this.prev) {
-          var hasCatch = hasOwn.call(entry, "catchLoc");
-          var hasFinally = hasOwn.call(entry, "finallyLoc");
-
-          if (hasCatch && hasFinally) {
-            if (this.prev < entry.catchLoc) {
-              return handle(entry.catchLoc, true);
-            } else if (this.prev < entry.finallyLoc) {
-              return handle(entry.finallyLoc);
-            }
-
-          } else if (hasCatch) {
-            if (this.prev < entry.catchLoc) {
-              return handle(entry.catchLoc, true);
-            }
-
-          } else if (hasFinally) {
-            if (this.prev < entry.finallyLoc) {
-              return handle(entry.finallyLoc);
-            }
-
-          } else {
-            throw new Error("try statement without catch or finally");
-          }
-        }
-      }
-    },
-
-    abrupt: function(type, arg) {
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        if (entry.tryLoc <= this.prev &&
-            hasOwn.call(entry, "finallyLoc") &&
-            this.prev < entry.finallyLoc) {
-          var finallyEntry = entry;
-          break;
-        }
-      }
-
-      if (finallyEntry &&
-          (type === "break" ||
-           type === "continue") &&
-          finallyEntry.tryLoc <= arg &&
-          arg <= finallyEntry.finallyLoc) {
-        // Ignore the finally entry if control is not jumping to a
-        // location outside the try/catch block.
-        finallyEntry = null;
-      }
-
-      var record = finallyEntry ? finallyEntry.completion : {};
-      record.type = type;
-      record.arg = arg;
-
-      if (finallyEntry) {
-        this.method = "next";
-        this.next = finallyEntry.finallyLoc;
-        return ContinueSentinel;
-      }
-
-      return this.complete(record);
-    },
-
-    complete: function(record, afterLoc) {
-      if (record.type === "throw") {
-        throw record.arg;
-      }
-
-      if (record.type === "break" ||
-          record.type === "continue") {
-        this.next = record.arg;
-      } else if (record.type === "return") {
-        this.rval = this.arg = record.arg;
-        this.method = "return";
-        this.next = "end";
-      } else if (record.type === "normal" && afterLoc) {
-        this.next = afterLoc;
-      }
-
-      return ContinueSentinel;
-    },
-
-    finish: function(finallyLoc) {
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        if (entry.finallyLoc === finallyLoc) {
-          this.complete(entry.completion, entry.afterLoc);
-          resetTryEntry(entry);
-          return ContinueSentinel;
-        }
-      }
-    },
-
-    "catch": function(tryLoc) {
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        if (entry.tryLoc === tryLoc) {
-          var record = entry.completion;
-          if (record.type === "throw") {
-            var thrown = record.arg;
-            resetTryEntry(entry);
-          }
-          return thrown;
-        }
-      }
-
-      // The context.catch method must only be called with a location
-      // argument that corresponds to a known catch block.
-      throw new Error("illegal catch attempt");
-    },
-
-    delegateYield: function(iterable, resultName, nextLoc) {
-      this.delegate = {
-        iterator: values(iterable),
-        resultName: resultName,
-        nextLoc: nextLoc
-      };
-
-      if (this.method === "next") {
-        // Deliberately forget the last sent value so that we don't
-        // accidentally pass it on to the delegate.
-        this.arg = undefined;
-      }
-
-      return ContinueSentinel;
-    }
-  };
-})(
-  // In sloppy mode, unbound `this` refers to the global object, fallback to
-  // Function constructor if we're in global strict mode. That is sadly a form
-  // of indirect eval which violates Content Security Policy.
-  (function() { return this })() || Function("return this")()
-);
-
-
-/***/ }),
-/* 114 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(115);
-
-
-/***/ }),
-/* 115 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var Promise = __webpack_require__(116).Promise;
-var urlBuilder = __webpack_require__(117);
-
-var googleApi;
-
-function loadAutoCompleteAPI(params) {
-  var script = document.createElement('script');
-
-  script.type = 'text/javascript';
-
-  script.src = urlBuilder({
-    base: 'https://maps.googleapis.com/maps/api/js',
-    libraries: params.libraries || [],
-    callback: 'googleMapsAutoCompleteAPILoad',
-    apiKey: params.apiKey,
-    client: params.client,
-    language: params.language,
-    version: params.version
-  });
-
-  document.querySelector('head').appendChild(script);
-}
-
-/**
- * googleMapsApiLoader
- *
- * @param  {object} params
- * @param  {object} params.libraries
- *
- * @return {promise}
- */
-function googleMapsApiLoader(params) {
-  if (googleApi) {
-    return Promise.resolve(googleApi);
-  }
-
-  return new Promise(function(resolve, reject) {
-    loadAutoCompleteAPI(params);
-
-    window.googleMapsAutoCompleteAPILoad = function() {
-      googleApi = window.google;
-      resolve(googleApi);
-    };
-
-    setTimeout(function() {
-      if (!window.google) {
-        reject(new Error('Loading took too long'));
-      }
-    }, 5000);
-  });
-}
-
-module.exports = googleMapsApiLoader;
-
-
-
-/***/ }),
-/* 116 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(process, global) {/*!
- * @overview es6-promise - a tiny implementation of Promises/A+.
- * @copyright Copyright (c) 2014 Yehuda Katz, Tom Dale, Stefan Penner and contributors (Conversion to ES6 API by Jake Archibald)
- * @license   Licensed under MIT license
- *            See https://raw.githubusercontent.com/stefanpenner/es6-promise/master/LICENSE
- * @version   v4.2.8+1e68dce6
- */
-
-(function (global, factory) {
-	 true ? module.exports = factory() :
-	typeof define === 'function' && define.amd ? define(factory) :
-	(global.ES6Promise = factory());
-}(this, (function () { 'use strict';
-
-function objectOrFunction(x) {
-  var type = typeof x;
-  return x !== null && (type === 'object' || type === 'function');
-}
-
-function isFunction(x) {
-  return typeof x === 'function';
-}
-
-
-
-var _isArray = void 0;
-if (Array.isArray) {
-  _isArray = Array.isArray;
-} else {
-  _isArray = function (x) {
-    return Object.prototype.toString.call(x) === '[object Array]';
-  };
-}
-
-var isArray = _isArray;
-
-var len = 0;
-var vertxNext = void 0;
-var customSchedulerFn = void 0;
-
-var asap = function asap(callback, arg) {
-  queue[len] = callback;
-  queue[len + 1] = arg;
-  len += 2;
-  if (len === 2) {
-    // If len is 2, that means that we need to schedule an async flush.
-    // If additional callbacks are queued before the queue is flushed, they
-    // will be processed by this flush that we are scheduling.
-    if (customSchedulerFn) {
-      customSchedulerFn(flush);
-    } else {
-      scheduleFlush();
-    }
-  }
-};
-
-function setScheduler(scheduleFn) {
-  customSchedulerFn = scheduleFn;
-}
-
-function setAsap(asapFn) {
-  asap = asapFn;
-}
-
-var browserWindow = typeof window !== 'undefined' ? window : undefined;
-var browserGlobal = browserWindow || {};
-var BrowserMutationObserver = browserGlobal.MutationObserver || browserGlobal.WebKitMutationObserver;
-var isNode = typeof self === 'undefined' && typeof process !== 'undefined' && {}.toString.call(process) === '[object process]';
-
-// test for web worker but not in IE10
-var isWorker = typeof Uint8ClampedArray !== 'undefined' && typeof importScripts !== 'undefined' && typeof MessageChannel !== 'undefined';
-
-// node
-function useNextTick() {
-  // node version 0.10.x displays a deprecation warning when nextTick is used recursively
-  // see https://github.com/cujojs/when/issues/410 for details
-  return function () {
-    return process.nextTick(flush);
-  };
-}
-
-// vertx
-function useVertxTimer() {
-  if (typeof vertxNext !== 'undefined') {
-    return function () {
-      vertxNext(flush);
-    };
-  }
-
-  return useSetTimeout();
-}
-
-function useMutationObserver() {
-  var iterations = 0;
-  var observer = new BrowserMutationObserver(flush);
-  var node = document.createTextNode('');
-  observer.observe(node, { characterData: true });
-
-  return function () {
-    node.data = iterations = ++iterations % 2;
-  };
-}
-
-// web worker
-function useMessageChannel() {
-  var channel = new MessageChannel();
-  channel.port1.onmessage = flush;
-  return function () {
-    return channel.port2.postMessage(0);
-  };
-}
-
-function useSetTimeout() {
-  // Store setTimeout reference so es6-promise will be unaffected by
-  // other code modifying setTimeout (like sinon.useFakeTimers())
-  var globalSetTimeout = setTimeout;
-  return function () {
-    return globalSetTimeout(flush, 1);
-  };
-}
-
-var queue = new Array(1000);
-function flush() {
-  for (var i = 0; i < len; i += 2) {
-    var callback = queue[i];
-    var arg = queue[i + 1];
-
-    callback(arg);
-
-    queue[i] = undefined;
-    queue[i + 1] = undefined;
-  }
-
-  len = 0;
-}
-
-function attemptVertx() {
-  try {
-    var vertx = Function('return this')().require('vertx');
-    vertxNext = vertx.runOnLoop || vertx.runOnContext;
-    return useVertxTimer();
-  } catch (e) {
-    return useSetTimeout();
-  }
-}
-
-var scheduleFlush = void 0;
-// Decide what async method to use to triggering processing of queued callbacks:
-if (isNode) {
-  scheduleFlush = useNextTick();
-} else if (BrowserMutationObserver) {
-  scheduleFlush = useMutationObserver();
-} else if (isWorker) {
-  scheduleFlush = useMessageChannel();
-} else if (browserWindow === undefined && "function" === 'function') {
-  scheduleFlush = attemptVertx();
-} else {
-  scheduleFlush = useSetTimeout();
-}
-
-function then(onFulfillment, onRejection) {
-  var parent = this;
-
-  var child = new this.constructor(noop);
-
-  if (child[PROMISE_ID] === undefined) {
-    makePromise(child);
-  }
-
-  var _state = parent._state;
-
-
-  if (_state) {
-    var callback = arguments[_state - 1];
-    asap(function () {
-      return invokeCallback(_state, child, callback, parent._result);
-    });
-  } else {
-    subscribe(parent, child, onFulfillment, onRejection);
-  }
-
-  return child;
-}
-
-/**
-  `Promise.resolve` returns a promise that will become resolved with the
-  passed `value`. It is shorthand for the following:
-
-  ```javascript
-  let promise = new Promise(function(resolve, reject){
-    resolve(1);
-  });
-
-  promise.then(function(value){
-    // value === 1
-  });
-  ```
-
-  Instead of writing the above, your code now simply becomes the following:
-
-  ```javascript
-  let promise = Promise.resolve(1);
-
-  promise.then(function(value){
-    // value === 1
-  });
-  ```
-
-  @method resolve
-  @static
-  @param {Any} value value that the returned promise will be resolved with
-  Useful for tooling.
-  @return {Promise} a promise that will become fulfilled with the given
-  `value`
-*/
-function resolve$1(object) {
-  /*jshint validthis:true */
-  var Constructor = this;
-
-  if (object && typeof object === 'object' && object.constructor === Constructor) {
-    return object;
-  }
-
-  var promise = new Constructor(noop);
-  resolve(promise, object);
-  return promise;
-}
-
-var PROMISE_ID = Math.random().toString(36).substring(2);
-
-function noop() {}
-
-var PENDING = void 0;
-var FULFILLED = 1;
-var REJECTED = 2;
-
-function selfFulfillment() {
-  return new TypeError("You cannot resolve a promise with itself");
-}
-
-function cannotReturnOwn() {
-  return new TypeError('A promises callback cannot return that same promise.');
-}
-
-function tryThen(then$$1, value, fulfillmentHandler, rejectionHandler) {
-  try {
-    then$$1.call(value, fulfillmentHandler, rejectionHandler);
-  } catch (e) {
-    return e;
-  }
-}
-
-function handleForeignThenable(promise, thenable, then$$1) {
-  asap(function (promise) {
-    var sealed = false;
-    var error = tryThen(then$$1, thenable, function (value) {
-      if (sealed) {
-        return;
-      }
-      sealed = true;
-      if (thenable !== value) {
-        resolve(promise, value);
-      } else {
-        fulfill(promise, value);
-      }
-    }, function (reason) {
-      if (sealed) {
-        return;
-      }
-      sealed = true;
-
-      reject(promise, reason);
-    }, 'Settle: ' + (promise._label || ' unknown promise'));
-
-    if (!sealed && error) {
-      sealed = true;
-      reject(promise, error);
-    }
-  }, promise);
-}
-
-function handleOwnThenable(promise, thenable) {
-  if (thenable._state === FULFILLED) {
-    fulfill(promise, thenable._result);
-  } else if (thenable._state === REJECTED) {
-    reject(promise, thenable._result);
-  } else {
-    subscribe(thenable, undefined, function (value) {
-      return resolve(promise, value);
-    }, function (reason) {
-      return reject(promise, reason);
-    });
-  }
-}
-
-function handleMaybeThenable(promise, maybeThenable, then$$1) {
-  if (maybeThenable.constructor === promise.constructor && then$$1 === then && maybeThenable.constructor.resolve === resolve$1) {
-    handleOwnThenable(promise, maybeThenable);
-  } else {
-    if (then$$1 === undefined) {
-      fulfill(promise, maybeThenable);
-    } else if (isFunction(then$$1)) {
-      handleForeignThenable(promise, maybeThenable, then$$1);
-    } else {
-      fulfill(promise, maybeThenable);
-    }
-  }
-}
-
-function resolve(promise, value) {
-  if (promise === value) {
-    reject(promise, selfFulfillment());
-  } else if (objectOrFunction(value)) {
-    var then$$1 = void 0;
-    try {
-      then$$1 = value.then;
-    } catch (error) {
-      reject(promise, error);
-      return;
-    }
-    handleMaybeThenable(promise, value, then$$1);
-  } else {
-    fulfill(promise, value);
-  }
-}
-
-function publishRejection(promise) {
-  if (promise._onerror) {
-    promise._onerror(promise._result);
-  }
-
-  publish(promise);
-}
-
-function fulfill(promise, value) {
-  if (promise._state !== PENDING) {
-    return;
-  }
-
-  promise._result = value;
-  promise._state = FULFILLED;
-
-  if (promise._subscribers.length !== 0) {
-    asap(publish, promise);
-  }
-}
-
-function reject(promise, reason) {
-  if (promise._state !== PENDING) {
-    return;
-  }
-  promise._state = REJECTED;
-  promise._result = reason;
-
-  asap(publishRejection, promise);
-}
-
-function subscribe(parent, child, onFulfillment, onRejection) {
-  var _subscribers = parent._subscribers;
-  var length = _subscribers.length;
-
-
-  parent._onerror = null;
-
-  _subscribers[length] = child;
-  _subscribers[length + FULFILLED] = onFulfillment;
-  _subscribers[length + REJECTED] = onRejection;
-
-  if (length === 0 && parent._state) {
-    asap(publish, parent);
-  }
-}
-
-function publish(promise) {
-  var subscribers = promise._subscribers;
-  var settled = promise._state;
-
-  if (subscribers.length === 0) {
-    return;
-  }
-
-  var child = void 0,
-      callback = void 0,
-      detail = promise._result;
-
-  for (var i = 0; i < subscribers.length; i += 3) {
-    child = subscribers[i];
-    callback = subscribers[i + settled];
-
-    if (child) {
-      invokeCallback(settled, child, callback, detail);
-    } else {
-      callback(detail);
-    }
-  }
-
-  promise._subscribers.length = 0;
-}
-
-function invokeCallback(settled, promise, callback, detail) {
-  var hasCallback = isFunction(callback),
-      value = void 0,
-      error = void 0,
-      succeeded = true;
-
-  if (hasCallback) {
-    try {
-      value = callback(detail);
-    } catch (e) {
-      succeeded = false;
-      error = e;
-    }
-
-    if (promise === value) {
-      reject(promise, cannotReturnOwn());
-      return;
-    }
-  } else {
-    value = detail;
-  }
-
-  if (promise._state !== PENDING) {
-    // noop
-  } else if (hasCallback && succeeded) {
-    resolve(promise, value);
-  } else if (succeeded === false) {
-    reject(promise, error);
-  } else if (settled === FULFILLED) {
-    fulfill(promise, value);
-  } else if (settled === REJECTED) {
-    reject(promise, value);
-  }
-}
-
-function initializePromise(promise, resolver) {
-  try {
-    resolver(function resolvePromise(value) {
-      resolve(promise, value);
-    }, function rejectPromise(reason) {
-      reject(promise, reason);
-    });
-  } catch (e) {
-    reject(promise, e);
-  }
-}
-
-var id = 0;
-function nextId() {
-  return id++;
-}
-
-function makePromise(promise) {
-  promise[PROMISE_ID] = id++;
-  promise._state = undefined;
-  promise._result = undefined;
-  promise._subscribers = [];
-}
-
-function validationError() {
-  return new Error('Array Methods must be provided an Array');
-}
-
-var Enumerator = function () {
-  function Enumerator(Constructor, input) {
-    this._instanceConstructor = Constructor;
-    this.promise = new Constructor(noop);
-
-    if (!this.promise[PROMISE_ID]) {
-      makePromise(this.promise);
-    }
-
-    if (isArray(input)) {
-      this.length = input.length;
-      this._remaining = input.length;
-
-      this._result = new Array(this.length);
-
-      if (this.length === 0) {
-        fulfill(this.promise, this._result);
-      } else {
-        this.length = this.length || 0;
-        this._enumerate(input);
-        if (this._remaining === 0) {
-          fulfill(this.promise, this._result);
-        }
-      }
-    } else {
-      reject(this.promise, validationError());
-    }
-  }
-
-  Enumerator.prototype._enumerate = function _enumerate(input) {
-    for (var i = 0; this._state === PENDING && i < input.length; i++) {
-      this._eachEntry(input[i], i);
-    }
-  };
-
-  Enumerator.prototype._eachEntry = function _eachEntry(entry, i) {
-    var c = this._instanceConstructor;
-    var resolve$$1 = c.resolve;
-
-
-    if (resolve$$1 === resolve$1) {
-      var _then = void 0;
-      var error = void 0;
-      var didError = false;
-      try {
-        _then = entry.then;
-      } catch (e) {
-        didError = true;
-        error = e;
-      }
-
-      if (_then === then && entry._state !== PENDING) {
-        this._settledAt(entry._state, i, entry._result);
-      } else if (typeof _then !== 'function') {
-        this._remaining--;
-        this._result[i] = entry;
-      } else if (c === Promise$1) {
-        var promise = new c(noop);
-        if (didError) {
-          reject(promise, error);
-        } else {
-          handleMaybeThenable(promise, entry, _then);
-        }
-        this._willSettleAt(promise, i);
-      } else {
-        this._willSettleAt(new c(function (resolve$$1) {
-          return resolve$$1(entry);
-        }), i);
-      }
-    } else {
-      this._willSettleAt(resolve$$1(entry), i);
-    }
-  };
-
-  Enumerator.prototype._settledAt = function _settledAt(state, i, value) {
-    var promise = this.promise;
-
-
-    if (promise._state === PENDING) {
-      this._remaining--;
-
-      if (state === REJECTED) {
-        reject(promise, value);
-      } else {
-        this._result[i] = value;
-      }
-    }
-
-    if (this._remaining === 0) {
-      fulfill(promise, this._result);
-    }
-  };
-
-  Enumerator.prototype._willSettleAt = function _willSettleAt(promise, i) {
-    var enumerator = this;
-
-    subscribe(promise, undefined, function (value) {
-      return enumerator._settledAt(FULFILLED, i, value);
-    }, function (reason) {
-      return enumerator._settledAt(REJECTED, i, reason);
-    });
-  };
-
-  return Enumerator;
-}();
-
-/**
-  `Promise.all` accepts an array of promises, and returns a new promise which
-  is fulfilled with an array of fulfillment values for the passed promises, or
-  rejected with the reason of the first passed promise to be rejected. It casts all
-  elements of the passed iterable to promises as it runs this algorithm.
-
-  Example:
-
-  ```javascript
-  let promise1 = resolve(1);
-  let promise2 = resolve(2);
-  let promise3 = resolve(3);
-  let promises = [ promise1, promise2, promise3 ];
-
-  Promise.all(promises).then(function(array){
-    // The array here would be [ 1, 2, 3 ];
-  });
-  ```
-
-  If any of the `promises` given to `all` are rejected, the first promise
-  that is rejected will be given as an argument to the returned promises's
-  rejection handler. For example:
-
-  Example:
-
-  ```javascript
-  let promise1 = resolve(1);
-  let promise2 = reject(new Error("2"));
-  let promise3 = reject(new Error("3"));
-  let promises = [ promise1, promise2, promise3 ];
-
-  Promise.all(promises).then(function(array){
-    // Code here never runs because there are rejected promises!
-  }, function(error) {
-    // error.message === "2"
-  });
-  ```
-
-  @method all
-  @static
-  @param {Array} entries array of promises
-  @param {String} label optional string for labeling the promise.
-  Useful for tooling.
-  @return {Promise} promise that is fulfilled when all `promises` have been
-  fulfilled, or rejected if any of them become rejected.
-  @static
-*/
-function all(entries) {
-  return new Enumerator(this, entries).promise;
-}
-
-/**
-  `Promise.race` returns a new promise which is settled in the same way as the
-  first passed promise to settle.
-
-  Example:
-
-  ```javascript
-  let promise1 = new Promise(function(resolve, reject){
-    setTimeout(function(){
-      resolve('promise 1');
-    }, 200);
-  });
-
-  let promise2 = new Promise(function(resolve, reject){
-    setTimeout(function(){
-      resolve('promise 2');
-    }, 100);
-  });
-
-  Promise.race([promise1, promise2]).then(function(result){
-    // result === 'promise 2' because it was resolved before promise1
-    // was resolved.
-  });
-  ```
-
-  `Promise.race` is deterministic in that only the state of the first
-  settled promise matters. For example, even if other promises given to the
-  `promises` array argument are resolved, but the first settled promise has
-  become rejected before the other promises became fulfilled, the returned
-  promise will become rejected:
-
-  ```javascript
-  let promise1 = new Promise(function(resolve, reject){
-    setTimeout(function(){
-      resolve('promise 1');
-    }, 200);
-  });
-
-  let promise2 = new Promise(function(resolve, reject){
-    setTimeout(function(){
-      reject(new Error('promise 2'));
-    }, 100);
-  });
-
-  Promise.race([promise1, promise2]).then(function(result){
-    // Code here never runs
-  }, function(reason){
-    // reason.message === 'promise 2' because promise 2 became rejected before
-    // promise 1 became fulfilled
-  });
-  ```
-
-  An example real-world use case is implementing timeouts:
-
-  ```javascript
-  Promise.race([ajax('foo.json'), timeout(5000)])
-  ```
-
-  @method race
-  @static
-  @param {Array} promises array of promises to observe
-  Useful for tooling.
-  @return {Promise} a promise which settles in the same way as the first passed
-  promise to settle.
-*/
-function race(entries) {
-  /*jshint validthis:true */
-  var Constructor = this;
-
-  if (!isArray(entries)) {
-    return new Constructor(function (_, reject) {
-      return reject(new TypeError('You must pass an array to race.'));
-    });
-  } else {
-    return new Constructor(function (resolve, reject) {
-      var length = entries.length;
-      for (var i = 0; i < length; i++) {
-        Constructor.resolve(entries[i]).then(resolve, reject);
-      }
-    });
-  }
-}
-
-/**
-  `Promise.reject` returns a promise rejected with the passed `reason`.
-  It is shorthand for the following:
-
-  ```javascript
-  let promise = new Promise(function(resolve, reject){
-    reject(new Error('WHOOPS'));
-  });
-
-  promise.then(function(value){
-    // Code here doesn't run because the promise is rejected!
-  }, function(reason){
-    // reason.message === 'WHOOPS'
-  });
-  ```
-
-  Instead of writing the above, your code now simply becomes the following:
-
-  ```javascript
-  let promise = Promise.reject(new Error('WHOOPS'));
-
-  promise.then(function(value){
-    // Code here doesn't run because the promise is rejected!
-  }, function(reason){
-    // reason.message === 'WHOOPS'
-  });
-  ```
-
-  @method reject
-  @static
-  @param {Any} reason value that the returned promise will be rejected with.
-  Useful for tooling.
-  @return {Promise} a promise rejected with the given `reason`.
-*/
-function reject$1(reason) {
-  /*jshint validthis:true */
-  var Constructor = this;
-  var promise = new Constructor(noop);
-  reject(promise, reason);
-  return promise;
-}
-
-function needsResolver() {
-  throw new TypeError('You must pass a resolver function as the first argument to the promise constructor');
-}
-
-function needsNew() {
-  throw new TypeError("Failed to construct 'Promise': Please use the 'new' operator, this object constructor cannot be called as a function.");
-}
-
-/**
-  Promise objects represent the eventual result of an asynchronous operation. The
-  primary way of interacting with a promise is through its `then` method, which
-  registers callbacks to receive either a promise's eventual value or the reason
-  why the promise cannot be fulfilled.
-
-  Terminology
-  -----------
-
-  - `promise` is an object or function with a `then` method whose behavior conforms to this specification.
-  - `thenable` is an object or function that defines a `then` method.
-  - `value` is any legal JavaScript value (including undefined, a thenable, or a promise).
-  - `exception` is a value that is thrown using the throw statement.
-  - `reason` is a value that indicates why a promise was rejected.
-  - `settled` the final resting state of a promise, fulfilled or rejected.
-
-  A promise can be in one of three states: pending, fulfilled, or rejected.
-
-  Promises that are fulfilled have a fulfillment value and are in the fulfilled
-  state.  Promises that are rejected have a rejection reason and are in the
-  rejected state.  A fulfillment value is never a thenable.
-
-  Promises can also be said to *resolve* a value.  If this value is also a
-  promise, then the original promise's settled state will match the value's
-  settled state.  So a promise that *resolves* a promise that rejects will
-  itself reject, and a promise that *resolves* a promise that fulfills will
-  itself fulfill.
-
-
-  Basic Usage:
-  ------------
-
-  ```js
-  let promise = new Promise(function(resolve, reject) {
-    // on success
-    resolve(value);
-
-    // on failure
-    reject(reason);
-  });
-
-  promise.then(function(value) {
-    // on fulfillment
-  }, function(reason) {
-    // on rejection
-  });
-  ```
-
-  Advanced Usage:
-  ---------------
-
-  Promises shine when abstracting away asynchronous interactions such as
-  `XMLHttpRequest`s.
-
-  ```js
-  function getJSON(url) {
-    return new Promise(function(resolve, reject){
-      let xhr = new XMLHttpRequest();
-
-      xhr.open('GET', url);
-      xhr.onreadystatechange = handler;
-      xhr.responseType = 'json';
-      xhr.setRequestHeader('Accept', 'application/json');
-      xhr.send();
-
-      function handler() {
-        if (this.readyState === this.DONE) {
-          if (this.status === 200) {
-            resolve(this.response);
-          } else {
-            reject(new Error('getJSON: `' + url + '` failed with status: [' + this.status + ']'));
-          }
-        }
-      };
-    });
-  }
-
-  getJSON('/posts.json').then(function(json) {
-    // on fulfillment
-  }, function(reason) {
-    // on rejection
-  });
-  ```
-
-  Unlike callbacks, promises are great composable primitives.
-
-  ```js
-  Promise.all([
-    getJSON('/posts'),
-    getJSON('/comments')
-  ]).then(function(values){
-    values[0] // => postsJSON
-    values[1] // => commentsJSON
-
-    return values;
-  });
-  ```
-
-  @class Promise
-  @param {Function} resolver
-  Useful for tooling.
-  @constructor
-*/
-
-var Promise$1 = function () {
-  function Promise(resolver) {
-    this[PROMISE_ID] = nextId();
-    this._result = this._state = undefined;
-    this._subscribers = [];
-
-    if (noop !== resolver) {
-      typeof resolver !== 'function' && needsResolver();
-      this instanceof Promise ? initializePromise(this, resolver) : needsNew();
-    }
-  }
-
-  /**
-  The primary way of interacting with a promise is through its `then` method,
-  which registers callbacks to receive either a promise's eventual value or the
-  reason why the promise cannot be fulfilled.
-   ```js
-  findUser().then(function(user){
-    // user is available
-  }, function(reason){
-    // user is unavailable, and you are given the reason why
-  });
-  ```
-   Chaining
-  --------
-   The return value of `then` is itself a promise.  This second, 'downstream'
-  promise is resolved with the return value of the first promise's fulfillment
-  or rejection handler, or rejected if the handler throws an exception.
-   ```js
-  findUser().then(function (user) {
-    return user.name;
-  }, function (reason) {
-    return 'default name';
-  }).then(function (userName) {
-    // If `findUser` fulfilled, `userName` will be the user's name, otherwise it
-    // will be `'default name'`
-  });
-   findUser().then(function (user) {
-    throw new Error('Found user, but still unhappy');
-  }, function (reason) {
-    throw new Error('`findUser` rejected and we're unhappy');
-  }).then(function (value) {
-    // never reached
-  }, function (reason) {
-    // if `findUser` fulfilled, `reason` will be 'Found user, but still unhappy'.
-    // If `findUser` rejected, `reason` will be '`findUser` rejected and we're unhappy'.
-  });
-  ```
-  If the downstream promise does not specify a rejection handler, rejection reasons will be propagated further downstream.
-   ```js
-  findUser().then(function (user) {
-    throw new PedagogicalException('Upstream error');
-  }).then(function (value) {
-    // never reached
-  }).then(function (value) {
-    // never reached
-  }, function (reason) {
-    // The `PedgagocialException` is propagated all the way down to here
-  });
-  ```
-   Assimilation
-  ------------
-   Sometimes the value you want to propagate to a downstream promise can only be
-  retrieved asynchronously. This can be achieved by returning a promise in the
-  fulfillment or rejection handler. The downstream promise will then be pending
-  until the returned promise is settled. This is called *assimilation*.
-   ```js
-  findUser().then(function (user) {
-    return findCommentsByAuthor(user);
-  }).then(function (comments) {
-    // The user's comments are now available
-  });
-  ```
-   If the assimliated promise rejects, then the downstream promise will also reject.
-   ```js
-  findUser().then(function (user) {
-    return findCommentsByAuthor(user);
-  }).then(function (comments) {
-    // If `findCommentsByAuthor` fulfills, we'll have the value here
-  }, function (reason) {
-    // If `findCommentsByAuthor` rejects, we'll have the reason here
-  });
-  ```
-   Simple Example
-  --------------
-   Synchronous Example
-   ```javascript
-  let result;
-   try {
-    result = findResult();
-    // success
-  } catch(reason) {
-    // failure
-  }
-  ```
-   Errback Example
-   ```js
-  findResult(function(result, err){
-    if (err) {
-      // failure
-    } else {
-      // success
-    }
-  });
-  ```
-   Promise Example;
-   ```javascript
-  findResult().then(function(result){
-    // success
-  }, function(reason){
-    // failure
-  });
-  ```
-   Advanced Example
-  --------------
-   Synchronous Example
-   ```javascript
-  let author, books;
-   try {
-    author = findAuthor();
-    books  = findBooksByAuthor(author);
-    // success
-  } catch(reason) {
-    // failure
-  }
-  ```
-   Errback Example
-   ```js
-   function foundBooks(books) {
-   }
-   function failure(reason) {
-   }
-   findAuthor(function(author, err){
-    if (err) {
-      failure(err);
-      // failure
-    } else {
-      try {
-        findBoooksByAuthor(author, function(books, err) {
-          if (err) {
-            failure(err);
-          } else {
-            try {
-              foundBooks(books);
-            } catch(reason) {
-              failure(reason);
-            }
-          }
-        });
-      } catch(error) {
-        failure(err);
-      }
-      // success
-    }
-  });
-  ```
-   Promise Example;
-   ```javascript
-  findAuthor().
-    then(findBooksByAuthor).
-    then(function(books){
-      // found books
-  }).catch(function(reason){
-    // something went wrong
-  });
-  ```
-   @method then
-  @param {Function} onFulfilled
-  @param {Function} onRejected
-  Useful for tooling.
-  @return {Promise}
-  */
-
-  /**
-  `catch` is simply sugar for `then(undefined, onRejection)` which makes it the same
-  as the catch block of a try/catch statement.
-  ```js
-  function findAuthor(){
-  throw new Error('couldn't find that author');
-  }
-  // synchronous
-  try {
-  findAuthor();
-  } catch(reason) {
-  // something went wrong
-  }
-  // async with promises
-  findAuthor().catch(function(reason){
-  // something went wrong
-  });
-  ```
-  @method catch
-  @param {Function} onRejection
-  Useful for tooling.
-  @return {Promise}
-  */
-
-
-  Promise.prototype.catch = function _catch(onRejection) {
-    return this.then(null, onRejection);
-  };
-
-  /**
-    `finally` will be invoked regardless of the promise's fate just as native
-    try/catch/finally behaves
-  
-    Synchronous example:
-  
-    ```js
-    findAuthor() {
-      if (Math.random() > 0.5) {
-        throw new Error();
-      }
-      return new Author();
-    }
-  
-    try {
-      return findAuthor(); // succeed or fail
-    } catch(error) {
-      return findOtherAuther();
-    } finally {
-      // always runs
-      // doesn't affect the return value
-    }
-    ```
-  
-    Asynchronous example:
-  
-    ```js
-    findAuthor().catch(function(reason){
-      return findOtherAuther();
-    }).finally(function(){
-      // author was either found, or not
-    });
-    ```
-  
-    @method finally
-    @param {Function} callback
-    @return {Promise}
-  */
-
-
-  Promise.prototype.finally = function _finally(callback) {
-    var promise = this;
-    var constructor = promise.constructor;
-
-    if (isFunction(callback)) {
-      return promise.then(function (value) {
-        return constructor.resolve(callback()).then(function () {
-          return value;
-        });
-      }, function (reason) {
-        return constructor.resolve(callback()).then(function () {
-          throw reason;
-        });
-      });
-    }
-
-    return promise.then(callback, callback);
-  };
-
-  return Promise;
-}();
-
-Promise$1.prototype.then = then;
-Promise$1.all = all;
-Promise$1.race = race;
-Promise$1.resolve = resolve$1;
-Promise$1.reject = reject$1;
-Promise$1._setScheduler = setScheduler;
-Promise$1._setAsap = setAsap;
-Promise$1._asap = asap;
-
-/*global self*/
-function polyfill() {
-  var local = void 0;
-
-  if (typeof global !== 'undefined') {
-    local = global;
-  } else if (typeof self !== 'undefined') {
-    local = self;
-  } else {
-    try {
-      local = Function('return this')();
-    } catch (e) {
-      throw new Error('polyfill failed because global object is unavailable in this environment');
-    }
-  }
-
-  var P = local.Promise;
-
-  if (P) {
-    var promiseToString = null;
-    try {
-      promiseToString = Object.prototype.toString.call(P.resolve());
-    } catch (e) {
-      // silently ignored
-    }
-
-    if (promiseToString === '[object Promise]' && !P.cast) {
-      return;
-    }
-  }
-
-  local.Promise = Promise$1;
-}
-
-// Strange compat..
-Promise$1.polyfill = polyfill;
-Promise$1.Promise = Promise$1;
-
-return Promise$1;
-
-})));
-
-
-
-//# sourceMappingURL=es6-promise.map
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(5)))
-
-/***/ }),
-/* 117 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/**
- * urlBuilder
- *
- * @param  {object} params
- * @param  {string} params.base       the base url
- * @param  {array}  params.libraries  an array of the libraries to be requested
- * @param  {string} params.callback   the callback function
- *
- * @return {string}
- */
-function urlBuilder(params) {
-  var builtUrl = params.base;
-
-  builtUrl += '?';
-
-  if (params.apiKey) {
-    builtUrl += 'key=' + params.apiKey + '&';
-  }
-
-  if (params.client) {
-    builtUrl += 'client=' + params.client + '&';
-  }
-
-  if (params.libraries.length > 0) {
-    builtUrl += 'libraries=';
-
-    params.libraries.forEach(function(library, index) {
-      builtUrl += library;
-
-      if (index !== params.libraries.length - 1) {
-        builtUrl += ',';
-      }
-    });
-
-    builtUrl += '&';
-  }
-
-  if (params.language) {
-    builtUrl += 'language=' + params.language + '&';
-  }
-
-  if (params.version) {
-    builtUrl += 'v=' + params.version + '&';
-  }
-
-  builtUrl += 'callback=' + params.callback;
-
-  return builtUrl;
-}
-
-module.exports = urlBuilder;
-
-
-/***/ }),
-/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -88071,31 +87313,155 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("main", { staticClass: "main" }, [
-    _c("div", { staticClass: "container-fluid" }, [
-      _c("div", { staticClass: "card" }, [
+    _c(
+      "button",
+      {
+        staticClass: "btn btn-primary",
+        attrs: {
+          type: "button",
+          "data-toggle": "modal",
+          "data-target": "#exampleModal"
+        }
+      },
+      [_vm._v("\r\n  Launch demo modal\r\n")]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: {
+          id: "exampleModal",
+          tabindex: "-1",
+          role: "dialog",
+          "aria-labelledby": "exampleModalLabel",
+          "aria-hidden": "true"
+        }
+      },
+      [
         _c(
           "div",
-          { staticClass: "card-header" },
+          { staticClass: "modal-dialog", attrs: { role: "document" } },
           [
-            _c("div", { ref: "googleMap", staticClass: "google-map" }),
-            _vm._v(" "),
-            Boolean(this.google) && Boolean(this.map)
-              ? [_vm._t("default", null, { google: _vm.google, map: _vm.map })]
-              : _vm._e()
-          ],
-          2
+            _c("div", { staticClass: "modal-content" }, [
+              _vm._m(0),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }, [
+                _c(
+                  "div",
+                  { attrs: { id: "app" } },
+                  [
+                    _c(
+                      "GmapMap",
+                      {
+                        staticStyle: { width: "500px", height: "500px" },
+                        attrs: {
+                          center: { lat: _vm.inicio, lng: _vm.fin },
+                          zoom: 8,
+                          "map-type-id": "hybrid"
+                        }
+                      },
+                      [
+                        _vm._l(_vm.markers, function(m, index) {
+                          return _c("GmapMarker", {
+                            key: index,
+                            attrs: {
+                              position: m.position,
+                              clickable: true,
+                              draggable: true,
+                              mousewheel: true
+                            },
+                            on: { click: _vm.openWindow }
+                          })
+                        }),
+                        _vm._v(" "),
+                        _c("GmapInfoWindow", {
+                          attrs: {
+                            opened: _vm.window_open,
+                            position: _vm.infowindow,
+                            options: {
+                              pixelOffset: {
+                                width: 10,
+                                height: 10
+                              }
+                            }
+                          },
+                          on: {
+                            closeclick: function($event) {
+                              _vm.window_open = false
+                            }
+                          }
+                        })
+                      ],
+                      2
+                    )
+                  ],
+                  1
+                )
+              ]),
+              _vm._v(" "),
+              _vm._m(1)
+            ])
+          ]
         )
-      ])
-    ])
+      ]
+    )
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header" }, [
+      _c(
+        "h5",
+        { staticClass: "modal-title", attrs: { id: "exampleModalLabel" } },
+        [_vm._v("Modal title")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-footer" }, [
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-secondary",
+          attrs: { type: "button", "data-dismiss": "modal" }
+        },
+        [_vm._v("Close")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        { staticClass: "btn btn-primary", attrs: { type: "button" } },
+        [_vm._v("Save changes")]
+      )
+    ])
+  }
+]
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-36bae2bf", module.exports)
+    require("vue-hot-reload-api")      .rerender("data-v-1b235968", module.exports)
   }
 }
 

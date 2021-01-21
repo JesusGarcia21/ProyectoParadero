@@ -6,9 +6,12 @@
     "type": "project",
     "require": {
         "php": ">=7.0.0",
+        "beyondcode/laravel-websockets": "^1.9",
         "fideloper/proxy": "~3.3",
         "laravel/framework": "5.5.*",
-        "laravel/tinker": "~1.0"
+        "laravel/tinker": "~1.0",
+        "laravel/ui": "^3.1",
+        "pusher/pusher-php-server": "~3.0"
     },
     "require-dev": {
         "filp/whoops": "~2.0",
@@ -48,6 +51,7 @@
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover"
         ]
+
     },
     "config": {
         "preferred-install": "dist",

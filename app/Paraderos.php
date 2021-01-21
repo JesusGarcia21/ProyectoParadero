@@ -8,5 +8,11 @@ class Paraderos extends Model
 {
     //protected $table = 'paraderos';
     //protected $primaryKey = 'id';
-    protected $fillable = ['ubicacion','ruta','serie','latitud','longitud','condicion'];
+    protected $fillable = ['id_rutas','ubicacion','latitud','longitud','condicion'];
+
+    //Una ruta pertenece a un paradero
+    public function Ruta()
+    {
+        return $this->belongsTo('App\rutas');
+    }
 }

@@ -15,11 +15,11 @@ class Paraderos extends Migration
     {
         Schema::create('paraderos', function (Blueprint $table) {
             $table->increments('id');
+            $table->unsignedInteger('id_rutas');
             $table->string('ubicacion', 100);
-            $table->string('ruta', 100);
-            $table->string('serie', 100);
             $table->string('latitud', 100);
             $table->string('longitud', 100);
+            $table->foreign('id_rutas')->references('id')->on('rutas');
             $table->boolean('condicion')->default(1);
             $table->timestamps();
             //$table->string('descripcion', 256)->nullable();

@@ -1,5 +1,6 @@
 <template>
             <main class="main">
+                <notifications group="foo" :classes="notificationClasses"/>
             <!-- Breadcrumb -->
             <!--<ol class="breadcrumb">
                 <li class="breadcrumb-item">Home</li>
@@ -103,12 +104,13 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-                                
-                                <div class="form-group row">
+                            <div class="form-group row">
+
+                                <div class="col-md-6">
                                     <label class="col-md-3 form-control-label" for="email-input">Direccion</label>
-                                    <div class="col-md-9">
-                                        <select class="form-control" v-model="direccion">       
+                                    <label v-if="error_direccion==1" class="form-control-label text-danger">*direccion</label>
+                                        <select class="form-control" :class="{'invalid-input': error_direccion}" v-model="direccion">
+                                        <!--<select class="form-control" v-model="direccion">-->       
                                         <option value="0" disabled>--Selecionar hacia donde va--</option>
                                         <option value="Campeche">Campeche</option>
                                         <option value="Hecelchakan">Hecelchakan</option>
@@ -120,43 +122,43 @@
                                         <option value="Maxcanu">Maxcanu</option> 
                                         <option value="Merida">Merida</option>              
                                      </select>
-                                    </div>
                                 </div>
 
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="email-input">Ruta</label>
-                                    <div class="col-md-9">
-                                        <input type="email" v-model="ruta" class="form-control" placeholder="Ejemplo Merida-Campeche">
-                                    </div>
+                                <div class="col-md-6">
+                                    <label class="form-control-label">Ruta</label>
+                                    <label v-if="error_ruta==1" class="form-control-label text-danger">*ruta</label>
+                                    <!--<input type="email" v-model="ruta" class="form-control" placeholder="Ejemplo Merida-Campeche">-->
+                                    <input type="text" maxlength="254" v-model="ruta" class="form-control" :class="{'invalid-input': error_ruta}" placeholder="Ejemplo Merida-Campeche">
                                 </div>
 
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="email-input">Latitud Inicial</label>
-                                    <div class="col-md-9">
-                                        <input type="email" v-model="latitud_inicial" class="form-control" placeholder="Ingrese la latitud del autobús">
-                                    </div>
+                                <div class="col-md-6">
+                                    <label class="form-control-label">Latitud Inicial</label>
+                                    <label v-if="error_latitud_inicial==1" class="form-control-label text-danger">*latitud inicial</label>
+                                    <!--<input type="email" v-model="latitud_inicial" class="form-control" placeholder="Ingrese la latitud del autobús">-->
+                                    <input type="text" maxlength="254" v-model="latitud_inicial" class="form-control" :class="{'invalid-input': error_latitud_inicial}" placeholder="Ingrese la latitud del autobús">
                                 </div>
                                 
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="email-input">longitud Inicial</label>
-                                    <div class="col-md-9">
-                                        <input type="email" v-model="longitud_inicial" class="form-control" placeholder="Ingrese la longitud del autobús">
-                                    </div>
+                                <div class="col-md-6">
+                                    <label class="form-control-label">longitud Inicial</label>
+                                    <label v-if="error_longitud_inicial==1" class="form-control-label text-danger">*longitud inicial</label>
+                                    <!--<input type="email" v-model="longitud_inicial" class="form-control" placeholder="Ingrese la longitud del autobús">-->
+                                    <input type="text" maxlength="254" v-model="longitud_inicial" class="form-control" :class="{'invalid-input': error_longitud_inicial}" placeholder="Ingrese la longitud del autobús">
                                 </div>
 
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="email-input">Latitud Final</label>
-                                    <div class="col-md-9">
-                                        <input type="email" v-model="latitud_final" class="form-control" placeholder="Ingrese la latitud del autobús">
-                                    </div>
+                                <div class="col-md-6">
+                                    <label class="form-control-label">Latitud Final</label>
+                                    <label v-if="error_latitud_final==1" class="form-control-label text-danger">*latitud final</label>
+                                    <!--<input type="email" v-model="latitud_final" class="form-control" placeholder="Ingrese la latitud del autobús">-->
+                                    <input type="text" maxlength="254" v-model="latitud_final" class="form-control" :class="{'invalid-input': error_latitud_final}" placeholder="Ingrese la latitud del autobús">
                                 </div>
                                 
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="email-input">longitud Final</label>
-                                    <div class="col-md-9">
-                                        <input type="email" v-model="longitud_final" class="form-control" placeholder="Ingrese la longitud del autobús">
-                                    </div>
+                                <div class="col-md-12">
+                                    <label class="form-control-label">longitud Final</label>
+                                    <label v-if="error_longitud_final==1" class="form-control-label text-danger">*longitud final</label>
+                                    <!--<input type="email" v-model="longitud_final" class="form-control" placeholder="Ingrese la longitud del autobús">-->
+                                    <input type="text" maxlength="254" v-model="longitud_final" class="form-control" :class="{'invalid-input': error_longitud_final}" placeholder="Ingrese la longitud del autobús">
                                 </div>
+                            </div>
                                 
                                 <div v-show="errorRutas" class="form-group row div-error">
                                     <div class="text-center text-error">
@@ -165,8 +167,6 @@
                                         </div>
                                     </div>
                                 </div>
-
-                            </form>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
@@ -209,7 +209,15 @@
                 },
                 offset : 3,
                 criterio : 'direccion',
-                buscar : ''
+                buscar : '',
+                notificationClasses: null,
+                error_direccion: 0,
+                error_ruta: 0,
+                error_paradero: 0,
+                error_latitud_inicial: 0,
+                error_longitud_inicial: 0,
+                error_latitud_final: 0,
+                error_longitud_final: 0
             }
         },
         computed:{
@@ -274,6 +282,7 @@
                 }).then(function (response) {
                     me.cerrarModal();
                     me.listarRutas(1,'','direccion');
+                    swal("Datos registrados", "¡Tu registro se realizo correctamente!");
                 }).catch(function (error) {
                     console.log(error);
                 });
@@ -295,6 +304,7 @@
                 }).then(function (response) {
                     me.cerrarModal();
                     me.listarRutas(1,'','direccion');
+                    swal("Datos actualizados", "¡Tu registros se han actualizado correctamente!");
                 }).catch(function (error) {
                     console.log(error);
                 }); 
@@ -407,23 +417,88 @@
                         )
                         }).catch(function (error) 
                         {
+                            me.listarRutas(1,'');
+                            swal("¡No se puede eliminar!", "Esta ruta esta relacionada a un vehiculo", "info");
+                        });
+					} else {
+                        swal.close();
+					}
+				});
+            },
+            /*eliminarRutas(id)
+            {
+                swal({
+					title: '¿Está seguro de eliminar esta ruta?',
+					text: "",
+					type: 'warning',
+					buttons:{
+						confirm: {
+							text : 'Si, aceptar',
+							className : 'btn btn-success'
+						},
+						cancel: {
+                            visible: true,
+                            text : 'No, cancelar!',
+							className: 'btn btn-danger'
+						}
+					}
+				}).then((Delete) => {
+                    if (Delete) 
+                    {
+                        let me = this;
+                        axios.delete('/rutas/delete/'+id,{
+                            //'id' : id,
+                            
+                        }).then(function (response) 
+                        {
+                            me.listarRutas(1,'');
+                            swal({
+							    title: 'Eliminado',
+							    text: 'Su ruta ha sido eliminado',
+							    type: 'success',
+							    buttons : {
+								    confirm: {
+									    className : 'btn btn-success'
+								    }
+							    }
+						    });
+                        }).catch(function (error) 
+                        {
                             console.log(error);
-                           
+                            me.notificationError('Error','La ruta esta asignado a un vehiculo');
                         });
 					} else {
 						swal.close();
 					}
 				});
-            },
+            },*/
             validarRutas(){
                 this.errorRutas=0;
                 this.errorMostrarMsjRutas =[];
-                if (!this.direccion) this.errorMostrarMsjRutas.push("El direccion de la categoría no puede estar vacío.");
-                if (!this.ruta) this.errorMostrarMsjRutas.push("El ruta de la categoría no puede estar vacío.");
-                if (!this.latitud_inicial) this.errorMostrarMsjRutas.push("El latitud de la categoría no puede estar vacío.");
-                if (!this.longitud_inicial) this.errorMostrarMsjRutas.push("El longitud de la categoría no puede estar vacío.");
-                if (!this.latitud_final) this.errorMostrarMsjRutas.push("El latitud de la categoría no puede estar vacío.");
-                if (!this.longitud_final) this.errorMostrarMsjRutas.push("El longitud de la categoría no puede estar vacío.");
+                //if (!this.direccion) this.errorMostrarMsjRutas.push("La direccion de la categoría no puede estar vacía.");
+                if (this.direccion == ''){ this.errorMostrarMsjRutas.push("La direccion de la categoría no puede estar vacía."); this.error_direccion = 1;}
+                else {this.error_direccion = 0;}
+
+                //if (!this.ruta) this.errorMostrarMsjRutas.push("La ruta de la categoría no puede estar vacío.");
+                if (this.ruta == ''){ this.errorMostrarMsjRutas.push("La ruta de la categoría no puede estar vacío."); this.error_ruta = 1;}
+                else {this.error_ruta = 0;}
+
+                //if (!this.latitud_inicial) this.errorMostrarMsjRutas.push("La latitud de la categoría no puede estar vacía.");
+                if (this.latitud_inicial == ''){ this.errorMostrarMsjRutas.push("La latitud de la categoría no puede estar vacía."); this.error_latitud_inicial = 1;}
+                else {this.error_latitud_inicial = 0;}
+
+                //if (!this.longitud_inicial) this.errorMostrarMsjRutas.push("La longitud de la categoría no puede estar vacía.");
+                if (this.longitud_inicial == ''){ this.errorMostrarMsjRutas.push("La longitud de la categoría no puede estar vacía."); this.error_longitud_inicial = 1;}
+                else {this.error_longitud_inicial = 0;}
+
+                //if (!this.latitud_final) this.errorMostrarMsjRutas.push("La latitud de la categoría no puede estar vacía.");
+                if (this.latitud_final == ''){ this.errorMostrarMsjRutas.push("La latitud de la categoría no puede estar vacía."); this.error_latitud_final = 1;}
+                else {this.error_latitud_final = 0;}
+
+                //if (!this.longitud_final) this.errorMostrarMsjRutas.push("La longitud de la categoría no puede estar vacía.");
+                if (this.longitud_final == ''){ this.errorMostrarMsjRutas.push("La longitud de la categoría no puede estar vacía."); this.error_longitud_final = 1;}
+                else {this.error_longitud_final = 0;}
+
                 if (this.errorMostrarMsjRutas.length) this.errorRutas = 1;
                 return this.errorRutas;
             },
@@ -436,6 +511,14 @@
                 this.longitud_inicial='';
                 this.latitud_final='';
                 this.longitud_final='';
+                this.error_direccion = 0;
+                this.error_ruta = 0;
+                this.error_direccion = 0;
+                this.error_latitud_inicial= 0;
+                this.error_longitud_inicial = 0;
+                this.error_latitud_final= 0;
+                this.error_longitud_final = 0;
+                this.errorMostrarMsjRutas =[];
             },
             abrirModal(modelo, accion, data = []){
                 switch(modelo){
@@ -453,6 +536,7 @@
                                 this.latitud_final= '';
                                 this.longitud_final= '';
                                 this.tipoAccion = 1;
+                                this.notificationClasses = null;
                                 break;
                             }
                             case 'actualizar':
@@ -468,13 +552,42 @@
                                 this.longitud_inicial = data['longitud_inicial'];
                                 this.latitud_final = data['latitud_final'];
                                 this.longitud_final = data['longitud_final'];
+                                this.notificationClasses = null;
                                 break;
                             }
                         }
                     }
+                    this.selectParadero();
                 }
             }
         },
+        notificationSuccess(title_s,text_s)
+            {
+                this.notificationClasses = 'vue-notification success';
+                this.$notify({
+                    group: 'foo',
+                    title: title_s,
+                    text: text_s
+                });
+            },
+            notificationWarning(title_w,text_w)
+            {
+                this.notificationClasses = 'vue-notification warn';
+                this.$notify({
+                    group: 'foo',
+                    title: title_w,
+                    text: text_w
+                });
+            },
+        notificationError(title_e,text_e)
+            {
+                this.notificationClasses = 'vue-notification error';
+                this.$notify({
+                    group: 'foo',
+                    title: title_e,
+                    text: text_e
+                });
+            },
         mounted() {
             this.listarRutas(1,this.buscar,this.criterio);
         }
@@ -498,5 +611,8 @@
     .text-error{
         color: red !important;
         font-weight: bold;
+    }
+    .invalid-input{
+    border: 1px solid #dc0e26;
     }
 </style>

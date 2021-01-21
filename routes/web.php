@@ -1,6 +1,7 @@
 <?php
 
-use App\Events\TaskEvent;
+
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -14,18 +15,21 @@ use App\Events\TaskEvent;
 
 Route::get('/', function () {
     return view('contenido/contenido');
+    
 });
 Route::get('/informacion', function () {
     return view('informacion');
 });
-
-
-
-Route::get('event',function(){
-    event(new TaskEvent('hola'));
+Route::get('/mapa', function () {
+    return view('mapa');
 });
 
+Route::post('/ubicacion', 'UbicacionController@store');
+
+
+
 Route::get('/vehiculo', 'VehiculoController@index');
+Route::get('vehiculo/ext', 'VehiculoController@ext');
 Route::post('/vehiculo/registrar', 'VehiculoController@store');
 Route::put('/vehiculo/actualizar', 'VehiculoController@update');
 Route::put('/vehiculo/desactivar', 'VehiculoController@desactivar');
@@ -35,19 +39,22 @@ Route::get('/vehiculo/selectRuta', 'VehiculoController@selectRuta');
 Route::get('/vehiculo/selectTipo', 'VehiculoController@selectTipo');
 
 Route::get('/paraderos', 'ParaderosController@index');
+Route::get('/paraderos/ver', 'ParaderosController@ver');
 Route::post('/paraderos/registrar', 'ParaderosController@store');
 Route::put('/paraderos/actualizar', 'ParaderosController@update');
 Route::put('/paraderos/desactivar', 'ParaderosController@desactivar');
 Route::put('/paraderos/activar', 'ParaderosController@activar');
+Route::get('/paraderos/rutas', 'ParaderosController@rutas');
 
 Route::get('/rutas', 'RutasController@index');
+Route::get('/rutas/rut', 'RutasController@rut');
 Route::post('/rutas/registrar', 'RutasController@store');
 Route::put('/rutas/actualizar', 'RutasController@update');
 Route::put('/rutas/desactivar', 'RutasController@desactivar');
 Route::put('/rutas/activar', 'RutasController@activar');
 Route::delete('/rutas/delete/{id}','RutasController@destroy');
 Route::get('/rutas/selectPlacas', 'RutasController@selectPlacas');
-Route::delete('/rutas/delete/{id}','RutasController@destroy');
+Route::get('/paraderos/selectRuta', 'ParaderosController@selectRuta');
 
 Route::get('/tipos', 'TiposController@index');
 Route::post('/tipos/registrar', 'TiposController@store');
@@ -61,4 +68,5 @@ Route::put('/horario/actualizar', 'HorarioController@update');
 Route::put('/horario/desactivar', 'HorarioController@desactivar');
 Route::put('/horario/activar', 'HorarioController@activar');
 Route::delete('/horario/delete/{id}', 'HorarioController@destroy');
+
 

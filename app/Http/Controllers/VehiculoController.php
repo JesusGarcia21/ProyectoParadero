@@ -135,6 +135,15 @@ class VehiculoController extends Controller
         ->orderBy('nombre','asc')->get();
         return ['tipos'=>$tipos];
     }
+    /*public function getLibros(){
+        $vehiculo=Vehiculo::all();
+        return response()->json($vehiculo);
+    }*/
+    public function ext(Request $request)
+    {
+        $vehiculo=Vehiculo::all();
+        return response()->json($vehiculo);
+    }
 
 }
 
